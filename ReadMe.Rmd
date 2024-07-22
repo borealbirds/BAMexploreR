@@ -1,0 +1,118 @@
+---
+title: "ReadMe"
+author: "Melina Houle"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# Rpackage <img src="man/figures/logo.png" align="right" alt="" width="120" />
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+`BAMexploreR` provides a set of functions for manipulating National Model output maps from v4 and v5.
+
+You can visit the package website here: https://github.com/borealbirds/....
+
+## Installation
+
+You can install the development version of `BAMexploreR` from [GitHub](https://github.com/) with:
+
+```{r, eval=FALSE}
+# install.packages("devtools")
+devtools::install_github("borealbirds/BAMexploreR")
+```
+
+## Citation
+
+Please cite the _BAMexploreR_ package when using it in publications. To cite the latest official version, please use:
+
+
+```{r, echo = FALSE, results = "asis"}
+dev_version <- packageDescription("BAMexploreR")$Version
+cat(paste0("> Houle M, Boehm M, Knight E, ... (",format(Sys.time(), "%Y"),"). Rpackage: evaluating boreal birds density in R. R package version ", dev_version, ". Available at https://github.com/borealbirds/BAMexploreR.\n"))
+```
+
+## Usage
+Here we provide a simple example of identifying species available in v4, then using `BAMexploreR` to download species specific density maps. 
+
+```{r, message=FALSE}
+library(BAMexploreR)
+library(terra)
+library(dplyr)
+library(tmap)
+```
+
+We will use the included dataset `vignette.shp` and `vignette.rast` to demonstrate how some of the functions work.
+
+```{r, message=FALSE}
+# Check which species are part of the National Model v4
+
+spp <- sppList("v4", "mean", "species_code")
+print(spp)
+
+spp <- sppList("v5", "mean", "species_code")
+print(spp)
+```
+
+
+Visualize study area to target bcr by either looking at the subUnits maps, or by uploading an AOI
+```{r, message=FALSE}
+tmap_mode("plot")
+subUnits_results <- mapBCR() 
+print(subUnits_results$map)
+print(subUnits_results$subUnits)
+
+
+# You can also provide an AOI and identified which BCR overlap
+aoi_shp <- system.file("extdata", "vignette_shp.shp", package = "BAMexploreR")
+aoi_sf <- vect(aoi_shp)
+subUnits_results <- mapBCR(aoi_sf) 
+print(subUnits_results$map)
+print(subUnits_results$subUnits)
+```
+
+Extract NM output 
+```{r, message=FALSE}
+# Get CAWA mean density from the v4 of the National Model 
+# Load data
+aoi <- system.file("extdata", "bcr10.shp", package = "BAMexploreR")
+aoi_sf <- vect(aoi)
+out_dir <- tempfile()
+getlayerNM("AMRO", "v4", file.path(out_dir),  crop = TRUE, y = "bcr9")
+#tif_files <- list.files(path = out_dir, pattern = "\\.tif$", full.names = TRUE)
+out_nm<- rast(tif_files[1])
+plot(out_nm)
+```
+
+
+
+
+
+test that
+```{r, message=FALSE}
+# Check which species are part of the National Model v4
+
+
+# Get CAWA mean density from the v4 of the National Model 
+out_dir <- tempfile()
+getlayerNM("All", "v4", file.path(out_dir),  crop = TRUE, y = vignette.shp)
+tif_files <- list.files(path = out_dir, pattern = "\\.tif$", full.names = TRUE)
+out_nm<- rast(tif_files[1])
+plot(out_nm)
+```

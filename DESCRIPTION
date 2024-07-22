@@ -1,0 +1,31 @@
+Package: BAMexploreR
+Type: Package
+Title: Manipulate NM data output
+Version: 0.1.0
+Authors@R: c(
+    person("Melina", "Houle", email = "houle.melina@gmail.com",
+    role = c("aut", "cre")),
+    person("Her Majesty the Queen in Right of Canada, as represented by the Minister of Natural Resources Canada",
+    role = "cph")
+    )
+Maintainer: The package maintainer <yourself@somewhere.net>
+Description: More about what it does (maybe more than one line)
+    Use four spaces when indenting paragraphs within the Description.
+Depends: R (>= 3.3.0), dplyr, googledrive, terra
+Imports:
+  tmap,
+  stringr,
+  terra
+Suggests:
+  knitr,
+  rmarkdown,
+  testthat
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+VignetteBuilder: knitr, rmarkdown
+Collate: 
+    'sppList.R'
+    'getlayerNM.R'
+    'mapBCR.R'
+RoxygenNote: 7.3.1
