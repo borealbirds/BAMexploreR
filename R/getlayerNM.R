@@ -90,7 +90,6 @@ getlayerNM <- function(spList, version, destfile, layer = "mean", crop = FALSE, 
   # Check if provided species list is in the available species codes. Display erroneous
   uspecies <- spList[!spList %in% spv]
   if (length(uspecies) > 0) {
-  #  warning(paste0("The following species aren't available for processing: ", paste(uspecies, collapse = ", ")))
     tryCatch({
       warning(paste0("The following species aren't available for processing: ", paste(uspecies, collapse = ", ")))
     }, warning = function(w) {
@@ -123,7 +122,7 @@ getlayerNM <- function(spList, version, destfile, layer = "mean", crop = FALSE, 
         }else if(class(y)[1] == "SpatRaster"){
           y <- project(y, tiff_data, align_only = TRUE)
         }else { #class(y)== "character"
-          y <- system.file("extdata", "BAM_BCR_NationalModel.shp", package = "BAMexploreR")  %>%
+          y <- system.file("extdata", "BAM_BCRNM_LAEA.shp", package = "BAMexploreR")  %>%
             vect() %>%
             dplyr::pull(subUnit==y) %>%
             project(tiff_data)
