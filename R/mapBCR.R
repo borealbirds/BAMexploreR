@@ -3,13 +3,13 @@
 #'
 #' @param ext SpatVector, SpatExtent, or SpatRaster used to define the extent for the cropping.
 #'
-#' @return Vector of bcr overlaid by study area
+#' @return List containing vector of bcr that overlay the study area and a map illustrating the overlap.
 #'
 #' @import terra
 #' @import dplyr
 #' @importFrom RColorBrewer brewer.pal
-#' @importFrom tmap tm_shape tm_polygons tm_layout
-#' @importFrom sf st_as_sf
+#' @importFrom tmap tm_shape tm_polygons tm_layout tm_text tm_add_legend
+#' @importFrom sf st_as_sf st_intersect
 #' @docType methods
 #' @author Melina Houle
 #' @rdname mapBCR
@@ -34,7 +34,7 @@ mapBCR <- function(ext) {
     }
   }
 
-  base_bcr <- vect(system.file("extdata", "BAM_BCR_NM.shp", package = "BAMexploreR"))
+  base_bcr <- vect(system.file("extdata", "BAM_BCRNM_LAEA.shp", package = "BAMexploreR"))
 
   label_sf <- st_as_sf(data.frame(
     X = base_bcr$X,
@@ -53,7 +53,7 @@ mapBCR <- function(ext) {
 
   # Find intersections
   if(add_sf){
-    intersected <- st_intersects(base_sf, user_sf, sparse = FALSE)
+    intersected <- sf::st_intersects(base_sf, user_sf, sparse = FALSE)
     intersected_subUnits <- base_sf$subunit_ui[apply(intersected, 1, any)]
   }else{
     intersected_subUnits <-base_sf$subunit_ui
