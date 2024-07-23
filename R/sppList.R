@@ -2,9 +2,9 @@
 #' Retrieve list of species
 #'
 #' The function produce a character vector of species available to download. To
-#' retreive available species, the function derive the list using the version, and type of output
+#' retrieve available species, the function derive the list using the version, and type of output
 #'
-#' @param version charact; Indicate the version of the National Model requested. Each version of the
+#' @param version character; Indicate the version of the National Model requested. Each version of the
 #'        National Model has its url access provided within the package.
 #'
 #' @param layer character; Name of the output layers of interest, either "mean", "sd", "overextrapolated", "ptdensity" or "distnear".
