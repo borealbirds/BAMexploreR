@@ -1,6 +1,8 @@
 ##################################################################################
 #' Retrieve list of BCR overlaid by the study area
 #'
+#' @param version character; Indicate the version of the National Model requested. Each version of the
+#'        National Model has its url access provided within the package.
 #' @param ext SpatVector, SpatExtent, or SpatRaster used to define the extent for the cropping.
 #'
 #' @return List containing vector of bcr that overlay the study area and a map illustrating the overlap.
@@ -9,20 +11,30 @@
 #' @import dplyr
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom tmap tm_shape tm_polygons tm_layout tm_text tm_add_legend
-#' @importFrom sf st_as_sf st_intersect
+#' @importFrom sf st_as_sf st_intersects
 #' @docType methods
 #' @author Melina Houle
 #' @rdname mapBCR
 #' @export
 #' @examples
-#' subUnit<- mapBCR()
-mapBCR <- function(ext) {
+#' subUnit<- mapBCR("v5")
+mapBCR <- function(version, ext) {
   add_sf <- TRUE
 
   # Need output path
+  if (missing(version)) {
+    stop("You must specified either v4 or v5")
+  }
+
+  # Need output path
   if (missing(ext)) {
-    ext <- vect(system.file("extdata", "BAM_BCR_NM.shp", package = "BAMexploreR"))
-    add_sf <- FALSE
+    if(version == "v4"){
+      ext <- vect(system.file("extdata", "BAM_BCRNMv4_LAEA.shp", package = "BAMexploreR"))
+      add_sf <- FALSE
+    }else{
+      ext <- vect(system.file("extdata", "BAM_BCRNMv5_LAEA.shp", package = "BAMexploreR"))
+      add_sf <- FALSE
+    }
   }
 
   # Need SpatVector or SpatRaster and projection
@@ -34,9 +46,17 @@ mapBCR <- function(ext) {
     }
   }
 
-  base_bcr <- vect(system.file("extdata", "BAM_BCRNM_LAEA.shp", package = "BAMexploreR"))
+  if(version == "v4"){
+    base_bcr <- vect(system.file("extdata", "BAM_BCRNMv4_LAEA.shp", package = "BAMexploreR"))
+    ncat <-16
+  }else if(version == "v5"){
+    base_bcr <- vect(system.file("extdata", "BAM_BCRNMv5_LAEA.shp", package = "BAMexploreR"))
+    ncat <-34
+  }else{
+    stop("Model version doesn't exist.")
+  }
 
-  label_sf <- st_as_sf(data.frame(
+  label_sf <- sf::st_as_sf(data.frame(
     X = base_bcr$X,
     Y = base_bcr$Y,
     label = base_bcr$subunit_ui,
@@ -62,13 +82,14 @@ mapBCR <- function(ext) {
   # Create the tmap
   # Generate a larger palette and subset it to get exactly 25 colors
   custom_palette <- RColorBrewer::brewer.pal(12, "Set3")  # Generate 12 colors from the Set3 palette
-  custom_palette <- rep(custom_palette, length.out = 34)  # Repeat the palette to get 25 colors
+  custom_palette <- rep(custom_palette, length.out = ncat)  # Repeat the palette to get 25 colors
 
   tmap <- tmap::tm_shape(base_sf) +
-    tmap::tm_polygons(col = "subUnit", palette = custom_palette, style = "cat",  n = 34, border.col = "black", border.alpha = 0.5, legend.show = TRUE, id = "BCR subunit") +
-    tmap::tm_shape(label_sf) + # Add the label_sf shape here
-    tmap::tm_text(text = "label", size = 0.7, col = "black", shadow = TRUE) +
-    tmap::tm_layout(legend.position = c("left", "bottom"))
+      tmap::tm_polygons(col = "subUnit", palette = custom_palette, style = "cat",  n = ncat, border.col = "black", border.alpha = 0.5, legend.show = TRUE, id = "BCR subunit") +
+      tmap::tm_shape(label_sf) + # Add the label_sf shape here
+      tmap::tm_text(text = "label", size = 0.7, col = "black", shadow = TRUE) +
+      tmap::tm_layout(legend.position = c("left", "bottom"))
+
   if(add_sf){
     tmap <- tmap +
       tmap::tm_shape(user_sf) +

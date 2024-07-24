@@ -5,13 +5,13 @@
 \alias{sppList}
 \title{Retrieve list of species}
 \usage{
-sppList(version, layer, out_format)
+sppList(version, layer, type)
 }
 \arguments{
-\item{version}{charact; Indicate the version of the National Model requested. Each version of the
+\item{version}{character; Indicate the version of the National Model requested. Each version of the
 National Model has its url access provided within the package.}
 
-\item{layer}{character; Name of the output layers of interest, either "mean", "sd", "overextrapolated", "ptdensity" or "distnear".}
+\item{layer}{character; Name of the output layers of interest, either "mean", "sd" or "overextrapolated".}
 
 \item{type}{character; type of output provided in the list, either "species_code", "common_name", "family_name" or "scientific_name".}
 }
@@ -20,14 +20,10 @@ Vector of available url to download
 }
 \description{
 The function produce a character vector of species available to download. To
-retreive available species, the function derive the list using the version, and type of output
+retrieve available species, the function derive the list using the version, and type of output
 }
 \examples{
-library(data.table)
-dt<- data.table(dataset = c("NFDB"),
-               url = c("http://cwfis.cfs.nrcan.gc.ca/downloads/nfdb/fire_poly/current_version/"),
-               password= c(NA))
-listWebData(dt, datasetName = "NFDB")
+speciesList <- sppList("v4", "mean", "species_code")
 }
 \author{
 Melina Houle

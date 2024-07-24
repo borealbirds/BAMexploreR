@@ -7,13 +7,13 @@
 #' @param version character; Indicate the version of the National Model requested. Each version of the
 #'        National Model has its url access provided within the package.
 #'
-#' @param layer character; Name of the output layers of interest, either "mean", "sd", "overextrapolated", "ptdensity" or "distnear".
+#' @param layer character; Name of the output layers of interest, either "mean", "sd" or "overextrapolated".
 #'
 #' @param type character; type of output provided in the list, either "species_code", "common_name", "family_name" or "scientific_name".
 #'
 #' @return Vector of available url to download
 #'
-#' @importFrom googledrive drive_ls
+#' @importFrom googledrive drive_ls drive_auth
 #' @import dplyr
 #' @importFrom stringr str_sub
 #' @docType methods
@@ -22,16 +22,10 @@
 #' @export
 #' @examples
 
-#' library(data.table)
-#' dt<- data.table(dataset = c("NFDB"),
-#'                url = c("http://cwfis.cfs.nrcan.gc.ca/downloads/nfdb/fire_poly/current_version/"),
-#'                password= c(NA))
-#' listWebData(dt, datasetName = "NFDB")
-sppList <- function(version, layer, out_format) {
+#' speciesList <- sppList("v4", "mean", "species_code")
+sppList <- function(version, layer, type) {
   load(system.file("R/sysdata.rda", package = "BAMexploreR"))
-  #spdt <- get(data(spp.List))
   spdt <- spp.List
-  #pid <- get(data(version.url))
   pid <- version.url
   gd.list <- googledrive::drive_ls(pid$url[pid$version == version])
   spcode <- spdt %>% pull("code")
@@ -49,18 +43,18 @@ sppList <- function(version, layer, out_format) {
     print("You must specified either v4 or v5")
   }
   # Extract species list
-  if(out_format=="species_code"){
+  if(type=="species_code"){
     sp <-spList
-  }else if(out_format=="commonName") {
+  }else if(type=="commonName") {
     sp <- spdt %>%
       filter(code %in% spList) %>%
       pull(commonName)
-  }else if(out_format=="order") {
+  }else if(type=="order") {
     sp <- spdt %>%
       filter(code %in% spList) %>%
       pull(order)  %>%
       unique()
-  }else if(out_format=="scientificName") {
+  }else if(type=="scientificName") {
     sp <- spdt %>%
       filter(code %in% spList) %>%
       pull(scientificName)

@@ -5,7 +5,7 @@
 \alias{getlayerNM}
 \title{Download National Model species specific output map raster based on list of species}
 \usage{
-getlayerNM(spList, version, destfile, layer = "mean", crop = FALSE, y = NULL)
+getlayerNM(spList, version, destfile, layer = "mean", crop = FALSE, ext = NULL)
 }
 \arguments{
 \item{spList}{A character string. A vector of species to be downloaded.}
@@ -14,9 +14,9 @@ getlayerNM(spList, version, destfile, layer = "mean", crop = FALSE, y = NULL)
 
 \item{destfile}{A character string giving the path where the downloaded file is saved.}
 
-\item{crop}{Logical. If \code{TRUE}, crop raster layers to .}
+\item{layer}{Character; Name of the output layers of interest, either "mean", "sd" or "overextrapolated".}
 
-\item{type}{Logical. If \code{TRUE}, file is untar and/or unzip. Default is \code{FALSE}.}
+\item{crop}{Logical. If \code{TRUE}, crop raster layers using \code{ext/}.}
 
 \item{ext}{SpatVector, SpatExtent, or SpatRaster used to define the extent for the cropping.}
 }
@@ -27,8 +27,7 @@ Invoked for its side-effect of downloading files to the \code{destfile/} directo
 Download National Model species specific output map raster based on list of species
 }
 \examples{
-url <- "http://ftp.geogratis.gc.ca/pub/nrcan_rncan/archive/vector/cli_itc_50k/land_use/L040J03.zip"
-hashDownload(urls = url, destfile = tempdir(), checkhash = FALSE, cascade = FALSE)
+bird <- getlayerNM("CAWA", "v4", "mean",  tempfile())
 
 
 }

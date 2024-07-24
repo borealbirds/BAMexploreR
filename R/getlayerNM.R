@@ -7,15 +7,15 @@
 #'
 #' @param destfile A character string giving the path where the downloaded file is saved.
 #'
-#' @param type Logical. If \code{TRUE}, file is untar and/or unzip. Default is \code{FALSE}.
+#' @param layer Character; Name of the output layers of interest, either "mean", "sd" or "overextrapolated".
 #'
-#' @param crop Logical. If \code{TRUE}, crop raster layers to .
+#' @param crop Logical. If \code{TRUE}, crop raster layers using \code{ext/}.
 #'
 #' @param ext SpatVector, SpatExtent, or SpatRaster used to define the extent for the cropping.
 #'
 #' @return Invoked for its side-effect of downloading files to the \code{destfile/} directory.
 #'
-#' @importFrom googledrive drive_ls drive_get drive_download
+#' @importFrom googledrive drive_ls drive_get drive_download drive_auth
 #' @importFrom dplyr pull
 #' @importFrom stringr str_sub
 #' @importFrom terra vect rast project crop values
@@ -24,40 +24,33 @@
 #' @export
 #' @rdname getlayerNM
 #' @examples
-#' url <- "http://ftp.geogratis.gc.ca/pub/nrcan_rncan/archive/vector/cli_itc_50k/land_use/L040J03.zip"
-#' hashDownload(urls = url, destfile = tempdir(), checkhash = FALSE, cascade = FALSE)
+#' bird <- getlayerNM("CAWA", "v4", "mean",  tempfile())
 #'
 #'
-getlayerNM <- function(spList, version, destfile, layer = "mean", crop = FALSE, y = NULL ) {
-  library(googledrive)
-  library(terra)
-  library(dplyr)
-
-  options(googledrive_quiet = TRUE)
-
-  bcr_ls<- c("bcr9", "bcr10")
-
+getlayerNM <- function(spList, version, destfile, layer = "mean", crop = FALSE, ext = NULL) {
+  # List where all bcrunit are listed
+  bcr_v5 <- c("bcr9", "bcr10")
 
   # Need output path
   if (missing(destfile)) {
     stop("You must provide an output path to store downloaded rasters.")
   }
 
-  # Need y if crop = TRUE
+  # Need ext if crop = TRUE
   if (crop){
-    if(is.null(y)) {
+    if(is.null(ext)) {
       stop("You need to provide a SpatRast, SpatVect or a specific BCR unit in order to crop.")
     }else{
-      if(!class(y)[1] %in% c("SpatVector", "SpatRaster", "character")){
+      if(!class(ext)[1] %in% c("SpatVector", "SpatRaster", "character")){
         stop("You need to provide a SpatRast, SpatVect or a specific BCR unit in order to crop.")
       }
     }
   }
 
   # Need CRS
-  if (!is.null(y)){
-    if(class(y) == "SpatVect" | class(y) == "SpatRast") {
-      if (nchar(crs(y)) == 0) {
+  if (!is.null(ext)){
+    if(class(ext) == "SpatVect" | class(ext) == "SpatRast") {
+      if (nchar(crs(ext)) == 0) {
         stop("CRS of cropping element is missing or empty.")
       }
     }
@@ -74,7 +67,7 @@ getlayerNM <- function(spList, version, destfile, layer = "mean", crop = FALSE, 
   }
 
   # Set url based on version
-  pid <- get(data(version.url))
+  pid <- get("version.url", envir = asNamespace("BAMexploreR"))
   gd.list <- googledrive::drive_ls(pid$url[pid$version == version])
   # Create list of available species
   if(version == "v4"){
@@ -100,45 +93,64 @@ getlayerNM <- function(spList, version, destfile, layer = "mean", crop = FALSE, 
   # Create valid species vector
   spList <- spList[spList %in% spv]
 
+  outList <- list()
   # Batch download function
-  batch_download <- function(species_code, version, crop, y) {
+  batch_download <- function(species_code, version, crop, ext) {
     cat(paste0("Downloading data for ", species_code, " from version ", version, ifelse(crop, " with cropping.", " without cropping.")), "\n")
-
     # Crop and mask using y
     if(crop){
-      browser()
       if(version == "v4"){
         ss <- gd.list %>%
           filter(grepl(species_code, name))
-        # Create a temporary file
-        temp_file <- tempfile(fileext = ".tif")
-        # Download the file from Google Drive to the temporary location
-        drive_download(as_id(ss$id), path = temp_file, overwrite = TRUE)
-        tiff_data <- rast(temp_file)
-
-        # reproject y based on tiff_data
-        if(class(y)[1] == "SpatVector"){
-          y <- project(y, tiff_data)
-        }else if(class(y)[1] == "SpatRaster"){
-          y <- project(y, tiff_data, align_only = TRUE)
-        }else { #class(y)== "character"
-          y <- system.file("extdata", "BAM_BCRNM_LAEA.shp", package = "BAMexploreR")  %>%
-            vect() %>%
-            dplyr::pull(subUnit==y) %>%
-            project(tiff_data)
+      }else if(version == "v5"){
+        if(class(ext) == "character"){
+          if(ext %in% bcr_v5){
+            ss <- gd.list %>%
+              filter(grepl(species_code, name), grepl(ext, name))
+          }else{
+            stop("you need to specify a valid subunit. Please run mapBCR to identify the one of interest")
+          }
+        }else{
+          ss <- gd.list %>%
+            filter(grepl(species_code, name), grepl("national", name))
         }
-        # Load the TIFF file, crop  and mask using y
+      }
+      # Create a temporary file
+      temp_file <- tempfile(fileext = ".tif")
+      # Download the file from Google Drive to the temporary location
+      drive_download(as_id(ss$id), path = temp_file, overwrite = TRUE)
+      tiff_data <- rast(temp_file)
+
+      # reproject ext based on tiff_data
+      if(class(ext)[1] == "SpatVector"){
+        y <- project(ext, tiff_data)
         tiff_data <- tiff_data %>%
           crop(y, snap="near", mask=TRUE)
-      }else{ # version v5
-        ss <- gd.list %>%
-          filter(grepl(species_code, name))
+      }else if(class(ext)[1] == "SpatRaster"){
+        y <- project(ext, tiff_data, align_only = TRUE)
+        tiff_data <- tiff_data %>%
+          crop(y, snap="near", mask=TRUE)
+      }else {#class(y)== "character"
+        if(version == "v4"){
+          y <- system.file("extdata", "BAM_BCRNMv4_LAEA.shp", package = "BAMexploreR")  %>%
+            vect() %>%
+            dplyr::pull(subUnit==y)
+          tiff_data <- crop(tiff_data, y, snap="near", mask=TRUE)
+        }else{
+          return(tiff_data)
+        }
+      }
+
+      # V5: select the right layer (mean, cv or extrapolation)
+      if(version == "v5"){
+        tiff_data <- tiff_data[[layer]]
       }
 
       # Save
       writeRaster(tiff_data, file.path(destfile, ss$name), overwrite=TRUE)
+      outList <- c(outList, setNames(list(tiff_data), species_code))
 
-      # Optionally delete the temporary file
+      # Delete the temporary file
       file.remove(temp_file)
       rm(tiff_data)
     }else{
@@ -146,13 +158,18 @@ getlayerNM <- function(spList, version, destfile, layer = "mean", crop = FALSE, 
       ss <- gd.list %>%
         filter(grepl(species_code, name))
       drive_download(as_id(ss$id), path =file.path(destfile, ss$name), overwrite=TRUE)
+      tiff_data <- rast(file.path(destfile, ss$name))
+      outList <- c(outList, setNames(list(tiff_data), species_code))
     }
+    return(outList)
   }
 
   # Perform batch download for species in the list
   for (s in spList) {
-    batch_download(s, version, crop, y)
+    outList <- batch_download(s, version, crop, ext)
   }
 
-  #return(sp)
+  # Return the results as a list
+  return(outList)
+
 }

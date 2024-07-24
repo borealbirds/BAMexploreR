@@ -5,23 +5,22 @@
 \alias{mapBCR}
 \title{Retrieve list of BCR overlaid by the study area}
 \usage{
-mapBCR(ext)
+mapBCR(version, ext)
 }
 \arguments{
+\item{version}{character; Indicate the version of the National Model requested. Each version of the
+National Model has its url access provided within the package.}
+
 \item{ext}{SpatVector, SpatExtent, or SpatRaster used to define the extent for the cropping.}
 }
 \value{
-Vector of bcr overlaid by study area
+List containing vector of bcr that overlay the study area and a map illustrating the overlap.
 }
 \description{
 Retrieve list of BCR overlaid by the study area
 }
 \examples{
-library(data.table)
-dt<- data.table(dataset = c("NFDB"),
-               url = c("http://cwfis.cfs.nrcan.gc.ca/downloads/nfdb/fire_poly/current_version/"),
-               password= c(NA))
-listWebData(dt, datasetName = "NFDB")
+subUnit<- mapBCR("v5")
 }
 \author{
 Melina Houle

@@ -15,7 +15,8 @@ Depends: R (>= 3.3.0), dplyr, googledrive, terra
 Imports:
   tmap,
   stringr,
-  terra
+  sf,
+  RColorBrewer
 Suggests:
   knitr,
   rmarkdown,
@@ -23,9 +24,8 @@ Suggests:
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-VignetteBuilder: knitr, rmarkdown
 Collate: 
     'sppList.R'
     'getlayerNM.R'
     'mapBCR.R'
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2

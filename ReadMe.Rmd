@@ -25,7 +25,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-`BAMexploreR` provides a set of functions for manipulating National Model output maps from v4 and v5.
+`BAMexploreR` provides a set of functions for manipulating National Model output from v4 and v5.
 
 You can visit the package website here: https://github.com/borealbirds/....
 
@@ -45,24 +45,29 @@ Please cite the _BAMexploreR_ package when using it in publications. To cite the
 
 ```{r, echo = FALSE, results = "asis"}
 dev_version <- packageDescription("BAMexploreR")$Version
-cat(paste0("> Houle M, Boehm M, Knight E, ... (",format(Sys.time(), "%Y"),"). Rpackage: evaluating boreal birds density in R. R package version ", dev_version, ". Available at https://github.com/borealbirds/BAMexploreR.\n"))
+cat(paste0("> Houle M, Boehm M, Knight E, ... (",format(Sys.time(), "%Y"),"). Rpackage: evaluating boreal birds density in R. R package version ", dev_version, ". Available at https://github.com/borealbirds/BAMexploreR\n"))
 ```
 
 ## Usage
-Here we provide a simple example of identifying species available in v4, then using `BAMexploreR` to download species specific density maps. 
+Here we provide a simple example of identifying species available in v4 using `BAMexploreR`. The package allow you to identify subregion(s) that intersect your studyarea and download species specific density maps at the right scale.
+
+The package includes demo dataset `vignette.shp` and `vignette.rast` that represent simulated AOI to demonstrate the workflow of the different functions.
 
 ```{r, message=FALSE}
 library(BAMexploreR)
-library(terra)
-library(dplyr)
+library(googledrive)
 library(tmap)
+
 ```
 
-We will use the included dataset `vignette.shp` and `vignette.rast` to demonstrate how some of the functions work.
+
+Function : sppList
+
+The function produce a character vector of species available to download. To retrieve available species, the function derive the list using the version, and type of output. The function allow to have the output either by "species_code", "common_name", "family_name" or "scientific_name". 
 
 ```{r, message=FALSE}
 # Check which species are part of the National Model v4
-
+drive_auth()
 spp <- sppList("v4", "mean", "species_code")
 print(spp)
 
@@ -70,19 +75,25 @@ spp <- sppList("v5", "mean", "species_code")
 print(spp)
 ```
 
+Function : mapBCR
 
-Visualize study area to target bcr by either looking at the subUnits maps, or by uploading an AOI
+Retrieve list of BCR overlaid by the AOI. If no AOI is provided, the user can either get a list of everything that is available or look at the map of how subunit are divided. 
+
 ```{r, message=FALSE}
+# NO AOI provided
 tmap_mode("plot")
-subUnits_results <- mapBCR() 
-print(subUnits_results$map)
-print(subUnits_results$subUnits)
+subUnitsv4_results <- mapBCR("v4") 
+print(subUnitsv4_results$map)
+print(subUnitsv4_results$subUnits)
 
+subUnitsv5_results <- mapBCR("v5") 
+print(subUnitsv5_results$map)
+print(subUnitsv5_results$subUnits)
 
-# You can also provide an AOI and identified which BCR overlap
-aoi_shp <- system.file("extdata", "vignette_shp.shp", package = "BAMexploreR")
+# with AOI provided
+aoi_shp <- system.file("extdata", "vignette_poly_LAEA.shp", package = "BAMexploreR")
 aoi_sf <- vect(aoi_shp)
-subUnits_results <- mapBCR(aoi_sf) 
+subUnits_results <- mapBCR("v5", ext=aoi_sf) 
 print(subUnits_results$map)
 print(subUnits_results$subUnits)
 ```
@@ -91,13 +102,21 @@ Extract NM output
 ```{r, message=FALSE}
 # Get CAWA mean density from the v4 of the National Model 
 # Load data
-aoi <- system.file("extdata", "bcr10.shp", package = "BAMexploreR")
-aoi_sf <- vect(aoi)
-out_dir <- tempfile()
-getlayerNM("AMRO", "v4", file.path(out_dir),  crop = TRUE, y = "bcr9")
-#tif_files <- list.files(path = out_dir, pattern = "\\.tif$", full.names = TRUE)
+v <- vect(system.file("extdata", "BAM_BCRNMv4_LAEA.shp", package = "BAMexploreR"))
+aoi_sf <- v[v$subunit_ui =="can10"]
+#out_dir <- tempfile()
+out_dir <- "E:/MelinaStuff/BAM/temp/package_out"
+birds <- getlayerNM(c("AMRO","AMRE"), "v4", file.path(out_dir),  crop = TRUE, y = aoi_sf)
+tif_files <- list.files(path = out_dir, pattern = "\\.tif$", full.names = TRUE)
 out_nm<- rast(tif_files[1])
 plot(out_nm)
+
+
+birds <- getlayerNM(c("CAWA","AMPI"), "v5", "mean", file.path(out_dir),  crop = TRUE, y = aoi_sf)
+tif_files <- list.files(path = out_dir, pattern = "\\.tif$", full.names = TRUE)
+out_nm<- rast(tif_files[1])
+plot(out_nm)
+
 ```
 
 
