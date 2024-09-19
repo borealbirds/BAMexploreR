@@ -24,6 +24,8 @@
 
 #' speciesList <- sppList("v4", "mean", "species_code")
 sppList <- function(version, layer, type) {
+  #browser()
+  googledrive::drive_auth()
   load(system.file("R/sysdata.rda", package = "BAMexploreR"))
   spdt <- spp.List
   pid <- version.url

@@ -1,15 +1,15 @@
 ##################################################################################
 #' Download National Model species specific output map raster based on list of species
 #'
-#' @param spList A character string. A vector of species to be downloaded.
+#' @param spList character. A vector of species to be downloaded.
 
-#' @param version A character string. Represents the version of the national model output to be downloaded.
+#' @param version character. Represents the version of the national model output to be downloaded.
 #'
-#' @param destfile A character string giving the path where the downloaded file is saved.
+#' @param destfile character. Indicate output path where the downloaded file is saved.
 #'
-#' @param layer Character; Name of the output layers of interest, either "mean", "sd" or "overextrapolated".
+#' @param layer character; Name of the output layers of interest, either "mean", "sd" or "overextrapolated".
 #'
-#' @param crop Logical. If \code{TRUE}, crop raster layers using \code{ext/}.
+#' @param crop logical. If \code{TRUE}, crop raster layers using \code{ext/}.
 #'
 #' @param ext SpatVector, SpatExtent, or SpatRaster used to define the extent for the cropping.
 #'

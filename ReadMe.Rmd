@@ -35,7 +35,8 @@ You can install the development version of `BAMexploreR` from [GitHub](https://g
 
 ```{r, eval=FALSE}
 # install.packages("devtools")
-devtools::install_github("borealbirds/BAMexploreR")
+install.packages('devtools')
+devtools::install_github("borealbirds/BAMexploreR", force = TRUE)
 ```
 
 ## Citation
@@ -67,7 +68,9 @@ The function produce a character vector of species available to download. To ret
 
 ```{r, message=FALSE}
 # Check which species are part of the National Model v4
-drive_auth()
+#drive_auth()
+ttt <- drive_auth()
+saveRDS(ttt, "token.rds")
 spp <- sppList("v4", "mean", "species_code")
 print(spp)
 
