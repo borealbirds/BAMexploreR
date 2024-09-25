@@ -8,15 +8,15 @@
 getlayerNM(spList, version, destfile, layer = "mean", crop = FALSE, ext = NULL)
 }
 \arguments{
-\item{spList}{A character string. A vector of species to be downloaded.}
+\item{spList}{character. A vector of species to be downloaded.}
 
-\item{version}{A character string. Represents the version of the national model output to be downloaded.}
+\item{version}{character. Represents the version of the national model output to be downloaded.}
 
-\item{destfile}{A character string giving the path where the downloaded file is saved.}
+\item{destfile}{character. Indicate output path where the downloaded file is saved.}
 
-\item{layer}{Character; Name of the output layers of interest, either "mean", "sd" or "overextrapolated".}
+\item{layer}{character; Name of the output layers of interest, either "mean", "sd" or "overextrapolated".}
 
-\item{crop}{Logical. If \code{TRUE}, crop raster layers using \code{ext/}.}
+\item{crop}{logical. If \code{TRUE}, crop raster layers using \code{ext/}.}
 
 \item{ext}{SpatVector, SpatExtent, or SpatRaster used to define the extent for the cropping.}
 }
@@ -27,7 +27,8 @@ Invoked for its side-effect of downloading files to the \code{destfile/} directo
 Download National Model species specific output map raster based on list of species
 }
 \examples{
-bird <- getlayerNM("CAWA", "v4", "mean",  tempfile())
+bird <- getlayerNM("BAOR", "v4", "mean",  tempfile())
+bird <- getlayerNM("BAOR", "v4", destfile = ".", "mean", crop = FALSE, ext = NULL)
 
 
 }
