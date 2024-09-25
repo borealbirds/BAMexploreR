@@ -1,7 +1,7 @@
 BAMexploreR
 ================
 Melina Houle
-2024-09-24
+2024-09-25
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <!-- badges: start -->
@@ -46,9 +46,9 @@ different functions.
 
 ``` r
 library(BAMexploreR)
+devtools::load_all()
 library(googledrive)
 library(tmap)
-devtools::load_all()
 ```
 
 Function : sppList
@@ -89,7 +89,7 @@ subUnitsv4_results <- mapBCR("v4")
 print(subUnitsv4_results$map)
 ```
 
-<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
+<img src="man/figures/README-mapBCR-1.png" width="100%" />
 
 ``` r
 print(subUnitsv4_results$subUnits)
@@ -100,7 +100,7 @@ subUnitsv5_results <- mapBCR("v5")
 print(subUnitsv5_results$map)
 ```
 
-<img src="man/figures/README-unnamed-chunk-6-2.png" width="100%" />
+<img src="man/figures/README-mapBCR-2.png" width="100%" />
 
 ``` r
 print(subUnitsv5_results$subUnits)
@@ -118,7 +118,7 @@ subUnits_results <- mapBCR("v5", ext=aoi_sf)
 print(subUnits_results$map)
 ```
 
-<img src="man/figures/README-unnamed-chunk-6-3.png" width="100%" />
+<img src="man/figures/README-mapBCR-3.png" width="100%" />
 
 ``` r
 print(subUnits_results$subUnits)

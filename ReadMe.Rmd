@@ -2,10 +2,6 @@
 title: "BAMexploreR"
 author: "Melina Houle"
 date: "`r Sys.Date()`"
-output: html_document
----
-
----
 output: github_document
 ---
 
@@ -55,11 +51,11 @@ This quick start guides shows how to identify species available per version, ide
 
 The package includes demo dataset `vignette.shp` and `vignette.rast` that represent simulated AOI to demonstrate the workflow of the different functions.
 
-```{r, message=FALSE}
+```{r load_libraries, message=FALSE}
 library(BAMexploreR)
+devtools::load_all()
 library(googledrive)
 library(tmap)
-devtools::load_all()
 ```
 
 
@@ -67,7 +63,7 @@ Function : sppList
 
 The function produce a character vector of species available to download. To retrieve available species, the function derive the list using the version, and type of output. The function allow to have the output either by "species_code", "common_name", "family_name" or "scientific_name". 
 
-```{r, message=FALSE}
+```{r sppList, message=FALSE}
 # Check which species are part of the National Model v4
 #drive_auth()
 #ttt <- drive_auth()
@@ -86,7 +82,7 @@ Function : mapBCR
 
 Retrieve list of BCR overlaid by the AOI. If no AOI is provided, the user can either get a list of everything that is available or look at the map of how subunit are divided. 
 
-```{r, message=FALSE}
+```{r mapBCR, message=FALSE}
 # NO AOI provided
 tmap_mode("plot")
 subUnitsv4_results <- mapBCR("v4") 
