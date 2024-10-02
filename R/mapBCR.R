@@ -20,7 +20,7 @@
 #' subUnit<- mapBCR("v5")
 mapBCR <- function(version, ext) {
   add_sf <- TRUE
-
+  tmap_mode("plot")
   # Need output path
   if (missing(version)) {
     stop("You must specified either v4 or v5")
@@ -51,7 +51,7 @@ mapBCR <- function(version, ext) {
     ncat <-16
   }else if(version == "v5"){
     base_bcr <- vect(system.file("extdata", "BAM_BCRNMv5_LAEA.shp", package = "BAMexploreR"))
-    ncat <-34
+    ncat <-32
   }else{
     stop("Model version doesn't exist.")
   }

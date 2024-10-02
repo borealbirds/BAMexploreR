@@ -1,7 +1,7 @@
 BAMexploreR
 ================
 Melina Houle
-2024-09-25
+2024-10-02
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <!-- badges: start -->
@@ -104,12 +104,12 @@ print(subUnitsv5_results$map)
 
 ``` r
 print(subUnitsv5_results$subUnits)
-#>  [1] "can3"      "can5"      "can9"      "can10"     "can11"     "can12"    
-#>  [7] "can13"     "can14"     "can40"     "can60"     "can61"     "can70"    
-#> [13] "can71"     "can72"     "can80"     "can81"     "can82"     "usa2"     
-#> [19] "usa5"      "usa9"      "usa10"     "usa11"     "usa12"     "usa13"    
-#> [25] "usa14"     "usa23"     "usa28"     "usa30"     "usa40"     "usa43"    
-#> [31] "can4142"   "usa414232"
+#>  [1] "can3"     "can5"     "can9"     "can10"    "can11"    "can12"   
+#>  [7] "can13"    "can14"    "can40"    "can60"    "can61"    "can70"   
+#> [13] "can71"    "can72"    "can80"    "can81"    "can82"    "usa2"    
+#> [19] "usa5"     "usa9"     "usa10"    "usa11"    "usa12"    "usa13"   
+#> [25] "usa14"    "usa23"    "usa28"    "usa30"    "usa40"    "usa43"   
+#> [31] "can4142"  "usa41423"
 
 # with AOI provided
 aoi_shp <- system.file("extdata", "vignette_poly_LAEA.shp", package = "BAMexploreR")
