@@ -16,7 +16,17 @@ Imports:
   tmap,
   stringr,
   sf,
-  RColorBrewer
+  RColorBrewer,
+  dplyr,
+  rlang,
+  ggplot2,
+  stringr, 
+  purrr, 
+  tibble,
+  gbm,
+  tidyr,
+  stats, 
+  splines2
 Suggests:
   knitr,
   rmarkdown,
@@ -28,4 +38,8 @@ Collate:
     'sppList.R'
     'getlayerNM.R'
     'mapBCR.R'
+    'boxplotNM.R'
+    'interactionsNM.R'
+    'partial_dependenceNM.R'
+    'stackedbarNM.R'
 RoxygenNote: 7.3.2

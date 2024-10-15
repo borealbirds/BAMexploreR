@@ -8,6 +8,11 @@
 #' @param plot Logical; if `TRUE`, creates a stacked bar plot.
 #' @param colours Character vector of hex codes for colours.
 #' @param export Logical; if `TRUE`, exports the underlying data.
+#'
+#' @importFrom rlang sym
+#' @importFrom dplyr filter summarise group_by left_join
+#' @importFrom ggplot2 ggplot aes geom_bar theme theme_classic element_text
+#'
 #' @return A stacked bar chart or a dataframe if `export = TRUE`.
 #' @export
 #' @rdname stackedbarNM

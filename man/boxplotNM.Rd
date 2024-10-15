@@ -44,9 +44,9 @@ with options to group by BCR (Bird Conservation Region), species, and other fact
 }
 \examples{
 # Example usage with default data:
-# bamexplorer_boxplots(data = bam_covariate_importance, group = "species", species = "all", bcr = "all")
+# boxplotNM(data = bam_covariate_importance, group = "species", species = "all", bcr = "all")
 
 # Example with filtering by BCR and custom colours:
-# bamexplorer_boxplots(data = bam_covariate_importance, group = "species", bcr = c("BCR12", "BCR13"),
+# boxplotNM(data = bam_covariate_importance, group = "species", bcr = c("BCR12", "BCR13"),
 #                      colours = c("#1f78b4", "#33a02c"))
 }

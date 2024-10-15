@@ -13,7 +13,7 @@
 #'
 #' @return Vector of available url to download
 #'
-#' @importFrom googledrive drive_ls drive_auth
+#' @importFrom googledrive drive_ls drive_auth drive_has_token
 #' @import dplyr
 #' @importFrom stringr str_sub
 #' @docType methods
@@ -25,7 +25,10 @@
 #' speciesList <- sppList("v4", "mean", "species_code")
 sppList <- function(version, layer, type) {
   #browser()
-  googledrive::drive_auth()
+  #googledrive::drive_auth()
+  if (!googledrive::drive_has_token()) {
+    googledrive::drive_auth()
+  }
   load(system.file("R/sysdata.rda", package = "BAMexploreR"))
   spdt <- spp.List
   pid <- version.url
