@@ -28,4 +28,9 @@ Collate:
     'sppList.R'
     'getlayerNM.R'
     'mapBCR.R'
+    'boxplotNM.R'
+    'interactionsNM.R'
+    'partial_dependenceNM.R'
+    'stackedbarNM.R'
 RoxygenNote: 7.3.2
+VignetteBuilder: knitr
