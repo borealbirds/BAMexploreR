@@ -22,16 +22,16 @@
 #' @importFrom tidyr pivot_longer
 #' @importFrom ggplot2 ggplot aes geom_line geom_ribbon labs theme_minimal
 #' @importFrom stats smooth.spline predict quantile
+#' @importFrom tibble as_tibble
+#' @importFrom stats smooth.spline predict
 #'
 #' @export
+#' @rdname partial_dependenceNM
 #' @examples
 #' # Assuming `boot_pts_sorted` contains the required bootstrap data:
 #' # Example of creating a partial dependence plot for "BAOR" in BCR 12 for the "temperature" covariate:
-#' # bamexplorer_partial_dependence(data = boot_pts_sorted, bcr = "12", common_name = "BAOR", covariate = "temperature")
+#' # partial_dependenceNM(data = boot_pts_sorted, bcr = "12", common_name = "BAOR", covariate = "temperature")
 ##################################################################################
-
-library(splines)
-
 partial_dependenceNM <- function(data = boot_pts_sorted, bcr, common_name, covariate) {
 
   # construct the key for accessing the desired data frame
@@ -54,8 +54,8 @@ partial_dependenceNM <- function(data = boot_pts_sorted, bcr, common_name, covar
   # fit a smoothing function to each bootstrap replicate and predict over the domain of x values
   predictions <-
     lapply(data[[key]], function(df) {
-      fit <- smooth.spline(df[[covariate]], df$y)
-      predict(fit, x_grid)$y
+      fit <- stats::smooth.spline(df[[covariate]], df$y)
+      stats::predict(fit, x_grid)$y
     })
 
   # combine predictions into a data frame
@@ -73,8 +73,8 @@ partial_dependenceNM <- function(data = boot_pts_sorted, bcr, common_name, covar
     group_by(.data = _, !!covariate_sym) |>
     summarise(
       mean_response = mean(predicted_response),
-      lower_bound = quantile(predicted_response, 0.025),
-      upper_bound = quantile(predicted_response, 0.975)
+      lower_bound = stats::quantile(predicted_response, 0.025),
+      upper_bound = stats::quantile(predicted_response, 0.975)
     )
 
   # create a partial dependence plot with error envelope

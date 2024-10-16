@@ -16,7 +16,17 @@ Imports:
   tmap,
   stringr,
   sf,
-  RColorBrewer
+  RColorBrewer,
+  dplyr,
+  rlang,
+  ggplot2,
+  stringr, 
+  purrr, 
+  tibble,
+  gbm,
+  tidyr,
+  stats, 
+  splines2
 Suggests:
   knitr,
   rmarkdown,
