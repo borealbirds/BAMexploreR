@@ -5,3 +5,9 @@
 .RData
 .Ruserdata
 .secrets
+
+*.tif  # Ignore all .tif files
+*.rds  # Ignore all .rds files
+inst/doc
+/doc/
+/Meta/
