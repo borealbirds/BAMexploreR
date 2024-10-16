@@ -12,4 +12,19 @@ version.url <- tibble(
 )
 
 spp.List <- read.csv("./data-raw/sppList.csv", header= TRUE)
-usethis::use_data(version.url, spp.List, internal = TRUE, overwrite = TRUE)
+
+
+library(readxl)
+library(tidyr)
+file_path <- "./data-raw/NationalModels_V5_VariableList.xlsx"
+v1 <- read_excel(file_path, sheet = 1)
+v3 <- read_excel(file_path, sheet = 3)
+
+covariates_label <- v3 %>%
+  select(Label, Category, Extent, Source, GapCategory) %>%
+  separate(Label, into = c("Label1", "res"), sep = "_", remove = FALSE) %>%
+  inner_join(v1, by = c("Label1" = "Abbreviation")) %>%
+  select(Label, Variable, Category, Extent, Source, GapCategory)
+
+
+usethis::use_data(version.url, spp.List, covariates_label, internal = TRUE, overwrite = TRUE)
