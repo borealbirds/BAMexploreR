@@ -42,5 +42,6 @@ Collate:
     'interactionsNM.R'
     'partial_dependenceNM.R'
     'stackedbarNM.R'
+    'data-doc.R'
 RoxygenNote: 7.3.2
 VignetteBuilder: knitr

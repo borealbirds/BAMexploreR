@@ -28,3 +28,19 @@ covariates_label <- v3 %>%
 
 
 usethis::use_data(version.url, spp.List, covariates_label, internal = TRUE, overwrite = TRUE)
+
+
+spp.group <- c("COSEWIC_Status",
+               "Cavity_Birds",
+               "Waterfowl",
+               "Marine_Birds",
+               "Shorebirds",
+               "Wetland_Birds",
+               "Birds_of_Prey",
+               "Forest_Birds",
+               "Grassland_Birds",
+               "Aerial_Insectivores",
+               "Arctic_Birds",
+               "Long_Distance_Migrants")
+
+usethis::use_data(spp.group, internal = FALSE, overwrite = TRUE)
