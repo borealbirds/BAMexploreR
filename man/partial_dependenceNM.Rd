@@ -28,5 +28,7 @@ aggregates predictions, and visualizes the mean response with error bounds.
 \examples{
 # Assuming `boot_pts_sorted` contains the required bootstrap data:
 # Example of creating a partial dependence plot for "BAOR" in BCR 12 for the "temperature" covariate:
-# partial_dependenceNM(data = boot_pts_sorted, bcr = "12", common_name = "BAOR", covariate = "temperature")
+# partial_dependenceNM(data = boot_pts_sorted,
+                       bcr = "12", common_name = "BAOR",
+                       covariate = "temperature")
 }

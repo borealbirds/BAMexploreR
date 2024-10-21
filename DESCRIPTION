@@ -23,8 +23,7 @@ Imports:
   tibble,
   gbm,
   tidyr,
-  stats, 
-  splines2
+  stats
 Suggests:
   knitr,
   rmarkdown,

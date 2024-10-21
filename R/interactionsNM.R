@@ -26,7 +26,9 @@
 #' @examples
 #' # Assuming `boot_pts_reduced_i2` contains the required GBM data:
 #' # Example of querying interactions for Alder Flycatcher in BCRs 11 and 12:
-#' # interactionsNM(data = boot_pts_reduced_i2, bcr = c("can12", "can11"), common_name = "Alder Flycatcher")
+#' # interactionsNM(data = boot_pts_reduced_i2,
+#' #                 bcr = c("can12", "can11"),
+#' #                 common_name = "Alder Flycatcher")
 #'
 #' # Plotting the GBM interaction for the lowest and highest mean_y_mean:
 #' # plot.gbm(x=b.i, return.grid = FALSE, i.var = c("SCANFITamarack_5x5", "year"), type="response")

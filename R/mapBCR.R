@@ -10,7 +10,7 @@
 #' @import terra
 #' @import dplyr
 #' @importFrom RColorBrewer brewer.pal
-#' @importFrom tmap tm_shape tm_polygons tm_layout tm_text tm_add_legend
+#' @importFrom tmap tm_shape tm_polygons tm_layout tm_text tm_add_legend tmap_mode
 #' @importFrom sf st_as_sf st_intersects
 #' @docType methods
 #' @author Melina Houle
@@ -20,7 +20,7 @@
 #' subUnit<- mapBCR("v5")
 mapBCR <- function(version, ext) {
   add_sf <- TRUE
-  tmap_mode("plot")
+  tmap::tmap_mode("plot")
   # Need output path
   if (missing(version)) {
     stop("You must specified either v4 or v5")

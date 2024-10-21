@@ -1,6 +1,6 @@
 #' National Models 5.0 - covariate interpretation
 #'
-#' @param covariate_data A data frame with rows as covariates and columns denoting relative influence.
+#' @param data A data frame with rows as covariates and columns denoting relative influence.
 #' @param species The species to be summarized.
 #' @param bcr Bird Conservation Regions to be summarized.
 #' @param traits Traits for the species, e.g., `avonet` or `acad`.
@@ -18,7 +18,7 @@
 #' @rdname stackedbarNM
 #' @examples
 #' stackedbarNM(covariate_data, species = "BAOR", bcr = 12)
-stackedbarNM <- function(data = bam_covariate_importance, groups = NULL, species = "all", bcr = "all", traits = NULL, plot = FALSE, colours = NULL){
+stackedbarNM <- function(data = bam_covariate_importance, species = "all", bcr = "all", traits = NULL, groups = NULL, plot = FALSE, colours = NULL, export = FALSE){
 
 
   # Filter the dataset by species if specified
