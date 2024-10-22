@@ -74,7 +74,12 @@ if (!googledrive::drive_has_token()) {
 spp <- sppList("v4", "mean", "species_code")
 print(spp)
 
+print(guild_opt)
 spp <- sppList("v5", "mean", "species_code")
+spp <- sppList("v5", "mean", "species_code", guild ="Forest_Birds")
+spp <- sppList("v5", "mean", "species_code", guild ="Long_Distance_Migrants")
+
+spp <- sppList("v5", "mean", "species_code", guild =c("Forest_Birds","Waterfowl"))
 print(spp)
 ```
 

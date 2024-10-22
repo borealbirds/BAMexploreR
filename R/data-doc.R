@@ -22,6 +22,6 @@
 #' @source The data was derived from internal project datasets and species grouping systems.
 #' @keywords datasets
 #' @examples
-#' data(spp.group)
-#' head(spp.group)
-"spp.group"
+#' data(guild_opt)
+#' head(guild_opt)
+"guild_opt"
