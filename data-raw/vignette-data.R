@@ -1,4 +1,6 @@
 library(dplyr)
+library(readxl)
+library(tidyr)
 
 version.url <- tibble(
   version = c("v4_complete",
@@ -14,8 +16,7 @@ version.url <- tibble(
 spp.List <- read.csv("./data-raw/sppList.csv", header= TRUE)
 
 
-library(readxl)
-library(tidyr)
+
 file_path <- "./data-raw/NationalModels_V5_VariableList.xlsx"
 v1 <- read_excel(file_path, sheet = 1)
 v3 <- read_excel(file_path, sheet = 3)
@@ -28,3 +29,19 @@ covariates_label <- v3 %>%
 
 
 usethis::use_data(version.url, spp.List, covariates_label, internal = TRUE, overwrite = TRUE)
+
+
+guild_opt <- c("COSEWIC_Status",
+               "Cavity_Birds",
+               "Waterfowl",
+               "Marine_Birds",
+               "Shorebirds",
+               "Wetland_Birds",
+               "Birds_of_Prey",
+               "Forest_Birds",
+               "Grassland_Birds",
+               "Aerial_Insectivores",
+               "Arctic_Birds",
+               "Long_Distance_Migrants")
+
+usethis::use_data(guild_opt, internal = FALSE, overwrite = TRUE)

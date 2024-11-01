@@ -5,7 +5,7 @@
 \alias{sppList}
 \title{Retrieve list of species}
 \usage{
-sppList(version, layer, type)
+sppList(version, layer, type, guild = NULL)
 }
 \arguments{
 \item{version}{character; Indicate the version of the National Model requested. Each version of the
@@ -14,6 +14,8 @@ National Model has its url access provided within the package.}
 \item{layer}{character; Name of the output layers of interest, either "mean", "sd" or "overextrapolated".}
 
 \item{type}{character; type of output provided in the list, either "species_code", "common_name", "family_name" or "scientific_name".}
+
+\item{guild}{character; Name of the guild based on the classification used in The State of Canada’s Birds Report (Birds Canada, 2024).}
 }
 \value{
 Vector of available url to download
@@ -23,7 +25,7 @@ The function produce a character vector of species available to download. To
 retrieve available species, the function derive the list using the version, and type of output
 }
 \examples{
-speciesList <- sppList("v4", "mean", "species_code")
+speciesList <- sppList("v4", "mean", "species_code", guild)
 }
 \author{
 Melina Houle

@@ -6,24 +6,25 @@
 \usage{
 stackedbarNM(
   data = bam_covariate_importance,
-  groups = NULL,
   species = "all",
   bcr = "all",
   traits = NULL,
+  groups = NULL,
   plot = FALSE,
-  colours = NULL
+  colours = NULL,
+  export = FALSE
 )
 }
 \arguments{
-\item{data}{A convariate data frame with rows as types of covariates and columns denoting relative influence.}
-
-\item{groups}{Grouping variables for summarizing model covariates.}
+\item{data}{A data frame with rows as covariates and columns denoting relative influence.}
 
 \item{species}{The species to be summarized. (only the input of type 'common_name' or 'sci_name' accepted)}
 
 \item{bcr}{Bird Conservation Regions to be summarized.}
 
 \item{traits}{Traits for the species, e.g., `avonet` or `acad`.}
+
+\item{groups}{Grouping variables for summarizing model covariates.}
 
 \item{plot}{Logical; if `TRUE`, creates a stacked bar plot.}
 

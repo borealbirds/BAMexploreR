@@ -28,8 +28,10 @@
 #' partial_dependenceNM(boot_pts_sorted, bcr = "can10", common_name = "Alder Flycatcher", covariate = "year")
 #'
 #' # Assuming `boot_pts_sorted` contains the required bootstrap data:
-#' # Example of creating a partial dependence plot for "BAOR" in BCR 12 for the "temperature" covariate:
-#' # bamexplorer_partial_dependence(data = boot_pts_sorted, bcr = "12", common_name = "BAOR", covariate = "temperature")
+#' # Example of creating a partial dependence plot for "BAOR" in BCR 12, covariate "temperature":
+#' # partial_dependenceNM(data = boot_pts_sorted,
+#'                        bcr = "12", common_name = "BAOR",
+#'                        covariate = "temperature")
 ##################################################################################
 
 partial_dependenceNM <- function(data = boot_pts_sorted, bcr, common_name, covariate) {

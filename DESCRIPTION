@@ -14,10 +14,8 @@ Description: More about what it does (maybe more than one line)
 Depends: R (>= 3.3.0), dplyr, googledrive, terra
 Imports:
   tmap,
-  stringr,
   sf,
   RColorBrewer,
-  dplyr,
   rlang,
   ggplot2,
   stringr, 
@@ -43,5 +41,6 @@ Collate:
     'interactionsNM.R'
     'partial_dependenceNM.R'
     'stackedbarNM.R'
+    'data-doc.R'
 RoxygenNote: 7.3.2
 VignetteBuilder: knitr
