@@ -7,8 +7,8 @@
 #'
 #' @return List containing vector of bcr that overlay the study area and a map illustrating the overlap.
 #'
-#' @import terra
-#' @import dplyr
+#' @import tmap
+#' @importFrom terra vect crs project
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom tmap tm_shape tm_polygons tm_layout tm_text tm_add_legend
 #' @importFrom sf st_as_sf st_intersects
@@ -29,10 +29,10 @@ mapBCR <- function(version, ext) {
   # Need output path
   if (missing(ext)) {
     if(version == "v4"){
-      ext <- vect(system.file("extdata", "BAM_BCRNMv4_LAEA.shp", package = "BAMexploreR"))
+      ext <- terra::vect(system.file("extdata", "BAM_BCRNMv4_LAEA.shp", package = "BAMexploreR"))
       add_sf <- FALSE
     }else{
-      ext <- vect(system.file("extdata", "BAM_BCRNMv5_LAEA.shp", package = "BAMexploreR"))
+      ext <- terra::vect(system.file("extdata", "BAM_BCRNMv5_LAEA.shp", package = "BAMexploreR"))
       add_sf <- FALSE
     }
   }
@@ -41,16 +41,16 @@ mapBCR <- function(version, ext) {
   if(!class(ext)[1] %in% c("SpatVector", "SpatRaster")){
     stop("You need to provide a SpatRast or a SpatVect")
   }else{
-    if (nchar(crs(ext)) == 0) {
+    if (nchar(terra::crs(ext)) == 0) {
       stop("CRS is missing or empty.")
     }
   }
 
   if(version == "v4"){
-    base_bcr <- vect(system.file("extdata", "BAM_BCRNMv4_LAEA.shp", package = "BAMexploreR"))
+    base_bcr <- terra::vect(system.file("extdata", "BAM_BCRNMv4_LAEA.shp", package = "BAMexploreR"))
     ncat <-16
   }else if(version == "v5"){
-    base_bcr <- vect(system.file("extdata", "BAM_BCRNMv5_LAEA.shp", package = "BAMexploreR"))
+    base_bcr <- terra::vect(system.file("extdata", "BAM_BCRNMv5_LAEA.shp", package = "BAMexploreR"))
     ncat <-32
   }else{
     stop("Model version doesn't exist.")
@@ -61,11 +61,11 @@ mapBCR <- function(version, ext) {
     Y = base_bcr$Y,
     label = base_bcr$subunit_ui,
     stringsAsFactors = FALSE
-  ), coords = c("X", "Y"), crs = crs(base_bcr))
+  ), coords = c("X", "Y"), crs = terra::crs(base_bcr))
 
   # Ensure both SpatVect objects are in the same CRS
-  if (crs(ext) != crs(base_bcr)) {
-    ext <- project(ext, crs(base_bcr))
+  if (terra::crs(ext) != terra::crs(base_bcr)) {
+    ext <- terra::project(ext, terra::crs(base_bcr))
   }
   # Convert SpatVect objects to sf objects for use with tmap
   base_sf <- sf::st_as_sf(base_bcr)

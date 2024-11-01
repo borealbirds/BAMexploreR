@@ -28,7 +28,11 @@ Invoked for its side-effect of downloading files to the \code{destfile/} directo
 Download National Model species specific output map raster based on list of species
 }
 \examples{
-bird <- getlayerNM("CAWA", "v4", "mean",  tempfile())
+bird <- getlayerNM("BAOR", "v4", "mean",  tempfile())
+
+bird <- getlayerNM("BAOR", "v4", destfile = tempdir(), layer = "mean", crop = FALSE)
+
+bird <- getlayerNM("BAOR", "v4", destfile = ".", "mean", crop = FALSE, ext = NULL)
 
 
 }

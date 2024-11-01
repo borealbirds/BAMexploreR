@@ -14,7 +14,7 @@
 #' @return Vector of available url to download
 #'
 #' @importFrom googledrive drive_ls drive_auth drive_has_token
-#' @import dplyr
+#' @importFrom dplyr pull mutate filter
 #' @importFrom stringr str_sub
 #' @docType methods
 #' @author Melina Houle
@@ -33,17 +33,17 @@ sppList <- function(version, layer, type) {
   spdt <- spp.List
   pid <- version.url
   gd.list <- googledrive::drive_ls(pid$url[pid$version == version])
-  spcode <- spdt %>% pull("code")
+  spcode <- spdt %>% dplyr::pull("code")
   if(version == "v4"){
     spList <- gd.list %>%
-      mutate(codesp = stringr::str_sub(name, start = 6, end = 9)) %>%
-      filter(codesp %in% spcode) %>%  # Filter for desired substrings
-      pull(codesp)
+      dplyr::mutate(codesp = stringr::str_sub(name, start = 6, end = 9)) %>%
+      dplyr::filter(codesp %in% spcode) %>%  # Filter for desired substrings
+      dplyr::pull(codesp)
   } else if(version == "v5"){
     spList <- gd.list %>%
-      mutate(codesp = stringr::str_sub(name, start = 1, end = 4)) %>%
-      filter(codesp %in% spcode) %>%  # Filter for desired substrings
-      pull(codesp)
+      dplyr::mutate(codesp = stringr::str_sub(name, start = 1, end = 4)) %>%
+      dplyr::filter(codesp %in% spcode) %>%  # Filter for desired substrings
+      dplyr::pull(codesp)
   } else {
     print("You must specified either v4 or v5")
   }
@@ -52,17 +52,17 @@ sppList <- function(version, layer, type) {
     sp <-spList
   }else if(type=="commonName") {
     sp <- spdt %>%
-      filter(code %in% spList) %>%
-      pull(commonName)
+      dplyr::filter(code %in% spList) %>%
+      dplyr::pull(commonName)
   }else if(type=="order") {
     sp <- spdt %>%
-      filter(code %in% spList) %>%
-      pull(order)  %>%
+      dplyr::filter(code %in% spList) %>%
+      dplyr::pull(order)  %>%
       unique()
   }else if(type=="scientificName") {
     sp <- spdt %>%
-      filter(code %in% spList) %>%
-      pull(scientificName)
+      dplyr::filter(code %in% spList) %>%
+      dplyr::pull(scientificName)
   }
  sp <- unique(sp)
  return(sp)

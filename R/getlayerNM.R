@@ -26,12 +26,20 @@
 #' @rdname getlayerNM
 #' @examples
 #' bird <- getlayerNM("BAOR", "v4", "mean",  tempfile())
+#'
+#' bird <- getlayerNM("BAOR", "v4", destfile = tempdir(), layer = "mean", crop = FALSE)
+#'
 #' bird <- getlayerNM("BAOR", "v4", destfile = ".", "mean", crop = FALSE, ext = NULL)
 #'
 #'
 getlayerNM <- function(spList, version, destfile, layer = "mean", crop = FALSE, ext = NULL) {
   # List where all bcrunit are listed
   bcr_v5 <- c("bcr9", "bcr10")
+
+  # Valid Model versions
+  if (!version %in% c("v4", "v5")) {
+    stop("Model version doesn't exist.")
+  }
 
   # Need output path
   if (missing(destfile)) {
@@ -57,6 +65,7 @@ getlayerNM <- function(spList, version, destfile, layer = "mean", crop = FALSE, 
       }
     }
   }
+
 
   cwd <- getwd()
   if (!file.exists(destfile)) {
@@ -122,6 +131,7 @@ getlayerNM <- function(spList, version, destfile, layer = "mean", crop = FALSE, 
       # Download the file from Google Drive to the temporary location
       drive_download(as_id(ss$id), path = temp_file, overwrite = TRUE)
       tiff_data <- rast(temp_file)
+
 
       # reproject ext based on tiff_data
       if(class(ext)[1] == "SpatVector"){

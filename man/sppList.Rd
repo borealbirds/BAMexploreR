@@ -9,8 +9,7 @@ sppList(version, layer, type)
 }
 \arguments{
 \item{version}{character; Indicate the version of the National Model requested. Each version of the
-National Model has its url access provided within the package.
-Possible values are: "v4", "v5", "v4_complete", or "v5_complete"}
+National Model has its url access provided within the package.}
 
 \item{layer}{character; Name of the output layers of interest, either "mean", "sd" or "overextrapolated".}
 

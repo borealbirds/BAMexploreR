@@ -15,9 +15,11 @@ stackedbarNM(
 )
 }
 \arguments{
+\item{data}{A convariate data frame with rows as types of covariates and columns denoting relative influence.}
+
 \item{groups}{Grouping variables for summarizing model covariates.}
 
-\item{species}{The species to be summarized.}
+\item{species}{The species to be summarized. (only the input of type 'common_name' or 'sci_name' accepted)}
 
 \item{bcr}{Bird Conservation Regions to be summarized.}
 
@@ -26,8 +28,6 @@ stackedbarNM(
 \item{plot}{Logical; if `TRUE`, creates a stacked bar plot.}
 
 \item{colours}{Character vector of hex codes for colours.}
-
-\item{covariate_data}{A data frame with rows as covariates and columns denoting relative influence.}
 
 \item{export}{Logical; if `TRUE`, exports the underlying data.}
 }
@@ -38,5 +38,5 @@ A stacked bar chart or a dataframe if `export = TRUE`.
 National Models 5.0 - covariate interpretation
 }
 \examples{
-stackedbarNM(bam_covariate_importance, groups = c("common_name", "var_class"), species = 'all', bcr = 'all')
+stackedbarNM(bam_covariate_importance, groups = c("common_name", "var_class"), species = 'all', bcr = 'all', plot = TRUE)
 }
