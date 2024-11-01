@@ -12,6 +12,7 @@
 #' @param crop logical. If \code{TRUE}, crop raster layers using \code{ext/}.
 #'
 #' @param ext SpatVector, SpatExtent, or SpatRaster used to define the extent for the cropping.
+#' Or downloading valid BCR polygons from list, type: mapBCR("v4") or mapBCR("v5")
 #'
 #' @return Invoked for its side-effect of downloading files to the \code{destfile/} directory.
 #'
@@ -24,7 +25,8 @@
 #' @export
 #' @rdname getlayerNM
 #' @examples
-#' bird <- getlayerNM("CAWA", "v4", "mean",  tempfile())
+#' bird <- getlayerNM("BAOR", "v4", "mean",  tempfile())
+#' bird <- getlayerNM("BAOR", "v4", destfile = ".", "mean", crop = FALSE, ext = NULL)
 #'
 #'
 getlayerNM <- function(spList, version, destfile, layer = "mean", crop = FALSE, ext = NULL) {
@@ -135,7 +137,6 @@ getlayerNM <- function(spList, version, destfile, layer = "mean", crop = FALSE, 
           y <- system.file("extdata", "BAM_BCRNMv4_LAEA.shp", package = "BAMexploreR")  %>%
             vect() %>%
             dplyr::pull(subUnit==y)
-          tiff_data <- crop(tiff_data, y, snap="near", mask=TRUE)
         }else{
           return(tiff_data)
         }

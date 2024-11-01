@@ -38,5 +38,5 @@ A stacked bar chart or a dataframe if `export = TRUE`.
 National Models 5.0 - covariate interpretation
 }
 \examples{
-stackedbarNM(covariate_data, species = "BAOR", bcr = 12)
+stackedbarNM(bam_covariate_importance, groups = c("common_name", "var_class"), species = 'all', bcr = 'all')
 }

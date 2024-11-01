@@ -18,7 +18,8 @@ getlayerNM(spList, version, destfile, layer = "mean", crop = FALSE, ext = NULL)
 
 \item{crop}{logical. If \code{TRUE}, crop raster layers using \code{ext/}.}
 
-\item{ext}{SpatVector, SpatExtent, or SpatRaster used to define the extent for the cropping.}
+\item{ext}{SpatVector, SpatExtent, or SpatRaster used to define the extent for the cropping.
+Or downloading valid BCR polygons from list, type: mapBCR("v4") or mapBCR("v5")}
 }
 \value{
 Invoked for its side-effect of downloading files to the \code{destfile/} directory.

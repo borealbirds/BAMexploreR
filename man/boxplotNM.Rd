@@ -43,6 +43,9 @@ This function generates side-by-side boxplots that show bootstrap variation of c
 with options to group by BCR (Bird Conservation Region), species, and other factors.
 }
 \examples{
+boxplotNM(bam_covariate_importance, group = "common_name", species = 'all', bcr = 'all')
+
+
 # Example usage with default data:
 # boxplotNM(data = bam_covariate_importance, group = "species", species = "all", bcr = "all")
 

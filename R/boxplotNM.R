@@ -33,6 +33,9 @@
 #' @export
 #' @rdname boxplotNM
 #' @examples
+#' boxplotNM(bam_covariate_importance, group = "common_name", species = 'all', bcr = 'all')
+#'
+#'
 #' # Example usage with default data:
 #' # boxplotNM(data = bam_covariate_importance, group = "species", species = "all", bcr = "all")
 #'
@@ -71,7 +74,7 @@ boxplotNM <- function(data = bam_covariate_importance, group = NULL, species = "
     left_join(x = _, group1_sum, by=c(group, "var_class")) |>
     mutate(prop = sum_influence/sum_group1)
 
-
+  library(ggplot2)
   ggplot(proportion_inf, aes(x = var_class, y = prop, fill = !!group_sym[[1]])) +
     geom_boxplot(position = position_dodge(width = 0.75), alpha=0.05) +
     geom_point(aes(colour=factor(!!group_sym[[1]])),  position = position_dodge(width = 0.75), alpha=0.7, size=2.5) +

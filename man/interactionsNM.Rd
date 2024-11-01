@@ -24,6 +24,9 @@ a set of Boosted Regression Model (GBM) objects for a given species and Bird Con
 It calculates the mean interaction effect for each covariate pair and sorts the results by the highest interaction effect.
 }
 \examples{
+interactionsNM(boot_pts_reduced_i2, bcr = c("can12", "can11"), common_name = "Alder Flycatcher")
+
+
 # Assuming `boot_pts_reduced_i2` contains the required GBM data:
 # Example of querying interactions for Alder Flycatcher in BCRs 11 and 12:
 # interactionsNM(data = boot_pts_reduced_i2, bcr = c("can12", "can11"), common_name = "Alder Flycatcher")
