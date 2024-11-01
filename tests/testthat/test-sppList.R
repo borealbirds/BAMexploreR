@@ -14,10 +14,25 @@ test_that("Invalid type argument produces an error", {
 
 # Test for correct input and expect certain results
 test_that("Valid version and type arguments work", {
-  # Example: Mock the output you expect
   result <- sppList("v4", "mean", "species_code")
   expect_type(result, "character")
 })
+
+test_that("commonName type returns character", {
+  result <- sppList("v4", "mean", "commonName")
+  expect_type(result, "character")
+})
+
+test_that("order type returns unique values", {
+  result <- sppList("v4", "mean", "order")
+  expect_equal(length(result), length(unique(result)))
+})
+
+test_that("scientificName type returns character", {
+  result <- sppList("v4", "mean", "scientificName")
+  expect_type(result, "character")
+})
+
 
 # Test if it handles empty result set gracefully
 test_that("Empty species list is handled", {
@@ -25,4 +40,15 @@ test_that("Empty species list is handled", {
   result <- sppList("v4", "mean", "species_code")
   expect_true(length(result) == 0 || is.character(result))
 })
+
+
+# Test Caching of Google Drive Token
+test_that("Google Drive token is only requested once", {
+  expect_message(
+    sppList("v4", "mean", "species_code"),
+    regexp = "Using an auto-discovered, cached token.|Auto-refreshing stale OAuth token."
+  )
+})
+
+
 
