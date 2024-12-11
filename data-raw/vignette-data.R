@@ -1,7 +1,12 @@
 library(dplyr)
 library(readxl)
 library(tidyr)
+library(googledrive)
+library(readxl)
 
+drive_auth()
+
+# version URL data file
 version.url <- tibble(
   version = c("v4_complete",
               "v5_complete",
@@ -13,11 +18,16 @@ version.url <- tibble(
           "https://drive.google.com/drive/folders/1J-V3cdkFYlLolZ53Sy_8tgTDrXLb9xux")
 )
 
+# species list URL data file
 spp.List <- read.csv("./data-raw/sppList.csv", header= TRUE)
 
 
-
-file_path <- "./data-raw/NationalModels_V5_VariableList.xlsx"
+# variable list URL data file
+file_id <- "1XATuq8BOYC2KkbJObaturaf4NFD2ufvn"
+file <- drive_get(as_id(file_id))
+file_path <- tempfile(fileext = ".xlsx")
+drive_download(file, path = file_path, overwrite = TRUE)
+#file_path <- "./data-raw/NationalModels_V5_VariableList.xlsx"
 v1 <- read_excel(file_path, sheet = 1)
 v3 <- read_excel(file_path, sheet = 3)
 
@@ -30,7 +40,7 @@ covariates_label <- v3 %>%
 
 usethis::use_data(version.url, spp.List, covariates_label, internal = TRUE, overwrite = TRUE)
 
-
+# guild list URL data file
 guild_opt <- c("COSEWIC_Status",
                "Cavity_Birds",
                "Waterfowl",
