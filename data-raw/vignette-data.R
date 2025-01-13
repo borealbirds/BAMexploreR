@@ -5,7 +5,9 @@ library(googledrive)
 library(readxl)
 
 drive_auth()
-
+###############################################################
+### create 1st internal data: URL for version 4/5
+###############################################################
 # version URL data file
 version.url <- tibble(
   version = c("v4_complete",
@@ -18,28 +20,31 @@ version.url <- tibble(
           "https://drive.google.com/drive/folders/1J-V3cdkFYlLolZ53Sy_8tgTDrXLb9xux")
 )
 
+###############################################################
+### create 2nd internal data: most updated species list
+###############################################################
 # species list URL data file
 spp.List <- read.csv("./data-raw/sppList.csv", header= TRUE)
 
+###############################################################
+### create 3st internal data: version 4 model covariate importance
+###############################################################
+load("./data/bam_covariate_importance_v4.rda")
 
-# variable list URL data file
-file_id <- "1XATuq8BOYC2KkbJObaturaf4NFD2ufvn"
-file <- drive_get(as_id(file_id))
-file_path <- tempfile(fileext = ".xlsx")
-drive_download(file, path = file_path, overwrite = TRUE)
-#file_path <- "./data-raw/NationalModels_V5_VariableList.xlsx"
-v1 <- read_excel(file_path, sheet = 1)
-v3 <- read_excel(file_path, sheet = 3)
+###############################################################
+### create 4th internal data: Covariate LookUp table
+###############################################################
+#
 
-covariates_label <- v3 %>%
-  select(Label, Category, Extent, Source, GapCategory) %>%
-  separate(Label, into = c("Label1", "res"), sep = "_", remove = FALSE) %>%
-  inner_join(v1, by = c("Label1" = "Abbreviation")) %>%
-  select(Label, Variable, Category, Extent, Source, GapCategory)
+###############################################################
+### Generate internal data
+###############################################################
+usethis::use_data(version.url, spp.List, bam_covariate_importance_v4, bam_covariate_importance_list_v4, internal = TRUE, overwrite = TRUE)
 
 
-usethis::use_data(version.url, spp.List, covariates_label, internal = TRUE, overwrite = TRUE)
-
+###############################################################
+### Generate external data
+###############################################################
 # guild list URL data file
 guild_opt <- c("COSEWIC_Status",
                "Cavity_Birds",
