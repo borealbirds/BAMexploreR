@@ -14,13 +14,14 @@
 #'
 #' @return Invoked for its side-effect of downloading files to the \code{destfile/} directory.
 #'
+#' @importFrom googledrive drive_ls drive_get drive_download drive_auth
 #' @importFrom dplyr pull
 #' @importFrom stringr str_sub
 #' @importFrom terra vect rast project crop values
 #' @docType methods
 #' @author Melina Houle
 #' @export
-#' @rdname getlayerNM
+#' @rdname getlayerNM_GD
 #' @examples
 #' bird <- getlayerNM("BAOR", "v4", "mean",  tempfile())
 #'
@@ -29,7 +30,7 @@
 #' bird <- getlayerNM("BAOR", "v4", destfile = ".", "mean", crop = FALSE, ext = NULL)
 #'
 #'
-getlayerNM <- function(spList, version, destfile, ext = NULL,  year = NULL) {
+getlayerNM_GD <- function(spList, version, destfile, ext = NULL,  year = NULL) {
   # Valid Model versions
   if (!version %in% c("v4", "v4_demo", "v5", "v5_demo")) {
     stop("Model version doesn't exist.")

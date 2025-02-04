@@ -13,19 +13,24 @@
 #'
 #' @return Vector of species name
 #'
-#' @importFrom httr GET content
+#' @importFrom googledrive drive_ls drive_auth drive_has_token
 #' @importFrom dplyr pull mutate filter
 #' @importFrom stringr str_sub
 #' @docType methods
 #' @author Melina Houle
-#' @rdname sppList
+#' @rdname sppList_GD
 #' @export
 #' @examples
 
 #' speciesList <- sppList("v4", "mean", "species_code", guild)
-sppList <- function(version, type, guild = NULL) {
+sppList_GD <- function(version, type, guild = NULL) {
+  if (!googledrive::drive_has_token()) {
+    googledrive::drive_auth()
+  }
   load(system.file("R/sysdata.rda", package = "BAMexploreR"))
   spdt <- spp.List
+  pid <- version.url
+  gd.list <- googledrive::drive_ls(pid$url[pid$version == version])
 
   if(is.null(guild)){
     spcode <- spdt %>% dplyr::pull("code")
@@ -37,33 +42,19 @@ sppList <- function(version, type, guild = NULL) {
       dplyr::pull("code")  # Extract species code
   }
 
-  url <- version.url$url[version.url$version == version]
-  response <- httr::GET(url)
-  if (status_code(response) == 200) {
-    if(version == "v4" || version == "v4_demo"){
-      content_text <- httr::content(response, "text")
-      tiff_files <- regmatches(content_text, gregexpr('href="([^"]+\\.tif)"', content_text))
-      tiff_files <- unlist(tiff_files)
-      tiff_files <- gsub('href="|/"', '', tiff_files)
-      spList <- tiff_files %>%
-        stringr::str_sub(start = 6, end = 9) %>%
-        .[.%in%spcode]
-      return(spList)
-    } else if(version == "v5" || version == "v5_demo"){
-      # Parse the content as text
-      content_text <- httr::content(response, "text")
-      # Use regular expressions to find all href links ending with '/'
-      subdirs <- regmatches(content_text, gregexpr('href="([^"]+/)"', content_text))
-      subdirs <- unlist(subdirs)
-      spList <- gsub('href="|/"', '', subdirs) %>%
-        .[!(. %in% "/data")]
-      return(spList)
-    } else {
-      print("You must specified either v4 or v5")
-    }
+  if(version == "v4" || version == "v4_demo"){
+    browser()
+    spList <- gd.list %>%
+      dplyr::mutate(codesp = stringr::str_sub(name, start = 6, end = 9)) %>%
+      dplyr::filter(codesp %in% spcode) %>%  # Filter for desired substrings
+      dplyr::pull(codesp)
+  } else if(version == "v5" || version == "v5_demo"){
+    spList <- gd.list %>%
+      dplyr::mutate(codesp = stringr::str_sub(name, start = 1, end = 4)) %>%
+      dplyr::filter(codesp %in% spcode) %>%  # Filter for desired substrings
+      dplyr::pull(codesp)
   } else {
-      # Return an error message if the request failed
-      return(paste("Error:", status_code(response)))
+    print("You must specified either v4 or v5")
   }
 
   # Extract species list

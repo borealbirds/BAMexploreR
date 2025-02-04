@@ -26,7 +26,7 @@ showing how the response variable changes over the range of the covariate. The f
 aggregates predictions, and visualizes the mean response with error bounds.
 }
 \examples{
-partial_dependenceNM(boot_pts_reduced_i2, bcr = "12", common_name = "BAOR", covariate = "temperature")
+partial_dependenceNM(boot_pts_sorted, bcr = "can10", common_name = "Alder Flycatcher", covariate = "year")
 
 # Assuming `boot_pts_sorted` contains the required bootstrap data:
 # Example of creating a partial dependence plot for "BAOR" in BCR 12, covariate "temperature":

@@ -54,7 +54,7 @@ The package includes demo dataset `vignette.shp` and `vignette.rast` that repres
 ```{r load_libraries, message=FALSE}
 library(BAMexploreR)
 devtools::load_all()
-library(googledrive)
+#library(googledrive)
 library(tmap)
 ```
 
@@ -68,19 +68,20 @@ The function produce a character vector of species available to download. To ret
 #drive_auth()
 #ttt <- drive_auth()
 #saveRDS(ttt, "token.rds")
-if (!googledrive::drive_has_token()) {
-    googledrive::drive_auth(cache= TRUE)
-}
-spp <- sppList("v4", "mean", "species_code")
+#if (!googledrive::drive_has_token()) {
+#    googledrive::drive_auth(cache= TRUE)
+#}
+spp <- sppList("v4_demo", "species_code")
 print(spp)
 
 print(guild_opt)
-spp <- sppList("v5", "mean", "species_code")
-spp <- sppList("v5", "mean", "species_code", guild ="Forest_Birds")
-spp <- sppList("v5", "mean", "species_code", guild ="Long_Distance_Migrants")
-
-spp <- sppList("v5", "mean", "species_code", guild =c("Forest_Birds","Waterfowl"))
+spp <- sppList("v5_demo", "species_code")
 print(spp)
+spp <- sppList("v5_demo", "species_code", guild ="Forest_Birds")
+print(spp)
+spp <- sppList("v5_demo", "species_code", guild ="Long_Distance_Migrants")
+print(spp)
+
 ```
 
 Function : mapBCR
@@ -94,7 +95,7 @@ subUnitsv4_results <- mapBCR("v4")
 print(subUnitsv4_results$map)
 print(subUnitsv4_results$subUnits)
 
-subUnitsv5_results <- mapBCR("v5") 
+subUnitsv5_results <- mapBCR("v5_demo") 
 print(subUnitsv5_results$map)
 print(subUnitsv5_results$subUnits)
 
@@ -106,3 +107,26 @@ print(subUnits_results$map)
 print(subUnits_results$subUnits)
 ```
 
+Function : getLayers
+
+Download National Model species specific output map raster based on list of species. 
+
+```{r mapBCR, message=FALSE}
+spp <- sppList("v5_demo", "species_code", "Forest_Birds")
+spp <- sppList("v4_demo", "species_code", "Forest_Birds")
+
+# specific BCR
+#v5
+lol <- getlayerNM(spp, "v5_demo", year = "2015", destfile = "C:/temp/BAMNM", ext = "can10")
+#v4
+lol <- getlayerNM(spp, "v4_demo", destfile = "C:/temp/BAMNM", ext = "can10")
+
+#--using Shape
+aoi_shp <- system.file("extdata", "vignette_poly_LAEA.shp", package = "BAMexploreR")
+aoi_sf <- vect(aoi_shp)
+#v5
+lol <- getlayerNM(spp, "v5_demo", year = "2015", destfile = "C:/temp/BAMNM", ext = aoi_sf)
+#v4
+lol <- getlayerNM(spp, "v4_demo", destfile = "C:/temp/BAMNM", ext = aoi_sf)
+
+```

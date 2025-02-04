@@ -36,8 +36,6 @@
 
 partial_dependenceNM <- function(data = boot_pts_sorted, bcr, common_name, covariate) {
 
-  library(splines)
-
   # construct the key for accessing the desired data frame
   key <- paste(bcr, common_name, covariate, sep = "_")
 

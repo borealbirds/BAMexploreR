@@ -5,37 +5,36 @@
 \title{Side-by-Side Boxplots Displaying Bootstrap Variation by Variable Class}
 \usage{
 boxplotNM(
-  data = bam_covariate_importance,
-  group = NULL,
+  data = NULL,
+  version = "v5",
   species = "all",
   bcr = "all",
-  traits = NULL,
+  group = NULL,
   plot = FALSE,
   colours = NULL
 )
 }
 \arguments{
-\item{data}{A `data.frame` containing covariate importance values,
-with rows as covariates and columns denoting the relative influence for a given bootstrap replicate by species by BCR permutation.
-Defaults to `bam_covariate_importance`.}
+\item{data}{Defaults to BAM's covariate importance data but can be replaced with any `data.frame` containing covariate importance values,
+with covariates as rows and a column each for `bcr`, `species`, `var_class`, `boot`, and `rel.inf`. If user data has no bootstrap replicates, 
+create a `boot` column and fill in the same number (e.g. `1`) for all rows. Leave this argument as `NULL` unless using custom data.}
 
-\item{group}{A `character` specifying the grouping variable(s) for summarizing the covariate importance (e.g., species, BCR, etc.).}
+\item{version}{A `character`. Defaults to `"v5"`. `"v4"` is also possible but not fully supported for all functions in the first release of this package.
+If using custom data in the `data` argument, this argument will be ignored.}
 
 \item{species}{A `character` specifying the species to filter by. The default is `"all"`, which includes all species in the dataset.}
 
 \item{bcr}{A `character` specifying the Bird Conservation Regions (BCRs) to filter by. The default is `"all"`, which includes all BCRs in the dataset.}
 
-\item{traits}{A `data.frame` containing species traits to include in the analysis (optional).
-If `NULL`, traits are not included in the plot.}
+\item{group}{A `character` specifying the grouping variable(s) for summarizing the covariate importance (e.g., species, BCR, etc.).}
 
-\item{plot}{A `logical` indicating whether to plot the results (`TRUE`) or return the processed data (`FALSE`).
-Defaults to `FALSE`.}
+\item{plot}{A `logical` indicating whether to plot the results (`TRUE`) or return the processed data (`FALSE`).}
 
 \item{colours}{A `character` vector of hex codes for the colours to use in the boxplot (optional).
 If `NULL`, default colours are used.}
 }
 \value{
-A ggplot object showing boxplots of relative covariate importance by variable class, grouped by the selected factors.
+A ggplot object displaying boxplots of relative covariate importance by variable class, grouped by the `group` argument.
 If `plot = FALSE`, the processed data is returned instead of the plot.
 }
 \description{
@@ -43,13 +42,15 @@ This function generates side-by-side boxplots that show bootstrap variation of c
 with options to group by BCR (Bird Conservation Region), species, and other factors.
 }
 \examples{
-boxplotNM(bam_covariate_importance, group = "common_name", species = 'all', bcr = 'all')
 
 
-# Example usage with default data:
-# boxplotNM(data = bam_covariate_importance, group = "species", species = "all", bcr = "all")
+# Example of plotting covariate importance for Alder Flycatcher across all BCRs.
+# boxplotNM(group = "species", species = "ALFL", bcr = "all")
 
-# Example with filtering by BCR and custom colours:
-# boxplotNM(data = bam_covariate_importance, group = "species", bcr = c("BCR12", "BCR13"),
-#                      colours = c("#1f78b4", "#33a02c"))
+# Example of plotting covariate importance for two species in two BCRs, using custom colours:
+# boxplotNM(group = "species", species = c("ALFL", "CAWA"), 
+bcr = c("BCR12", "BCR13"),  colours = c("#1f78b4", "#33a02c"))
+
+
+
 }

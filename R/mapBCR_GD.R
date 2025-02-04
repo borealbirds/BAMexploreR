@@ -14,11 +14,11 @@
 #' @importFrom sf st_as_sf st_intersects
 #' @docType methods
 #' @author Melina Houle
-#' @rdname mapBCR
+#' @rdname mapBCR_GD
 #' @export
 #' @examples
 #' subUnit<- mapBCR("v5")
-mapBCR <- function(version, ext) {
+mapBCR_GD <- function(version, ext) {
   add_sf <- TRUE
   tmap::tmap_mode("plot")
   # Need output path

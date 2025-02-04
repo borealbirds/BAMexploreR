@@ -1,10 +1,7 @@
-library(dplyr)
+library(tibble)
 library(readxl)
-library(tidyr)
-library(googledrive)
-library(readxl)
+library(usethis)
 
-drive_auth()
 ###############################################################
 ### create 1st internal data: URL for version 4/5
 ###############################################################
@@ -12,10 +9,10 @@ drive_auth()
 version.url <- tibble(
   version = c("v4_demo",
               "v5_demo",
-              "v4",
-              "v5"),
-  url = c("https://drive.google.com/drive/u/0/folders/1bVBEABbrcfgHidmo_PLue916Knjmayre",
-          "https://drive.google.com/drive/u/0/folders/1J-V3cdkFYlLolZ53Sy_8tgTDrXLb9xux",
+              "v4_GD",
+              "v5_GD"),
+  url = c("http://206.12.92.143/data/NationalModelv4_sample",
+          "http://206.12.92.143/data/NationalModelv5",
           "https://drive.google.com/drive/u/1/folders/1aJUZr4fACdD02H8AYejR2XG6zuA6E492",
           "https://drive.google.com/drive/u/1/folders/1snHdBwcVyUYCbwYJSCWm5506fiBEYal-")
 )
@@ -39,7 +36,7 @@ load("./data/bam_covariate_importance_v4.rda")
 ###############################################################
 ### Generate internal data
 ###############################################################
-usethis::use_data(version.url, spp.List, bam_covariate_importance_v4, bam_covariate_importance_list_v4, internal = TRUE, overwrite = TRUE)
+use_data(version.url, spp.List, bam_covariate_importance_v4, bam_covariate_importance_list_v4, internal = TRUE, overwrite = TRUE)
 
 
 ###############################################################
@@ -59,4 +56,4 @@ guild_opt <- c("COSEWIC_Status",
                "Arctic_Birds",
                "Long_Distance_Migrants")
 
-usethis::use_data(guild_opt, internal = FALSE, overwrite = TRUE)
+use_data(guild_opt, internal = FALSE, overwrite = TRUE)

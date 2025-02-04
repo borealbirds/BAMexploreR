@@ -18,7 +18,7 @@ stackedbarNM(
 \arguments{
 \item{data}{A data frame with rows as covariates and columns denoting relative influence.}
 
-\item{species}{The species to be summarized. (only the input of type 'common_name' or 'sci_name' accepted)}
+\item{species}{The species to be summarized.}
 
 \item{bcr}{Bird Conservation Regions to be summarized.}
 
@@ -39,5 +39,5 @@ A stacked bar chart or a dataframe if `export = TRUE`.
 National Models 5.0 - covariate interpretation
 }
 \examples{
-stackedbarNM(bam_covariate_importance, groups = c("common_name", "var_class"), species = 'all', bcr = 'all', plot = TRUE)
+stackedbarNM(covariate_data, species = "BAOR", bcr = 12)
 }

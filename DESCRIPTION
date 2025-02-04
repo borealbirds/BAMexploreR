@@ -11,7 +11,7 @@ Authors@R: c(
 Maintainer: The package maintainer <yourself@somewhere.net>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
-Depends: R (>= 3.3.0), dplyr, googledrive, terra
+Depends: R (>= 3.5.0), dplyr, terra
 Imports:
   tmap,
   sf,
@@ -37,6 +37,9 @@ Collate:
     'sppList.R'
     'getlayerNM.R'
     'mapBCR.R'
+    'sppList_GD.R'
+    'getlayerNM_GD.R'
+    'mapBCR_GD.R'
     'boxplotNM.R'
     'interactionsNM.R'
     'partial_dependenceNM.R'
