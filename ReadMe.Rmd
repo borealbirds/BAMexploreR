@@ -129,4 +129,14 @@ lol <- getlayerNM(spp, "v5_demo", year = "2015", destfile = "C:/temp/BAMNM", ext
 #v4
 lol <- getlayerNM(spp, "v4_demo", destfile = "C:/temp/BAMNM", ext = aoi_sf)
 
+#--No year with v5
+#v5
+lol <- getlayerNM(spp, "v5_demo", destfile = "C:/temp/BAMNM", ext = "can10")
+
+# --No ext 
+#v5
+lol <- getlayerNM(spp, "v5_demo", year = "2015", destfile = "C:/temp/BAMNM")
+#v4
+lol <- getlayerNM(spp, "v4_demo", destfile = "C:/temp/BAMNM")
+
 ```

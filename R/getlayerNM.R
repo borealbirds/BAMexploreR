@@ -15,6 +15,7 @@
 #' @return Invoked for its side-effect of downloading files to the \code{destfile/} directory.
 #'
 #' @importFrom dplyr pull
+#' @importFrom tools file_ext file_path_sans_ext
 #' @importFrom stringr str_sub
 #' @importFrom terra vect rast project crop values
 #' @docType methods
@@ -65,17 +66,22 @@ getlayerNM <- function(spList, version, destfile, ext = NULL,  year = NULL) {
   }
 
   # Set url based on version
-  pid <- get("version.url", envir = asNamespace("BAMexploreR"))
-  gd.list <- googledrive::drive_ls(pid$url[pid$version == version])
+  url <- version.url$url[version.url$version == version]
+  response <- httr::GET(url)
+  content_text <- httr::content(response, "text")
   # Create list of available species
   if(version == "v4" || version == "v4_demo"){
-    spv <- gd.list %>%
-      mutate(codesp = stringr::str_sub(name, start = 6, end = 9)) %>%
-      pull(codesp)
+    tiff_files <- regmatches(content_text, gregexpr('href="([^"]+\\.tif)"', content_text))
+    tiff_files <- unlist(tiff_files)
+    tiff_files <- gsub('href="|/"', '', tiff_files)
+    spv <- tiff_files %>%
+      stringr::str_sub(start = 6, end = 9)
   }else if(version == "v5" || version == "v5_demo"){
-    spv <- gd.list %>%
-      mutate(codesp = stringr::str_sub(name, start = 1, end = 4)) %>%
-      pull(codesp)
+    subdirs <- regmatches(content_text, gregexpr('href="([^"]+/)"', content_text))
+    subdirs <- unlist(subdirs)
+    spv <- gsub('href="|/"', '', subdirs) %>%
+      .[!(. %in% "/data")]
+    flevel1 <- paste0(subdirs, "/")
   }
 
   # Check if provided species list is in the available species codes. Display erroneous
@@ -94,6 +100,7 @@ getlayerNM <- function(spList, version, destfile, ext = NULL,  year = NULL) {
   outList <- list()
   # Batch download function
   batch_download <- function(species_code, version, ext) {
+
     cat(paste0("Downloading data for ", species_code, " from version ", version), "\n")
     if(version=="v4_demo"){
       version<- "v4"
@@ -101,31 +108,39 @@ getlayerNM <- function(spList, version, destfile, ext = NULL,  year = NULL) {
       version<- "v5"
     }
 
-    if(class(ext)[1]=="SpatVector" || class(ext)[1]=="SpatRaster"){
+    if(class(ext)[1]=="SpatVector" || class(ext)[1]=="SpatRaster"|| is.null(ext)){
       temp_file <- tempfile(fileext = ".tif")
       if(version == "v5"){
         region <- "mosaic"
         # Create a temporary file
         file_name <- paste0(species_code, "_", region, "_", year, ".tiff")
-        full_path <- file.path("NM_output_demo", version, species_code, region, file_name)
+        file_url <- file.path(url, species_code, region, file_name)
       } else if(version == "v4"){
         file_name <- paste0("pred-", species_code, "-CAN-Mean.tif")
-        full_path <- file.path("NM_output_demo", version, file_name)
+        file_url <- file.path(url, file_name)
       }
-      file_info <- drive_get(full_path, shared_drive= "BAM_Core")
-      drive_download(as_id(file_info$id), path =temp_file, overwrite=TRUE)
+      response <- GET(file_url)
+      writeBin(content(response, "raw"), temp_file)
       tiff_data <- rast(temp_file)
       if(class(ext)[1] == "SpatVector"){
         y <- project(ext, tiff_data)
         tiff_data <- tiff_data %>%
           crop(y, snap="near", mask=TRUE)
+        if(tools::file_ext(file_name) == "tif"){
+          out_name <- sub("(\\.tif)$", "_clip\\1", file_name)
+        }else{
+          out_name <- sub("(\\.tiff)$", "_clip\\1", file_name)
+        }
       }else if(class(ext)[1] == "SpatRaster"){
          y <- project(ext, tiff_data, align_only = TRUE)
         tiff_data <- tiff_data %>%
           crop(y, snap="near", mask=TRUE)
+        out_name <- sub("(\\.tif)$", "_clip\\1", file_name)
+      }else{
+        out_name <- paste0(species_code, "_", region, "_", year, ".tiff")
       }
       # Save
-      writeRaster(tiff_data, file.path(destfile, file_info$name), overwrite=TRUE)
+      writeRaster(tiff_data, file.path(destfile, out_name), overwrite=TRUE)
       outList <- c(outList, setNames(list(tiff_data), species_code))
       # Delete the temporary file
       file.remove(temp_file)
@@ -133,30 +148,33 @@ getlayerNM <- function(spList, version, destfile, ext = NULL,  year = NULL) {
       return(outList)
     }else if(class(ext) == "character"){
       if(version == "v4"){
-        ext <- system.file("extdata", "BAM_BCRNMv4_LAEA.shp", package = "BAMexploreR")  %>%
-          vect() %>%
-          dplyr::pull(subUnit==ext)
+        extent <- system.file("extdata", "BAM_BCRNMv4_LAEA.shp", package = "BAMexploreR")  %>%
+          vect()
+        extent <- subset(extent, extent$subunit_ui == ext)
         # Create a temporary file
         temp_file <- tempfile(fileext = ".tif")
         file_name <- paste0("pred-", species_code, "-CAN-Mean.tif")
-        full_path <- file.path("NM_output_demo", version, file_name)
-        file_info <- drive_get(full_path, shared_drive= "BAM_Core")
-        drive_download(as_id(file_info$id), path =temp_file, overwrite=TRUE)
+        file_url <- paste(url, file_name, sep= "/")
+        response <- GET(file_url)
+        writeBin(content(response, "raw"), temp_file)
         tiff_data <- rast(temp_file)
-        y <- project(ext, tiff_data)
+        y <- project(extent, tiff_data)
         tiff_data <- tiff_data %>%
           crop(y, snap="near", mask=TRUE)
-        writeRaster(tiff_data, file.path(destfile, file_info$name), overwrite=TRUE)
+        file_parts <- tools::file_path_sans_ext(file_name)
+        file_extension <- tools::file_ext(file_name)
+        out_name <- paste0(file_parts,"_", ext, ".",file_extension)
+        writeRaster(tiff_data, file.path(destfile, out_name), overwrite=TRUE)
         outList <- c(outList, setNames(list(tiff_data), species_code))
         # Delete the temporary file
         file.remove(temp_file)
         rm(tiff_data)
       }else if (version == "v5"){
         file_name <- paste0(species_code, "_", ext, "_", year, ".tiff")
-        full_path <- file.path("NM_output_demo", version, species_code, ext, file_name)
-        file_info <- drive_get(full_path, shared_drive= "BAM_Core")
-        drive_download(as_id(file_info$id), path =file.path(destfile, file_info$name), overwrite=TRUE)
-        tiff_data <- rast(file.path(destfile, file_info$name))
+        file_url <- paste(url, species_code, ext, file_name, sep= "/")
+        response <- GET(file_url)
+        writeBin(content(response, "raw"), file.path(destfile, file_name))
+        tiff_data <- rast(file.path(destfile, file_name))
         outList <- c(outList, setNames(list(tiff_data), species_code))
       }
     }

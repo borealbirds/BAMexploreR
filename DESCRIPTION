@@ -24,7 +24,8 @@ Imports:
   gbm,
   tidyr,
   stats, 
-  splines
+  splines, 
+  tools
 Suggests:
   knitr,
   rmarkdown,
