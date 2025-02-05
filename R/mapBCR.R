@@ -87,7 +87,7 @@ mapBCR <- function(version, ext) {
   custom_palette <- rep(custom_palette, length.out = ncat)  # Repeat the palette to get 25 colors
 
   tmap <- tmap::tm_shape(base_sf) +
-      tmap::tm_polygons(col = "subUnit", palette = custom_palette, style = "cat",  n = ncat, border.col = "black", border.alpha = 0.5, legend.show = TRUE, id = "BCR subunit") +
+      tmap::tm_polygons(col = "subunit_ui", palette = custom_palette, style = "cat",  n = ncat, border.col = "black", border.alpha = 0.5, legend.show = TRUE, id = "subunit_ui") +
       tmap::tm_shape(label_sf) + # Add the label_sf shape here
       tmap::tm_text(text = "label", size = 0.7, col = "black", shadow = TRUE) +
       tmap::tm_layout(legend.position = c("left", "bottom"))

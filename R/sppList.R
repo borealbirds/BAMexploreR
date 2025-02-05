@@ -39,9 +39,10 @@ sppList <- function(version, type, guild = NULL) {
 
   url <- version.url$url[version.url$version == version]
   response <- httr::GET(url)
+  content_text <- httr::content(response, "text")
   if (status_code(response) == 200) {
     if(version == "v4" || version == "v4_demo"){
-      content_text <- httr::content(response, "text")
+      # Use regular expressions to parse
       tiff_files <- regmatches(content_text, gregexpr('href="([^"]+\\.tif)"', content_text))
       tiff_files <- unlist(tiff_files)
       tiff_files <- gsub('href="|/"', '', tiff_files)
@@ -50,9 +51,7 @@ sppList <- function(version, type, guild = NULL) {
         .[.%in%spcode]
       return(spList)
     } else if(version == "v5" || version == "v5_demo"){
-      # Parse the content as text
-      content_text <- httr::content(response, "text")
-      # Use regular expressions to find all href links ending with '/'
+      # Use regular expressions to parse
       subdirs <- regmatches(content_text, gregexpr('href="([^"]+/)"', content_text))
       subdirs <- unlist(subdirs)
       spList <- gsub('href="|/"', '', subdirs) %>%

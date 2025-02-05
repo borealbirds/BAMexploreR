@@ -39,7 +39,6 @@ Collate:
     'mapBCR.R'
     'sppList_GD.R'
     'getlayerNM_GD.R'
-    'mapBCR_GD.R'
     'boxplotNM.R'
     'interactionsNM.R'
     'partial_dependenceNM.R'

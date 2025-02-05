@@ -91,7 +91,7 @@ Retrieve list of BCR overlaid by the AOI. If no AOI is provided, the user can ei
 ```{r mapBCR, message=FALSE}
 # NO AOI provided
 tmap_mode("plot")
-subUnitsv4_results <- mapBCR("v4") 
+subUnitsv4_results <- mapBCR("v4_demo") 
 print(subUnitsv4_results$map)
 print(subUnitsv4_results$subUnits)
 
