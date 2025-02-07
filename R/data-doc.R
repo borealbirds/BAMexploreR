@@ -25,3 +25,26 @@
 #' data(guild_opt)
 #' head(guild_opt)
 "guild_opt"
+
+
+#' BAM Covariate Importance Data (v4)
+#'
+#' `bam_covariate_importance_v4` is a `data.frame` where each row represents the mean relative influence (calculated from 32 bootstraps) of a model covariate for a given species × Bird Conservation Region (BCR).
+#'
+#' @format A `data.frame` with 7 columns:
+#' \describe{
+#'   \item{spp}{A four-letter bird code indicating the species.}
+#'   \item{bcr}{The Bird Conservation Region.}
+#'   \item{var}{The name of the covariate.}
+#'   \item{mean_rel_inf}{The mean relative influence of the covariate across 32 bootstraps.}
+#'   \item{sd_rel_inf}{The standard deviation of the covariate's relative influence across 32 bootstraps.}
+#'   \item{n_boots}{The number of bootstraps in which the given covariate appeared.}
+#'   \item{var_class}{A broad variable class to which the covariate belongs.}
+#' }
+#'
+#' @source The data was derived from internal project datasets.
+#' @keywords datasets
+#' @examples
+#' data(bam_covariate_importance_v4)
+#' head(bam_covariate_importance_v4)
+"bam_covariate_importance_v4"
