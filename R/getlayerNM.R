@@ -100,7 +100,6 @@ getlayerNM <- function(spList, version, destfile, ext = NULL,  year = NULL) {
   outList <- list()
   # Batch download function
   batch_download <- function(species_code, version, ext) {
-
     cat(paste0("Downloading data for ", species_code, " from version ", version), "\n")
     if(version=="v4_demo"){
       version<- "v4"
@@ -119,29 +118,27 @@ getlayerNM <- function(spList, version, destfile, ext = NULL,  year = NULL) {
         file_name <- paste0("pred-", species_code, "-CAN-Mean.tif")
         file_url <- file.path(url, file_name)
       }
-      response <- GET(file_url)
-      writeBin(content(response, "raw"), temp_file)
+      writeBin(content(GET(file_url), "raw"), temp_file)
       tiff_data <- rast(temp_file)
+
       if(class(ext)[1] == "SpatVector"){
-        y <- project(ext, tiff_data)
         tiff_data <- tiff_data %>%
-          crop(y, snap="near", mask=TRUE)
+          crop(project(ext, tiff_data), snap="near", mask=TRUE)
         if(tools::file_ext(file_name) == "tif"){
           out_name <- sub("(\\.tif)$", "_clip\\1", file_name)
         }else{
           out_name <- sub("(\\.tiff)$", "_clip\\1", file_name)
         }
       }else if(class(ext)[1] == "SpatRaster"){
-         y <- project(ext, tiff_data, align_only = TRUE)
         tiff_data <- tiff_data %>%
-          crop(y, snap="near", mask=TRUE)
+          crop(project(ext, tiff_data, align_only = TRUE), snap="near", mask=TRUE)
         out_name <- sub("(\\.tif)$", "_clip\\1", file_name)
       }else{
         out_name <- paste0(species_code, "_", region, "_", year, ".tiff")
       }
-      # Save
       writeRaster(tiff_data, file.path(destfile, out_name), overwrite=TRUE)
       outList <- c(outList, setNames(list(tiff_data), species_code))
+
       # Delete the temporary file
       file.remove(temp_file)
       rm(tiff_data)
@@ -151,29 +148,29 @@ getlayerNM <- function(spList, version, destfile, ext = NULL,  year = NULL) {
         extent <- system.file("extdata", "BAM_BCRNMv4_LAEA.shp", package = "BAMexploreR")  %>%
           vect()
         extent <- subset(extent, extent$subunit_ui == ext)
+
         # Create a temporary file
-        temp_file <- tempfile(fileext = ".tif")
         file_name <- paste0("pred-", species_code, "-CAN-Mean.tif")
         file_url <- paste(url, file_name, sep= "/")
-        response <- GET(file_url)
-        writeBin(content(response, "raw"), temp_file)
+        temp_file <- tempfile(fileext = ".tif")
+
+        writeBin(content(GET(file_url), "raw"), temp_file)
         tiff_data <- rast(temp_file)
-        y <- project(extent, tiff_data)
         tiff_data <- tiff_data %>%
-          crop(y, snap="near", mask=TRUE)
-        file_parts <- tools::file_path_sans_ext(file_name)
-        file_extension <- tools::file_ext(file_name)
-        out_name <- paste0(file_parts,"_", ext, ".",file_extension)
-        writeRaster(tiff_data, file.path(destfile, out_name), overwrite=TRUE)
-        outList <- c(outList, setNames(list(tiff_data), species_code))
-        # Delete the temporary file
+          crop(project(extent, tiff_data), snap="near", mask=TRUE)
+
+        # Construct output file name and save raster
+        out_name <- file.path(destfile, paste0(tools::file_path_sans_ext(file_name), "_", ext, ".tif"))
+        writeRaster(tiff_data, out_name, overwrite = TRUE)
+
+        # Store result and clean up
+        outList[[species_code]] <- tiff_data
         file.remove(temp_file)
         rm(tiff_data)
       }else if (version == "v5"){
         file_name <- paste0(species_code, "_", ext, "_", year, ".tiff")
         file_url <- paste(url, species_code, ext, file_name, sep= "/")
-        response <- GET(file_url)
-        writeBin(content(response, "raw"), file.path(destfile, file_name))
+        writeBin(content(GET(file_url), "raw"), file.path(destfile, file_name))
         tiff_data <- rast(file.path(destfile, file_name))
         outList <- c(outList, setNames(list(tiff_data), species_code))
       }
