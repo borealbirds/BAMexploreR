@@ -9,10 +9,14 @@ library(usethis)
 version.url <- tibble(
   version = c("v4_demo",
               "v5_demo",
+              "v4",
+              "v5",
               "v4_GD",
               "v5_GD"),
   url = c("http://206.12.92.143/data/NationalModelv4_sample",
           "http://206.12.92.143/data/NationalModelv5",
+          "http://206.12.92.143/data/NationalModelv4",
+          "",
           "https://drive.google.com/drive/u/1/folders/1aJUZr4fACdD02H8AYejR2XG6zuA6E492",
           "https://drive.google.com/drive/u/1/folders/1snHdBwcVyUYCbwYJSCWm5506fiBEYal-")
 )
@@ -21,8 +25,8 @@ version.url <- tibble(
 ### create 2nd internal data: most updated species list
 ###############################################################
 # species list URL data file
-spp.List <- read.csv("./data-raw/sppList.csv", header= TRUE)
-
+spp_List <- read.csv("./data-raw/spp_List.csv", header= TRUE)
+use_data(spp_List, internal = FALSE, overwrite = TRUE)
 ###############################################################
 ### create 3st internal data: version 4 model covariate importance
 ###############################################################
@@ -36,7 +40,7 @@ load("./data/bam_covariate_importance_v4.rda")
 ###############################################################
 ### Generate internal data
 ###############################################################
-use_data(version.url, spp.List, bam_covariate_importance_v4, bam_covariate_importance_list_v4, internal = TRUE, overwrite = TRUE)
+usethis::use_data(version.url, bam_covariate_importance_v4, bam_covariate_importance_list_v4, internal = TRUE, overwrite = TRUE)
 
 
 ###############################################################

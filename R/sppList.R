@@ -25,22 +25,22 @@
 #' speciesList <- sppList("v4", "mean", "species_code", guild)
 sppList <- function(version, type, guild = NULL) {
   load(system.file("R/sysdata.rda", package = "BAMexploreR"))
-  spdt <- spp.List
+  spdt <- spp_List
 
   if(is.null(guild)){
-    spcode <- spdt %>% dplyr::pull("code")
+    spcode <- spdt %>% dplyr::pull("speciesCode")
   }else if(any(!(guild %in% guild_opt))){
     print("Guild is invalid")
   }else{
     spcode <- spdt %>%
       dplyr::filter(if_any(all_of(guild), ~ . == 1)) %>%  # Use if_any to check across multiple columns
-      dplyr::pull("code")  # Extract species code
+      dplyr::pull("speciesCode")  # Extract species code
   }
 
   url <- version.url$url[version.url$version == version]
   response <- httr::GET(url)
   content_text <- httr::content(response, "text")
-  if (status_code(response) == 200) {
+  if (httr::status_code(response) == 200) {
     if(version == "v4" || version == "v4_demo"){
       # Use regular expressions to parse
       tiff_files <- regmatches(content_text, gregexpr('href="([^"]+\\.tif)"', content_text))
@@ -62,7 +62,7 @@ sppList <- function(version, type, guild = NULL) {
     }
   } else {
       # Return an error message if the request failed
-      return(paste("Error:", status_code(response)))
+      return(paste("Error:", httr::status_code(response)))
   }
 
   # Extract species list
@@ -70,16 +70,16 @@ sppList <- function(version, type, guild = NULL) {
     sp <-spList
   }else if(type=="commonName") {
     sp <- spdt %>%
-      dplyr::filter(code %in% spList) %>%
+      dplyr::filter(speciesCode %in% spList) %>%
       dplyr::pull(commonName)
   }else if(type=="order") {
     sp <- spdt %>%
-      dplyr::filter(code %in% spList) %>%
+      dplyr::filter(speciesCode %in% spList) %>%
       dplyr::pull(order)  %>%
       unique()
   }else if(type=="scientificName") {
     sp <- spdt %>%
-      dplyr::filter(code %in% spList) %>%
+      dplyr::filter(speciesCode %in% spList) %>%
       dplyr::pull(scientificName)
   }
  sp <- unique(sp)
