@@ -1,0 +1,68 @@
+---
+title: "1. access BAMexploreR Model Scope"
+author: "Diego, Siu Chung WU"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{model_access}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "",
+  message = FALSE,
+  warning = FALSE
+)
+```
+
+```{r setup_packages, echo = FALSE, results = 'hide'}
+library(BAMexploreR)
+suppressWarnings(suppressMessages(library(googledrive)))
+library(tmap)
+library(dplyr)
+library(httr)
+library(stringr)
+library(terra)
+library(tools)
+tmap::tmap_mode("plot")
+devtools::load_all()
+```
+
+# Introduction
+
+`BAMexploreR` is a package for analyzing bird species data from the BAM National Model. This vignette will guide you through the basic usage of the package, including how to download and interpret species-specific data layers.
+
+
+# Species scope of model: Species list
+
+Depending on model version 4 and version 5, different species code are applied. 
+
+Below is the sample function to download the list of available species in the model, for the model version 5.
+```{r species_list, echo = TRUE, results = 'markup', error = TRUE}
+sppList("v5_demo", "species_code", "Waterfowl")
+```
+
+# Spatial scope of model: Bird Conservation Region (BCR) list
+
+Depending on model version 4 and version 5, different BCRs code are delineated.
+
+Below is the sample function to check the list of available list of BCRs zoning, offered by the model 5.
+```{r bcr_list, echo = TRUE, results = 'markup', error = TRUE}
+bcr_list_output <- mapBCR("v5")
+tmap::tmap_save(bcr_list_output$map, filename = "bcr_map.png", width = 6, height = 4)
+knitr::include_graphics("bcr_map.png", dpi = 300)
+```
+
+# Temporal scope of model: 1985-2023
+
+By default 2020, available model year includes "1985, "1990", "1995", "2000" "2005", "2010", "2015", "2020", "2023"
+
+Below is the sample function to download the model of 'TEWA', for the whole Canada, in 2020
+```{r get_layer, echo = TRUE, results = 'markup', error = TRUE}
+result <- getlayerNM("TEWA", "v5_demo", destfile = tempdir())
+result$TEWA
+```
+
+
