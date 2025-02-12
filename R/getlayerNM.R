@@ -32,6 +32,7 @@
 #'
 getlayerNM <- function(spList, version, destfile, ext = NULL,  year = NULL) {
   # Valid Model versions
+
   if (!version %in% c("v4", "v4_demo", "v5", "v5_demo")) {
     stop("Model version doesn't exist.")
   }
@@ -51,6 +52,20 @@ getlayerNM <- function(spList, version, destfile, ext = NULL,  year = NULL) {
     if(class(ext) == "SpatVect" | class(ext) == "SpatRast") {
       if (nchar(crs(ext)) == 0) {
         stop("CRS of cropping element is missing or empty.")
+      }
+    } else if(class(ext) == "character"){
+      if(length(ext)>1){
+        if(version == "v4" || version == "v4_demo"){
+          base_bcr <- terra::vect(system.file("extdata", "BAM_BCRNMv4_LAEA.shp", package = "BAMexploreR"))
+          sel_bcr <- subset(base_bcr, base_bcr$subunit_ui %in% ext)
+          ext <- union(sel_bcr)
+        }else if(version == "v4"|| version == "v5_demo") {
+          base_bcr <- terra::vect(system.file("extdata", "BAM_BCRNMv5_LAEA.shp", package = "BAMexploreR"))
+          sel_bcr <- subset(base_bcr, base_bcr$subunit_ui %in% ext)
+          ext <- terra::union(sel_bcr)
+        }
+      }else{
+        ext <- ext
       }
     }
   }
