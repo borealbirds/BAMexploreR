@@ -24,7 +24,7 @@ devtools::load_all()
 ```
 
 ## Introduction
-Over the years, BAM developed generalized analytical approaches to model species densities in relation to environmental covariates using bird survey. Two version of the BAM National Models are now available. Version 4 was released in 2020 and modeled species-specific density in the boreal region independently in 16 regional sub-units (portions of BCRs separated by provincial boundaries), while version 5 extends across the Canadian border and includes the northern United States within the boreal and hemiboreal regions. In order to integrate possible changes in population density due to environmental variations, version 5 focused on choosing products that could be temporally matched to bird survey data to accurately represent the environmental conditions during the time of survey, which led to 5-year intervals species-specific density maps (1985-2020). In version 4, we provided mean density predictions. In version 5, we expanded our geospatial products to complement these predictions by incorporating measures of variation, sampling density, and areas of extrapolation, offering better context for interpreting and applying our density models. Those different layers are all package as a stack of raster. 
+Over the years, BAM developed generalized analytical approaches to model species densities in relation to environmental covariates using bird survey. Two versions of the BAM National Models are now available. Version 4 was released in 2020 and modeled species-specific density in the boreal region independently in 16 regional sub-units (portions of BCRs separated by provincial boundaries), while version 5 extends across the Canadian border and includes the northern United States within the boreal and hemiboreal regions. In order to integrate possible changes in population density due to environmental variations, version 5 focused on choosing products that could be temporally matched to bird survey data to accurately represent the environmental conditions during the time of survey, which led to 5-year intervals species-specific density maps (1985-2020). In version 4, we provided mean density predictions. In version 5, we expanded our geospatial products to complement these predictions by incorporating measures of variation, sampling density, and areas of extrapolation, offering better context for interpreting and applying our density models. Those different layers are all package as a stack of raster. 
 
 
 `BAMexploreR` is a package for downloading and analyzing bird species data from the BAM National Model v4 and v5. Functions in the package perform the following tasks:
@@ -63,36 +63,41 @@ print(mapBCRv5$map)
 ```
 
 ## Example workflow
-The following workflow demonstrates how to generate a species list based on available model output version, filtering by a species groups categories used by The State of the Canada's birds such as 'Forest_Bird'.
+
+### Identify species available
+BAM National Models were generated for 143 species. Users can access the species available for the version of the model specified using the **sppList** function. The function has a **guild** parameters that allow the user to filter species avaiable based on a specific species group. The species groups follow the classification used by The State of Canada's Birds, which categorizes species based on broad biomes and groups with distinct and noteworthy trends. While some species may belong to multiple groups, only those that are truly representative of a given group are included. The following workflow demonstrates how to generate a species list based on available model output version, filtering by a species groups categories used by The State of the Canada's birds such as 'Forest_Bird'.User can check the species group categories and definition by accessing the vignette: **?guild_opt**
 
 
-# Species scope of model: Species list
-
-Depending on model version 4 and version 5, different species code are applied. 
-
-Below is the sample function to download the list of available species in the model, for the model version 5.
 ```{r species_list, echo = TRUE, results = 'markup', error = TRUE}
-sppList("v5_demo", "species_code", "Waterfowl")
+# Generate a vector of Forest bird species available in version 5. 
+# If guild is not provided, the function will return all species avaialble for a specific version of the model.
+forest_v5 <- sppList("v5_demo", "species_code", "Forest_Birds")
+
 ```
 
-# Spatial scope of model: Bird Conservation Region (BCR) list
+### Identify the zone of interest
+Species-specific density maps are available at the national scale in version 4, while in version 5, they can be accessed at the BCR level. This functionality helps reduce overall download size. Since BCR names vary by version and country, the mapBCR function ensures the correct naming is used. Users can specify an extent and identify BCRs intersection the zone of interest. 
 
-Depending on model version 4 and version 5, different BCRs code are delineated.
-
-Below is the sample function to check the list of available list of BCRs zoning, offered by the model 5.
-```{r bcr_list, echo = TRUE, results = 'markup', error = TRUE}
-bcr_list_output <- mapBCR("v5")
-tmap::tmap_save(bcr_list_output$map, filename = "bcr_map.png", width = 6, height = 4)
-knitr::include_graphics("bcr_map.png", dpi = 300)
+```{r bcr_list, fig.width=8, fig.height=6, echo = TRUE, results = 'markup', error = TRUE}
+aoi_sf <- vect(system.file("extdata", "vignette_poly_LAEA.shp", package = "BAMexploreR"))
+result <- mapBCR("v5_demo", ext=aoi_sf) 
+suppressWarnings(print(result$map))
+bcraoi_v5 <- result$subUnits
+print(bcraoi_v5)
 ```
 
-# Temporal scope of model: 1985-2023
+### Download species specific density maps
 
-By default 2020, available model year includes "1985, "1990", "1995", "2000" "2005", "2010", "2015", "2020", "2023"
+Users can download density maps for species using the **getlayerNM** function. Users can restrict the download on specific species and extent to reduce overall download size. Since version 5 provide species specific density map on a 5 years interval, the user can specify which of the 9 maps to download. By the absence of a specific year, the density map of the year 2020 is provided. 
 
-Below is the sample function to download the model of 'TEWA', for the whole Canada, in 2020
+
 ```{r get_layer, echo = TRUE, results = 'markup', error = TRUE}
-result <- getlayerNM("TEWA", "v5_demo", destfile = tempdir())
+# Check which species under a the COSEWIC act are available
+cosewic_spp <- sppList("v5_demo", "COSEWIC_Status")
+print(cosewic_spp)
+
+# From the list, download TEWA and VESP density map for the year 2010
+result <- getlayerNM(c("TEWA", "VESP"), "v5_demo", destfile = tempdir(), ext= bcraoi_v5, Year = "2010")
 result$TEWA
 ```
 
