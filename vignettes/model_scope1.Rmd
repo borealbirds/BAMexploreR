@@ -1,6 +1,5 @@
 ---
-title: "1. access BAMexploreR Model Scope"
-author: "Diego, Siu Chung WU"
+title: "<span style='font-size: 14px;'>BAM National Models Density Map</span><br><strong>Accessing the data</strong>"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{model_access}
@@ -19,20 +18,52 @@ knitr::opts_chunk$set(
 
 ```{r setup_packages, echo = FALSE, results = 'hide'}
 library(BAMexploreR)
-suppressWarnings(suppressMessages(library(googledrive)))
-library(tmap)
-library(dplyr)
-library(httr)
-library(stringr)
 library(terra)
-library(tools)
 tmap::tmap_mode("plot")
 devtools::load_all()
 ```
 
-# Introduction
+## Introduction
+Over the years, BAM developed generalized analytical approaches to model species densities in relation to environmental covariates using bird survey. Two version of the BAM National Models are now available. Version 4 was released in 2020 and modeled species-specific density in the boreal region independently in 16 regional sub-units (portions of BCRs separated by provincial boundaries), while version 5 extends across the Canadian border and includes the northern United States within the boreal and hemiboreal regions. In order to integrate possible changes in population density due to environmental variations, version 5 focused on choosing products that could be temporally matched to bird survey data to accurately represent the environmental conditions during the time of survey, which led to 5-year intervals species-specific density maps (1985-2020). In version 4, we provided mean density predictions. In version 5, we expanded our geospatial products to complement these predictions by incorporating measures of variation, sampling density, and areas of extrapolation, offering better context for interpreting and applying our density models. Those different layers are all package as a stack of raster. 
 
-`BAMexploreR` is a package for analyzing bird species data from the BAM National Model. This vignette will guide you through the basic usage of the package, including how to download and interpret species-specific data layers.
+
+`BAMexploreR` is a package for downloading and analyzing bird species data from the BAM National Model v4 and v5. Functions in the package perform the following tasks:
+
+- **Accessing the data** - list the species for which National models were created, specify and map bcr unit available for each National model version and download species output.
+- **Population & distribution** - blabla.
+- **Covariate interpretation** - blabla.
+ 
+This vignette will guide you through the basic usage of accessing the data using the package, including how to download specific species using region subunit or custom extent.
+
+### Data
+All data used in this example are included in the package and are described in the help files.
+```{r, eval = FALSE}
+?guild_opt
+?spp_List
+
+```
+
+## Subunit naming convention
+BAM National Density Model version 4 was generated within Canada boundary only using the delineation of BCR intersecting the provinces, while version 5 encompassed both Canada and North of the USA. In version 5, because most of the spatial layers used to develop the models were country specific, we used as model-building units the combination of bird conservation regions (BCRs) intersected with Canada-USA jurisdictional boundaries. Those subunits changed overtime based on decision making by the different agencies. For both version, each subunits use acronym of the country as prefix followed by the number of the BCR unit. Delineation of the subunit can be viewed using the `mapBCR` function. It is possible to provide an extent (**ext**) that represent a study region and have it overlaid on the BCRs delineation.
+
+```{r, fig.width=8, fig.height=6, message=FALSE, warning=FALSE}
+
+library(tmap)
+tmap_mode("plot")
+
+mapBCRv4 <- mapBCR("v4") 
+mapBCRv4$map <- mapBCRv4$map + tmap::tm_layout(title = "BCR Mapping - Version 4", title.position = c("center", "top"))
+print(mapBCRv4$map) 
+
+#Display available BCR for BAM NM version 5
+mapBCRv5<- mapBCR("v5")
+mapBCRv5$map <- mapBCRv5$map + tmap::tm_layout(title = "BCR Mapping - Version 5", title.position = c("center", "top"))
+print(mapBCRv5$map) 
+
+```
+
+## Example workflow
+The following workflow demonstrates how to generate a species list based on available model output version, filtering by a species groups categories used by The State of the Canada's birds such as 'Forest_Bird'.
 
 
 # Species scope of model: Species list
