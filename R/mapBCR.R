@@ -80,24 +80,30 @@ mapBCR <- function(version, ext) {
   }else{
     intersected_subUnits <-base_sf$subunit_ui
   }
-
   # Create the tmap
   # Generate a larger palette and subset it to get exactly 25 colors
   custom_palette <- RColorBrewer::brewer.pal(12, "Set3")  # Generate 12 colors from the Set3 palette
   custom_palette <- rep(custom_palette, length.out = ncat)  # Repeat the palette to get 25 colors
 
   tmap <- tmap::tm_shape(base_sf) +
-      tmap::tm_polygons(col = "subunit_ui", palette = custom_palette, style = "cat",  n = ncat, border.col = "black", border.alpha = 0.5, legend.show = TRUE, id = "subunit_ui") +
-      tmap::tm_shape(label_sf) + # Add the label_sf shape here
-      tmap::tm_text(text = "label", size = 0.7, col = "black", shadow = TRUE) +
-      tmap::tm_layout(legend.position = c("left", "bottom"))
+      tmap::tm_polygons(fill = "subunit_ui",
+                        fill.scale = tm_scale_categorical(values = custom_palette),
+                        col = "black", col_alpha = 0.5,
+                        fill.legend = NULL,
+                        id = "subunit_ui") +
+      tmap::tm_add_legend(type = "polygons",  # Updated from "fill"
+                          labels = unique(base_sf$subunit_ui),
+                          title = "BCR subunit",
+                          fill = custom_palette[seq_along(unique(base_sf$subunit_ui))]) +  # Use `fill` instead of `col`
+
+      tmap::tm_layout(legend.outside = TRUE, legend.is.portrait = FALSE, legend.stack = "horizontal")
 
   if(add_sf){
     tmap <- tmap +
       tmap::tm_shape(user_sf) +
-      tmap::tm_polygons(col = NA, alpha = 0, border.col = "black", border.alpha = 1, lwd = 2, legend.show = TRUE) +
-      tmap::tm_add_legend(type = "fill", labels = "User AOI", col = NA, border.col = "black") + # Add legend item for user_sf
-      tmap::tm_layout(legend.position = c("left", "bottom"))
+      tmap::tm_polygons(fill = NA, fill_alpha = 0, col = "red", col_alpha = 1, lwd = 2, fill.legend = NULL) +
+      tmap::tm_add_legend(type = "polygons", labels = "User AOI", fill = NA, col = "red") + # Add legend item for user_sf
+      tmap::tm_layout(legend.outside = TRUE, legend.stack = "vertical")
   }
 
   # Return the results as a list
