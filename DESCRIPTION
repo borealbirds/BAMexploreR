@@ -38,8 +38,6 @@ Collate:
     'sppList.R'
     'getlayerNM.R'
     'mapBCR.R'
-    'sppList_GD.R'
-    'getlayerNM_GD.R'
     'boxplotNM.R'
     'interactionsNM.R'
     'partial_dependenceNM.R'

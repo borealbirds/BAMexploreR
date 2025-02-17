@@ -16,12 +16,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup_packages, echo = FALSE, results = 'hide'}
-library(BAMexploreR)
-library(terra)
-tmap::tmap_mode("plot")
-devtools::load_all()
-```
+
 
 ## Introduction
 Over the years, BAM developed generalized analytical approaches to model species densities in relation to environmental covariates using bird survey. Two versions of the BAM National Models are now available. Version 4 was released in 2020 and modeled species-specific density in the boreal region independently in 16 regional sub-units (portions of BCRs separated by provincial boundaries), while version 5 extends across the Canadian border and includes the northern United States within the boreal and hemiboreal regions. In order to integrate possible changes in population density due to environmental variations, version 5 focused on choosing products that could be temporally matched to bird survey data to accurately represent the environmental conditions during the time of survey, which led to 5-year intervals species-specific density maps (1985-2020). In version 4, we provided mean density predictions. In version 5, we expanded our geospatial products to complement these predictions by incorporating measures of variation, sampling density, and areas of extrapolation, offering better context for interpreting and applying our density models. Those different layers are all package as a stack of raster. 
@@ -34,6 +29,24 @@ Over the years, BAM developed generalized analytical approaches to model species
 - **Covariate interpretation** - blabla.
  
 This vignette will guide you through the basic usage of accessing the data using the package, including how to download specific species using region subunit or custom extent.
+
+## Installation
+
+You can install the development version of `BAMexploreR` from [GitHub](https://github.com/) with:
+
+```{r, eval=FALSE}
+# install.packages("devtools")
+devtools::install_github("borealbirds/BAMexploreR", force = TRUE, dependencies = TRUE)
+devtools::document()
+devtools::install()
+```
+
+```{r setup_packages, echo = FALSE, results = 'hide'}
+library(BAMexploreR)
+library(terra)
+tmap::tmap_mode("plot")
+devtools::load_all()
+```
 
 ### Data
 All data used in this example are included in the package and are described in the help files.
@@ -65,7 +78,7 @@ print(mapBCRv5$map)
 ## Example workflow
 
 ### Identify species available
-BAM National Models were generated for 143 species. Users can access the species available for the version of the model specified using the **sppList** function. The function has a **guild** parameters that allow the user to filter species avaiable based on a specific species group. The species groups follow the classification used by The State of Canada's Birds, which categorizes species based on broad biomes and groups with distinct and noteworthy trends. While some species may belong to multiple groups, only those that are truly representative of a given group are included. The following workflow demonstrates how to generate a species list based on available model output version, filtering by a species groups categories used by The State of the Canada's birds such as 'Forest_Bird'.User can check the species group categories and definition by accessing **guild_opt** documentation. 
+BAM National Models were generated for 143 species. Users can access the species available for the version of the model specified using the `sppList` function. The function has a `guild` parameters that allow the user to filter species avaiable based on a specific species group. The species groups follow the classification used by The State of Canada's Birds, which categorizes species based on broad biomes and groups with distinct and noteworthy trends. While some species may belong to multiple groups, only those that are truly representative of a given group are included. The following workflow demonstrates how to generate a species list based on available model output version, filtering by a species groups categories used by The State of the Canada's birds such as 'Forest_Bird'.User can check the species group categories and definition by accessing `guild_opt` documentation. 
 
 
 ```{r species_list, echo = TRUE, results = 'markup', error = TRUE}
@@ -88,7 +101,7 @@ print(bcraoi_v5)
 
 ### Download species specific density maps
 
-Users can download density maps for species using the **getlayerNM** function. Users can restrict the download on specific species and extent to reduce overall download size. Since version 5 provide species specific density map on a 5 years interval, the user can specify which of the 9 maps to download. By the absence of a specific year, the density map of the year 2020 is provided. 
+Users can download density maps for species using the `getlayerNM` function. Users can restrict the download on specific species and extent to reduce overall download size. Since version 5 provide species specific density map on a 5 years interval, the user can specify which of the 9 maps to download. By the absence of a specific year, the density map of the year 2020 is provided. 
 
 
 ```{r get_layer, fig.width=8, fig.height=6, echo = TRUE, results = 'markup', error = TRUE}
@@ -106,5 +119,16 @@ bcraoi_v5 <- result$subUnits
 result <- getlayerNM(c("TEWA", "VESP"), "v5_demo", destfile = tempdir(), ext= bcraoi_v5, year = "2010")
 plot(result$TEWA)
 ```
+
+## Citation
+
+Please cite the _BAMexploreR_ package when using it in publications. To cite the latest official version, please use:
+
+
+```{r, echo = FALSE, results = "asis"}
+dev_version <- packageDescription("BAMexploreR")$Version
+cat(paste0("\\> Houle M, Boehm M, Wu SC, Knight E, ... (", format(Sys.time(), "%Y"),"). BAMexploreR: Evaluating boreal birds density in Canada using R. R package version ", dev_version, ". Available at https://github.com/borealbirds/BAMexploreR\n"))
+```
+
 
 
