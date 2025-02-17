@@ -1,25 +1,9 @@
 library(testthat)
 library(BAMexploreR)
-library(googledrive)
 library(terra)
 
 # Mock Google Drive functions for testing purposes
 with_mock(
-  `googledrive::drive_ls` = function(...) {
-    # Return a mock list of files available on Google Drive
-    return(data.frame(
-      name = c("pred-BAOR-CAN-Mean.tif", "pred-CAWA-CAN-Mean.tif"),
-      id = c("1a2b3c", "4d5e6f"),
-      stringsAsFactors = FALSE
-    ))
-  },
-  `googledrive::drive_download` = function(file, path, ...) {
-    # Mock the downloading process by creating a temporary file
-    writeRaster(rast(matrix(runif(100), 10, 10)), path, overwrite = TRUE)
-  },
-
-
-
   # Test that function throws error if `destfile` is missing
   test_that("getlayerNM throws error if destfile is missing", {
     expect_error(getlayerNM(spList = "BAOR", version = "v4", layer = "mean"),

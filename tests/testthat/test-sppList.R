@@ -42,13 +42,6 @@ test_that("Empty species list is handled", {
 })
 
 
-# Test Caching of Google Drive Token
-test_that("Google Drive token is only requested once", {
-  expect_message(
-    sppList("v4", "mean", "species_code"),
-    regexp = "Using an auto-discovered, cached token.|Auto-refreshing stale OAuth token."
-  )
-})
 
 
 
