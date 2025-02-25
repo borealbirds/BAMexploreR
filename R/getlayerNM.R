@@ -59,7 +59,7 @@ getlayerNM <- function(spList, version, destfile, ext = NULL,  year = NULL) {
           base_bcr <- terra::vect(system.file("extdata", "BAM_BCRNMv4_LAEA.shp", package = "BAMexploreR"))
           sel_bcr <- subset(base_bcr, base_bcr$subunit_ui %in% ext)
           ext <- union(sel_bcr)
-        }else if(version == "v4"|| version == "v5_demo") {
+        }else if(version == "v5"|| version == "v5_demo") {
           base_bcr <- terra::vect(system.file("extdata", "BAM_BCRNMv5_LAEA.shp", package = "BAMexploreR"))
           sel_bcr <- subset(base_bcr, base_bcr$subunit_ui %in% ext)
           ext <- terra::union(sel_bcr)
