@@ -1,7 +1,6 @@
 library(tibble)
 library(readxl)
 library(usethis)
-library(terra)
 ###############################################################
 ### create 1st internal data: URL for version 4/5
 ###############################################################
@@ -26,15 +25,8 @@ version.url <- tibble(
 ###############################################################
 # species list URL data file
 spp_List <- read.csv("./data-raw/sppList.csv", header= TRUE)
-use_data(spp_List, internal = FALSE, overwrite = TRUE)
+#use_data(spp_List, internal = FALSE, overwrite = TRUE)
 
-###############################################################
-### create BCR internal data
-###############################################################
-BCRNMv4 <- terra::vect(system.file("./data-raw", "BAM_BCRNMv4_LAEA.shp", package = "BAMexploreR"))
-BCRNMv5 <- terra::vect(system.file("./data-raw", "BAM_BCRNMv5_LAEA.shp", package = "BAMexploreR"))
-
-#use_data(guild_opt, BCRNMv4, BCRNMv5, internal = FALSE, overwrite = TRUE)
 
 ###############################################################
 ### create 3st internal data: version 4 model covariate importance
@@ -49,7 +41,8 @@ load("./data/bam_covariate_importance_v5.rda")
 ###############################################################
 ### Generate internal data
 ###############################################################
-use_data(version.url, spp_List, BCRNMv4, BCRNMv5, bam_covariate_importance_v4, bam_covariate_importance_v5, internal = TRUE, overwrite = TRUE)
+use_data(version.url, spp_List, bam_covariate_importance_v4, bam_covariate_importance_v5, internal = TRUE, overwrite = TRUE)
+#use_data(version.url, spp_List, internal = TRUE, overwrite = TRUE)
 
 
 ###############################################################
@@ -70,5 +63,4 @@ guild_opt <- c("COSEWIC_Status",
                "Long_Distance_Migrants")
 
 use_data(guild_opt, internal = FALSE, overwrite = TRUE)
-
 
