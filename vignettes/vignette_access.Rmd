@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 Over the years, BAM developed generalized analytical approaches to model species densities in relation to environmental covariates using bird survey. Two versions of the BAM National Models are now available. Version 4 was released in 2020 and modeled species-specific density in the boreal region independently in 16 regional sub-units (portions of BCRs separated by provincial boundaries), while version 5 extends across the Canadian border and includes the northern United States within the boreal and hemiboreal regions. In order to integrate possible changes in population density due to environmental variations, version 5 focused on choosing products that could be temporally matched to bird survey data to accurately represent the environmental conditions during the time of survey, which led to 5-year intervals species-specific density maps (1985-2020). In version 4, we provided mean density predictions. In version 5, we expanded our geospatial products to complement these predictions by incorporating measures of variation, sampling density, and areas of extrapolation, offering better context for interpreting and applying our density models. Those different layers are all package as a stack of raster. 
 
 
-`BAMexploreR` is a package for downloading and analyzing bird species data from the BAM National Model v4 and v5. Functions in the package perform the following tasks:
+`BAMexploreR` is a package for downloading and analyzing bird species data from the BAM National Model v4 and v51. Functions in the package perform the following tasks:
 
 - **Accessing the data** - list the species for which National models were created, specify and map bcr unit available for each National model version and download species output.
 - **Population & distribution** - blabla.
@@ -37,15 +37,7 @@ You can install the development version of `BAMexploreR` from [GitHub](https://g
 ```{r, eval=FALSE}
 # install.packages("devtools")
 devtools::install_github("borealbirds/BAMexploreR", force = TRUE, dependencies = TRUE)
-devtools::document()
-devtools::install()
-```
-
-```{r setup_packages, echo = FALSE, results = 'hide'}
 library(BAMexploreR)
-library(terra)
-tmap::tmap_mode("plot")
-devtools::load_all()
 ```
 
 ### Data
@@ -86,6 +78,8 @@ BAM National Models were generated for 143 species. Users can access the species
 # If guild is not provided, the function will return all species avaialble for a specific version of the model.
 forest_v5 <- sppList("v5_demo", "species_code", "Forest_Birds")
 
+head(forest_v5)
+
 ```
 
 ### Identify the zone of interest
@@ -105,6 +99,8 @@ Users can download density maps for species using the `getlayerNM` function. Use
 
 
 ```{r get_layer, fig.width=8, fig.height=6, echo = TRUE, results = 'markup', error = TRUE}
+library(terra)
+
 # Check which species under a the COSEWIC act are available
 cosewic_spp <- sppList("v5_demo", "COSEWIC_Status")
 print(cosewic_spp)
