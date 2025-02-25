@@ -6,7 +6,7 @@
 #'
 #' @param version character; Indicate the version of the National Model requested. Each version of the
 #'        National Model has its url access provided within the package.
-#' @param type character; type of output provided in the list, either "species_code", "common_name", "family_name" or "scientific_name".
+#' @param type character; type of output provided in the list, either "speciesCode", "commonName" or "scientificName".
 #' @param guild character; Specifies the guild to filter the species list, based on the classification used in The State of Canada’s Birds Report (Birds Canada, 2024).
 #'              By providing a guild (e.g., "Forest Birds"), the function will return only the species available within that specific category.
 #'              Accepted guild names include "Forest_Birds", "Grassland_Birds", "Waterfowl", and others as defined in the report.
@@ -66,17 +66,12 @@ sppList <- function(version, type, guild = NULL) {
   }
 
   # Extract species list
-  if(type=="species_code"){
+  if(type=="speciesCode"){
     sp <-spList
   }else if(type=="commonName") {
     sp <- spdt %>%
       dplyr::filter(speciesCode %in% spList) %>%
       dplyr::pull(commonName)
-  }else if(type=="order") {
-    sp <- spdt %>%
-      dplyr::filter(speciesCode %in% spList) %>%
-      dplyr::pull(order)  %>%
-      unique()
   }else if(type=="scientificName") {
     sp <- spdt %>%
       dplyr::filter(speciesCode %in% spList) %>%
