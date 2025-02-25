@@ -13,6 +13,8 @@ version.url <- tibble(
               "v5_GD"),
   url = c("http://206.12.92.143/data/NationalModelv4_sample",
           "http://206.12.92.143/data/NationalModelv5",
+          "http://206.12.92.143/data/NationalModelv4",
+          "http://206.12.92.143/data/NationalModelv5",
           "https://drive.google.com/drive/u/1/folders/1aJUZr4fACdD02H8AYejR2XG6zuA6E492",
           "https://drive.google.com/drive/u/1/folders/1snHdBwcVyUYCbwYJSCWm5506fiBEYal-")
 )
@@ -21,8 +23,8 @@ version.url <- tibble(
 ### create 2nd internal data: most updated species list
 ###############################################################
 # species list URL data file
-spp.List <- read.csv("./data-raw/sppList.csv", header= TRUE)
-
+spp_List <- read.csv("./data-raw/sppList.csv", header= TRUE)
+use_data(spp_List, internal = FALSE, overwrite = TRUE)
 ###############################################################
 ### create 3st internal data: version 4 model covariate importance
 ###############################################################
