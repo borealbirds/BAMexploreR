@@ -11,7 +11,7 @@ sppList(version, type, guild = NULL)
 \item{version}{character; Indicate the version of the National Model requested. Each version of the
 National Model has its url access provided within the package.}
 
-\item{type}{character; type of output provided in the list, either "species_code", "common_name", "family_name" or "scientific_name".}
+\item{type}{character; type of output provided in the list, either "speciesCode", "commonName" or "scientificName".}
 
 \item{guild}{character; Specifies the guild to filter the species list, based on the classification used in The State of Canada’s Birds Report (Birds Canada, 2024).
 By providing a guild (e.g., "Forest Birds"), the function will return only the species available within that specific category.
