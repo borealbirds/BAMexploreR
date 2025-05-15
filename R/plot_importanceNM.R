@@ -23,8 +23,8 @@
 #' If `NULL`, default colours are used.
 #'
 #' @return A ggplot object displaying percent covariate importance by variable class, grouped by the `group` argument.
-#' Percent importance is used to allow results directly comparable across groups that likely
-#' have differing total covariate importance.
+#' Percent importance is used to allow comparisions across groups that have
+#' differing total covariate importance.
 #' If `plot = FALSE` the processed data is returned as a `data.frame`.
 #'
 #' @importFrom dplyr group_by filter summarise left_join mutate
@@ -36,12 +36,13 @@
 #' @examples
 #'
 #'
-#' # Example of plotting covariate importance for Alder Flycatcher across all BCRs.
-#' # plot_importanceNM(group = "spp", species = "ALFL", bcr = "all", plot=TRUE)
+#' # Example of plotting covariate importance for Townsend's Solitaire across all BCRs.
+#' # This is a species with relatively high bootstrap variance.
+#' # plot_importanceNM(group = "spp", species = "TOSO", bcr = "all", plot=TRUE)
 #'
-#' # Example of plotting covariate importance for two species from two BCRs, using custom colours:
-#' # plot_importanceNM(group = "spp", species = c("ALFL", "CAWA"),
-#' bcr = c("can12", "can13"),  colours = c("#1f78b4", "#33a02c"))
+#' # Example of plotting covariate importance for two warbler species from three BCRs, using custom colours:
+#' # plot_importanceNM(group = "spp", species = c("BAWW", "CAWA"),
+#' # bcr = c("can12", "can13", "can14"),  colours = c("#1f78b4", "#33a02c"))
 #'
 #'
 #'
@@ -107,10 +108,10 @@ plot_importanceNM <- function(species = "all", bcr = "all", group = NULL, versio
 
   # group by user-specified group
   # then, sum rel.inf by the grouped variable per variable class
-  # !!! evaluates a list of expressions
+  # convert std. dev. back to variance, sum, and take sqrt()
   cov_importance_grouped <-
     data |>
-    group_by(!!!group_sym) |>
+    group_by(!!!group_sym) |> # !!! evaluates a list of expressions
     filter(!is.na(var_class)) |>
     summarise(sum_inf = sum(mean_rel_inf), sd_inf = sd(mean_rel_inf),
               pooled_sd = sqrt(sum(sd_rel_inf^2)),
@@ -124,6 +125,7 @@ plot_importanceNM <- function(species = "all", bcr = "all", group = NULL, versio
     summarise(sum_all_groups = sum(sum_inf), .groups = "keep")
 
   # calculate the percent of covariate importance
+  # sd_percent_inf is the uncertainty of the percent influence of a given var_class
   percent_importance <-
     cov_importance_grouped |>
     left_join(group1_sum, by = group) |>
