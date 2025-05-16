@@ -33,8 +33,14 @@
 #' @export
 #'
 #' @examples
-#' # stackedbarNM(species = c("CAWA"), bcr = "can14", groups = c("spp", "var_class"))
+#' # Compare covariate importance (binned by variable class) for four
+#' warbler species in BCR14
+#' warblers <- c("CAWA", "BAWW", "BTNW", "BLBW")
+#' stackedbarNM(species = warblers, bcr = "can14", groups = c("spp", "var_class"))
 #'
+#' # Compare covariate importance for a single warbler species
+#' # relative to the total influence that covariate had across all warblers.
+#' stackedbarNM(species = warblers, bcr = "can14", groups = c("var", "spp"))
 stackedbarNM <- function(species = "all", bcr = "all",  groups = NULL, version ="v5", plot = TRUE, colours = NULL){
 
   # load bam_covariate_importance_v* from data folder
@@ -56,6 +62,17 @@ stackedbarNM <- function(species = "all", bcr = "all",  groups = NULL, version =
   if (!all(bcr %in% unique(data$bcr)) && !any(bcr == "all")) {
     stop(paste("The following BCR(s) are not in `data`:",
                paste(setdiff(bcr, unique(data$bcr)), collapse = ", ")))
+  }
+
+  # filter for user-specified species
+  if (!any(species == "all")) {
+    data <- filter(data, spp %in% species)
+  }
+
+  # filter for user-specified BCRs
+  # use .env because `bcr` is also a column name in `data`
+  if (!any(bcr == "all")) {
+    data <- dplyr::filter(data, bcr %in% .env$bcr)
   }
 
   # ensure groups are specified correctly
