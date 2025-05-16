@@ -1,73 +1,89 @@
-#' National Models 5.0 - covariate interpretation
+##################################################################################
 #'
-#' @param data A data frame with rows as covariates and columns denoting relative influence.
-#' @param species The species to be summarized.
-#' @param bcr Bird Conservation Regions to be summarized.
+#' This function plots stacked bar charts.
 #'
-#' @param traits Traits for the species, e.g., `avonet` or `acad`.
+#' @param species A `character` specifying the species to filter by. The default is `"all"`, which includes all species in the dataset.
 #'
-#' @param groups Grouping variables for summarizing model covariates.
+#' @param bcr A `character` specifying the Bird Conservation Regions (BCRs) to filter by. The default is `"all"`, which includes all BCRs in the dataset.
 #'
-#' @param plot Logical; if `TRUE`, creates a stacked bar plot.
+#' @param groups A `character` of two grouping variables for summarising covariate importance.
+#' The first group element is plotted on the x-axis as bins each containing a stacked bar,
+#' while the second group element is shown by fill colours in the stacked bars.
+#' For example, setting `groups=c("spp", "var_class") produces a plot with a
+#' stacked bar per species on the x-axis, and bar colours denoting covariate
+#' importance per variable class for a given species.
+#' Run the examples below for a visualization.
 #'
-#' @param colours Character vector of hex codes for colours.
-#' @param export Logical; if `TRUE`, exports the underlying data.
+#' @param version A `character`. Defaults to `"v5"`. Loads BAM's covariate importance data,
+#' a `data.frame` containing covariate importance values, with mean covariate importance as
+#' rows and columns `bcr`, `species`, `var_class`, `n_boot`, `mean_rel_inf`, and `sd_rel_inf`.
+#' `"v4"` is also possible but not fully supported for all functions in the first release of this package.
 #'
-#' @importFrom rlang sym
-#' @importFrom dplyr filter summarise group_by left_join
-#' @importFrom ggplot2 ggplot aes geom_bar theme theme_classic element_text
-#' @param export Logical; if `TRUE`, exports the underlying data.
+#' @param plot A `logical` indicating whether to plot the results (`TRUE`) or return the processed data (`FALSE`).
 #'
-#' @return A stacked bar chart or a dataframe if `export = TRUE`.
-#' @import ggplot2
+#' @param colours A `character` vector of hex codes for the colours to use in the ggplot (optional).
+#' If `NULL`, default colours are used.
+#'
+#' @return A stacked bar chart.
+#'
+#' @importFrom rlang syms
+#' @importFrom dplyr filter summarise group_by left_join mutate
+#' @importFrom ggplot2 ggplot aes geom_bar theme theme_classic element_text scale_fill_manual labs
+#'
 #' @export
-#' @rdname stackedbarNM
+#'
 #' @examples
-#' stackedbarNM(covariate_data, species = "BAOR", bcr = 12)
-stackedbarNM <- function(data = bam_covariate_importance, species = "all", bcr = "all", traits = NULL, groups = NULL, plot = FALSE, colours = NULL, export = FALSE){
+#' # stackedbarNM(species = c("CAWA"), bcr = "can14", groups = c("spp", "var_class"))
+#'
+stackedbarNM <- function(species = "all", bcr = "all",  groups = NULL, version ="v5", plot = TRUE, colours = NULL){
 
-  # Filter the dataset by species if specified
-  user_species <- species
-
-  if (user_species != "all" &
-      (all(user_species %in% data$common_name)==TRUE | all(user_species %in% data$sci_name)==TRUE)) {
-    data <-
-      data |>
-      dplyr::filter(common_name %in% user_species | sci_name %in% user_species)
+  # load bam_covariate_importance_v* from data folder
+  if (version == "v5") {
+    data("bam_covariate_importance_v5", package = "BAMexploreR")
+    data <- bam_covariate_importance_v5
+  } else {
+    data("bam_covariate_importance_v4", package = "BAMexploreR")
+    data <- bam_covariate_importance_v4
   }
 
-  # Ensure groups are specified correctly
+  # check if user specified species are in `data`
+  if (!all(species %in% unique(data$spp)) && !any(species == "all")) {
+    stop(paste("The following species are not in `data`:",
+               paste(setdiff(species, unique(data$spp)), collapse = ", ")))
+  }
+
+  # check if user specified BCRs are in `data`
+  if (!all(bcr %in% unique(data$bcr)) && !any(bcr == "all")) {
+    stop(paste("The following BCR(s) are not in `data`:",
+               paste(setdiff(bcr, unique(data$bcr)), collapse = ", ")))
+  }
+
+  # ensure groups are specified correctly
   if (is.null(groups) || length(groups) < 2) {
     stop("The 'groups' parameter must be a character vector with at least two elements.")
   }
 
-  # If user specifies built-in dataset, load it via `data()`, otherwise use user-specified dataset
-  # if (traits %in% c("avonet", "acad")){
-  #   traits <- data(traits)
-  # } else {traits <- trait}
-
-
-  # Check that trait data is the right class
-  if (is.null(traits) == FALSE & is.data.frame(traits) == FALSE) {
-    warning("argument `traits` must be NULL or a data.frame")
-    return(NULL)
+  # check groups exist in data
+  if (!all(groups %in% colnames(data))) {
+    stop("One or more elements in `groups` are not valid column names in `data`.")
   }
 
+
   # for dplyr::group_by
-  group_sym <- rlang::syms(groups)
+  group_syms <- rlang::syms(groups)
 
 
   # sum covariate importance across for every permutation of group1 and group2
   rel_inf_sum <-
     data |>
-    group_by(!!!group_sym) |>
-    summarise(sum_influence = sum(rel.inf), .groups="keep")
+    group_by(!!!group_syms) |>
+    summarise(sum_influence = sum(mean_rel_inf), .groups="keep")
 
 
   # sum of covariate importance for each of group1 (all group2 sums are amalgamated into group1 bins)
   group1_sum <-
     rel_inf_sum |>
-    group_by(!!group_sym[[1]])  |>
+    group_by(!!group_syms[[1]])  |>
     summarise(sum_group1 = sum(sum_influence), .groups="keep")
 
   # get the %contribution of group2 covariates to overall covariate importance for a given group1
@@ -78,16 +94,18 @@ stackedbarNM <- function(data = bam_covariate_importance, species = "all", bcr =
 
 
   if (plot) {
-  barplot <-
-    ggplot2::ggplot() +
-    ggplot2::geom_bar(aes(x=!!group_sym[[1]], y=prop, fill=!!group_sym[[2]]), data=proportion_inf, stat = "identity") +
-    # scale_fill_manual(values = colours) +
-    ggplot2::theme_classic() +
-    ggplot2::theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+    p <- ggplot2::ggplot(proportion_inf, ggplot2::aes(x = !!group_syms[[1]], y = prop, fill = !!group_syms[[2]])) +
+      ggplot2::geom_bar(stat = "identity") +
+      ggplot2::theme_classic() +
+      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1)) +
+      ggplot2::labs(x = groups[1], y = "Proportion of Influence", fill = groups[2])
 
-  print(barplot)
-  print(paste("plotting proportion of variable influence by", groups[1], "and", groups[2], sep=" "))
-  return(barplot)
+    if (!is.null(colours)) {
+      p <- p + ggplot2::scale_fill_manual(values = colours)
+    }
+
+    print(p)
+    return(p)
   } else {
     return(proportion_inf)
   }
