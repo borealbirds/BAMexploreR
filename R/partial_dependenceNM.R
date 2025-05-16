@@ -1,9 +1,10 @@
 ##################################################################################
 #' Partial Dependence Plot for Species in a BCR Based on Covariate
 #'
-#' This function generates a partial dependence plot (PDP) for a given species, BCR (Bird Conservation Region), and covariate,
-#' showing how the response variable changes over the range of the covariate. The function fits a smooth spline to bootstrap replicates,
-#' aggregates predictions, and visualizes the mean response with error bounds.
+#' This function generates a partial dependence plot for a given species, BCR (Bird Conservation Region), and
+#' covariate, i.e. how the response variable changes over the range of the covariate.
+#' The function fits a smooth spline to bootstrap replicates, aggregates predictions,
+#' and visualizes the mean response with error bounds.
 #'
 #' @param data A named list of `data.frames`, where each element contains bootstrap replicates for different combinations of BCRs, species, and covariates.
 #' The key for each element in the list is a combination of `bcr`, `common_name`, and `covariate` (e.g., `"12_BAOR_temp"`).

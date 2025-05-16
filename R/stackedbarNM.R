@@ -9,10 +9,7 @@
 #' @param groups A `character` of two grouping variables for summarising covariate importance.
 #' The first group element is plotted on the x-axis as bins each containing a stacked bar,
 #' while the second group element is shown by fill colours in the stacked bars.
-#' For example, setting `groups=c("spp", "var_class") produces a plot with a
-#' stacked bar per species on the x-axis, and bar colours denoting covariate
-#' importance per variable class for a given species.
-#' Run the examples below for a visualization.
+#' Please see the examples below for a visualization.
 #'
 #' @param version A `character`. Defaults to `"v5"`. Loads BAM's covariate importance data,
 #' a `data.frame` containing covariate importance values, with mean covariate importance as
