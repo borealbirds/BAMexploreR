@@ -2,42 +2,50 @@
 % Please edit documentation in R/stackedbarNM.R
 \name{stackedbarNM}
 \alias{stackedbarNM}
-\title{National Models 5.0 - covariate interpretation}
+\title{This function plots stacked bar charts.}
 \usage{
 stackedbarNM(
-  data = bam_covariate_importance,
   species = "all",
   bcr = "all",
-  traits = NULL,
   groups = NULL,
-  plot = FALSE,
-  colours = NULL,
-  export = FALSE
+  version = "v5",
+  plot = TRUE,
+  colours = NULL
 )
 }
 \arguments{
-\item{data}{A data frame with rows as covariates and columns denoting relative influence.}
+\item{species}{A \code{character} specifying the species to filter by. The default is \code{"all"}, which includes all species in the dataset.}
 
-\item{species}{The species to be summarized.}
+\item{bcr}{A \code{character} specifying the Bird Conservation Regions (BCRs) to filter by. The default is \code{"all"}, which includes all BCRs in the dataset.}
 
-\item{bcr}{Bird Conservation Regions to be summarized.}
+\item{groups}{A \code{character} of two grouping variables for summarising covariate importance.
+The first group element is plotted on the x-axis as bins each containing a stacked bar,
+while the second group element is shown by fill colours in the stacked bars.
+Please see the examples below for a visualization.}
 
-\item{traits}{Traits for the species, e.g., `avonet` or `acad`.}
+\item{version}{A \code{character}. Defaults to \code{"v5"}. Loads BAM's covariate importance data,
+a \code{data.frame} containing covariate importance values, with mean covariate importance as
+rows and columns \code{bcr}, \code{species}, \code{var_clas}, \code{n_boot}, \code{mean_rel_inf}, and \code{sd_rel_inf}.
+\code{"v4"} is also possible but not fully supported for all functions in the first release of this package.}
 
-\item{groups}{Grouping variables for summarizing model covariates.}
+\item{plot}{A \code{logical} indicating whether to plot the results (\code{TRUE}) or return the processed data (\code{FALSE}).}
 
-\item{plot}{Logical; if `TRUE`, creates a stacked bar plot.}
-
-\item{colours}{Character vector of hex codes for colours.}
-
-\item{export}{Logical; if `TRUE`, exports the underlying data.}
+\item{colours}{A \code{character} vector of hex codes for the colours to use in the ggplot (optional).
+If \code{NULL}, default colours are used.}
 }
 \value{
-A stacked bar chart or a dataframe if `export = TRUE`.
+A stacked bar chart.
 }
 \description{
-National Models 5.0 - covariate interpretation
+This function plots stacked bar charts.
 }
 \examples{
-stackedbarNM(covariate_data, species = "BAOR", bcr = 12)
+# Compare covariate importance (binned by variable class) for four
+# warbler species in BCR14
+warblers <- c("CAWA", "BAWW", "BTNW", "BLBW")
+stackedbarNM(species = warblers, bcr = "can14", groups = c("spp", "var_class"))
+
+# Compare covariate importance for a single warbler species
+# relative to the total influence that covariate had across all warblers.
+stackedbarNM(species = warblers, bcr = "can14", groups = c("var", "spp"))
 }

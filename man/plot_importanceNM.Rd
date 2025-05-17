@@ -14,43 +14,43 @@ plot_importanceNM(
 )
 }
 \arguments{
-\item{species}{A `character` specifying the species to filter by. The default is `"all"`, which includes all species in the dataset.}
+\item{species}{A \code{character} specifying the species to filter by. The default is \code{"all"}, which includes all species in the dataset.}
 
-\item{bcr}{A `character` specifying the Bird Conservation Regions (BCRs) to filter by. The default is `"all"`, which includes all BCRs in the dataset.}
+\item{bcr}{A \code{character} specifying the Bird Conservation Regions (BCRs) to filter by. The default is \code{"all"}, which includes all BCRs in the dataset.}
 
-\item{group}{A `character` specifying the grouping variable for summarizing covariate importance.
-Valid values are `"spp"` (species), `"bcr"` (BCR), or `"var"` (model covariate).}
+\item{group}{A \code{character} specifying the grouping variable for summarizing covariate importance.
+Valid strings are \code{"spp"} (species), or \code{"bcr"} (BCR).}
 
-\item{version}{A `character`. Defaults to `"v5"`. Loads BAM's covariate importance data,
-a `data.frame` containing covariate importance values, with mean covariate importance as
-rows and columns `bcr`, `species`, `var_class`, `n_boot`, `mean_rel_inf`, and `sd_rel_inf`.
-`"v4"` is also possible but not fully supported for all functions in the first release of this package.}
+\item{version}{A \code{character}. Defaults to \code{"v5"}. Loads BAM's covariate importance data,
+a \code{data.frame} containing covariate importance values, with mean covariate importance as
+rows and columns \code{bcr}, \code{species}, \code{var_class}, \code{n_boot}, \code{mean_rel_inf}, and \code{sd_rel_inf}.
+\code{"v4"} is also possible but not fully supported for all functions in the first release of this package.}
 
-\item{plot}{A `logical` indicating whether to plot the results (`TRUE`) or return the processed data (`FALSE`).}
+\item{plot}{A \code{logical} indicating whether to plot the results (\code{TRUE}) or return the processed data (\code{FALSE}).}
 
-\item{colours}{A `character` vector of hex codes for the colours to use in the ggplot (optional).
-If `NULL`, default colours are used.}
+\item{colours}{A \code{character} vector of hex codes for the colours to use in the ggplot (optional).
+If \code{NULL}, default colours are used.}
 }
 \value{
-A ggplot object displaying percent covariate importance by variable class, grouped by the `group` argument.
-Percent importance is used to allow results directly comparable across groups that likely
-have differing total covariate importance.
+A ggplot displaying percent covariate importance by variable class, grouped by the `group` argument.
+Percent importance is used to allow comparisions across groups that have
+differing total covariate importance.
 If `plot = FALSE` the processed data is returned as a `data.frame`.
 }
 \description{
 This function plots mean relative covariate importance (with bootstrap variation)
-by variable class, with options to group by BCR (Bird Conservation Region),
-species, or model covariate.
+by variable class, with options to group by BCR (Bird Conservation Region) or species.
 }
 \examples{
 
 
-# Example of plotting covariate importance for Alder Flycatcher across all BCRs.
-# plot_importanceNM(group = "spp", species = "ALFL", bcr = "all", plot=TRUE)
+# Example of plotting covariate importance for Townsend's Solitaire across all BCRs.
+# This is a species with relatively high bootstrap variance.
+plot_importanceNM(group = "spp", species = "TOSO", bcr = "all", plot=TRUE)
 
-# Example of plotting covariate importance for two species in two BCRs, using custom colours:
-# plot_importanceNM(group = "spp", species = c("ALFL", "CAWA"),
-bcr = c("can12", "can13"),  colours = c("#1f78b4", "#33a02c"))
+# Example of plotting covariate importance for two warbler species from three BCRs, using custom colours:
+ plot_importanceNM(group = "spp", species = c("BAWW", "CAWA"),
+ bcr = c("can12", "can13", "can14"),  colours = c("#1f78b4", "#33a02c"))
 
 
 

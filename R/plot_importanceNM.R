@@ -4,23 +4,22 @@
 #' This function plots mean relative covariate importance (with bootstrap variation)
 #' by variable class, with options to group by BCR (Bird Conservation Region) or species.
 #'
+#' @param species A \code{character} specifying the species to filter by. The default is \code{"all"}, which includes all species in the dataset.
 #'
-#' @param species A `character` specifying the species to filter by. The default is `"all"`, which includes all species in the dataset.
+#' @param bcr A \code{character} specifying the Bird Conservation Regions (BCRs) to filter by. The default is \code{"all"}, which includes all BCRs in the dataset.
 #'
-#' @param bcr A `character` specifying the Bird Conservation Regions (BCRs) to filter by. The default is `"all"`, which includes all BCRs in the dataset.
+#' @param group A \code{character} specifying the grouping variable for summarizing covariate importance.
+#' Valid strings are \code{"spp"} (species), or \code{"bcr"} (BCR).
 #'
-#' @param group A `character` specifying the grouping variable for summarizing covariate importance.
-#' Valid strings are `"spp"` (species), or `"bcr"` (BCR).
+#' @param version A \code{character}. Defaults to \code{"v5"}. Loads BAM's covariate importance data,
+#' a \code{data.frame} containing covariate importance values, with mean covariate importance as
+#' rows and columns \code{bcr}, \code{species}, \code{var_class}, \code{n_boot}, \code{mean_rel_inf}, and \code{sd_rel_inf}.
+#' \code{"v4"} is also possible but not fully supported for all functions in the first release of this package.
 #'
-#' @param version A `character`. Defaults to `"v5"`. Loads BAM's covariate importance data,
-#' a `data.frame` containing covariate importance values, with mean covariate importance as
-#' rows and columns `bcr`, `species`, `var_class`, `n_boot`, `mean_rel_inf`, and `sd_rel_inf`.
-#' `"v4"` is also possible but not fully supported for all functions in the first release of this package.
+#' @param plot A \code{logical} indicating whether to plot the results (\code{TRUE}) or return the processed data (\code{FALSE}).
 #'
-#' @param plot A `logical` indicating whether to plot the results (`TRUE`) or return the processed data (`FALSE`).
-#'
-#' @param colours A `character` vector of hex codes for the colours to use in the ggplot (optional).
-#' If `NULL`, default colours are used.
+#' @param colours A \code{character} vector of hex codes for the colours to use in the ggplot (optional).
+#' If \code{NULL}, default colours are used.
 #'
 #' @return A ggplot displaying percent covariate importance by variable class, grouped by the `group` argument.
 #' Percent importance is used to allow comparisions across groups that have

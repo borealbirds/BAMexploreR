@@ -21,9 +21,10 @@ A `ggplot` object showing the partial dependence plot, including the mean respon
 If the specified combination of BCR, species, and covariate does not exist in the data, the function returns an error.
 }
 \description{
-This function generates a partial dependence plot (PDP) for a given species, BCR (Bird Conservation Region), and covariate,
-showing how the response variable changes over the range of the covariate. The function fits a smooth spline to bootstrap replicates,
-aggregates predictions, and visualizes the mean response with error bounds.
+This function generates a partial dependence plot for a given species, BCR (Bird Conservation Region), and
+covariate, i.e. how the response variable changes over the range of the covariate.
+The function fits a smooth spline to bootstrap replicates, aggregates predictions,
+and visualizes the mean response with error bounds.
 }
 \examples{
 partial_dependenceNM(boot_pts_sorted, bcr = "can10", common_name = "Alder Flycatcher", covariate = "year")

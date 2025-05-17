@@ -2,24 +2,24 @@
 #'
 #' This function plots stacked bar charts.
 #'
-#' @param species A `character` specifying the species to filter by. The default is `"all"`, which includes all species in the dataset.
+#' @param species A \code{character} specifying the species to filter by. The default is \code{"all"}, which includes all species in the dataset.
 #'
-#' @param bcr A `character` specifying the Bird Conservation Regions (BCRs) to filter by. The default is `"all"`, which includes all BCRs in the dataset.
+#' @param bcr A \code{character} specifying the Bird Conservation Regions (BCRs) to filter by. The default is \code{"all"}, which includes all BCRs in the dataset.
 #'
-#' @param groups A `character` of two grouping variables for summarising covariate importance.
+#' @param groups A \code{character} of two grouping variables for summarising covariate importance.
 #' The first group element is plotted on the x-axis as bins each containing a stacked bar,
 #' while the second group element is shown by fill colours in the stacked bars.
 #' Please see the examples below for a visualization.
 #'
-#' @param version A `character`. Defaults to `"v5"`. Loads BAM's covariate importance data,
-#' a `data.frame` containing covariate importance values, with mean covariate importance as
-#' rows and columns `bcr`, `species`, `var_class`, `n_boot`, `mean_rel_inf`, and `sd_rel_inf`.
-#' `"v4"` is also possible but not fully supported for all functions in the first release of this package.
+#' @param version A \code{character}. Defaults to \code{"v5"}. Loads BAM's covariate importance data,
+#' a \code{data.frame} containing covariate importance values, with mean covariate importance as
+#' rows and columns \code{bcr}, \code{species}, \code{var_clas}, \code{n_boot}, \code{mean_rel_inf}, and \code{sd_rel_inf}.
+#' \code{"v4"} is also possible but not fully supported for all functions in the first release of this package.
 #'
-#' @param plot A `logical` indicating whether to plot the results (`TRUE`) or return the processed data (`FALSE`).
+#' @param plot A \code{logical} indicating whether to plot the results (\code{TRUE}) or return the processed data (\code{FALSE}).
 #'
-#' @param colours A `character` vector of hex codes for the colours to use in the ggplot (optional).
-#' If `NULL`, default colours are used.
+#' @param colours A \code{character} vector of hex codes for the colours to use in the ggplot (optional).
+#' If \code{NULL}, default colours are used.
 #'
 #' @return A stacked bar chart.
 #'
@@ -31,7 +31,7 @@
 #'
 #' @examples
 #' # Compare covariate importance (binned by variable class) for four
-#' warbler species in BCR14
+#' # warbler species in BCR14
 #' warblers <- c("CAWA", "BAWW", "BTNW", "BLBW")
 #' stackedbarNM(species = warblers, bcr = "can14", groups = c("spp", "var_class"))
 #'
