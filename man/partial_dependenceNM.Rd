@@ -7,17 +7,17 @@
 partial_dependenceNM(data = boot_pts_sorted, bcr, common_name, covariate)
 }
 \arguments{
-\item{data}{A named list of `data.frames`, where each element contains bootstrap replicates for different combinations of BCRs, species, and covariates.
-The key for each element in the list is a combination of `bcr`, `common_name`, and `covariate` (e.g., `"12_BAOR_temp"`).}
+\item{data}{A named list of \code{data.frames}, where each element contains bootstrap replicates for different combinations of BCRs, species, and covariates.
+The key for each element in the list is a combination of \code{bcr}, \code{common_name}, and \code{covariate} (e.g., \code{"12_BAOR_temp"}).}
 
-\item{bcr}{A `character` or `numeric` specifying the Bird Conservation Region (BCR) for which the partial dependence plot is to be generated.}
+\item{bcr}{A \code{character} specifying the Bird Conservation Region (BCR) for which the partial dependence plot is to be generated.}
 
-\item{common_name}{A `character` specifying the common name of the species for which the partial dependence plot is to be generated.}
+\item{common_name}{A \code{character} specifying the species to generate a partial dependence plot for.}
 
-\item{covariate}{A `character` specifying the covariate (e.g., temperature, precipitation) whose effect is to be visualized in the partial dependence plot.}
+\item{covariate}{A \code{character} specifying the covariate (e.g., temperature, precipitation) whose effect is to be visualized in the partial dependence plot.}
 }
 \value{
-A `ggplot` object showing the partial dependence plot, including the mean response and an error ribbon representing the 95% confidence interval.
+A \code{ggplot} showing the partial dependence plot, including the mean response and an error ribbon representing the 95% confidence interval.
 If the specified combination of BCR, species, and covariate does not exist in the data, the function returns an error.
 }
 \description{
