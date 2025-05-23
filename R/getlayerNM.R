@@ -129,7 +129,7 @@ getlayerNM <- function(spList, version, destfile, crop_ext = NULL,  year = NULL,
   # Batch download function
   batch_download <- function(species_code, version, crop_ext, bcrNM = "mosaic") {
     cat(paste0("Downloading data for ", species_code, " from version ", version), "\n")
-    browser()
+
     if(inherits(crop_ext, "SpatVector") || inherits(crop_ext, "SpatRaster")){
       temp_file <- tempfile(fileext = ".tif")
       if(version == "v5"){
