@@ -86,8 +86,8 @@ head(forest_v5)
 Species-specific density maps are available at the national scale in version 4, while in version 5, they can be accessed at the BCR level. This functionality helps reduce overall download size. Since BCR names vary by version and country, the mapBCR function ensures the correct naming is used. Users can specify an extent and identify BCRs intersection the zone of interest. 
 
 ```{r bcr_list, fig.width=8, fig.height=6, echo = TRUE, results = 'markup', error = TRUE}
-aoi_sf <- vect(system.file("extdata", "vignette_poly_LAEA.shp", package = "BAMexploreR"))
-result <- mapBCR("v5_demo", ext=aoi_sf) 
+aoi_sf <- vect(system.file("extdata", "vignette_poly_5072.shp", package = "BAMexploreR"))
+result <- mapBCR("v5", ext=aoi_sf) 
 suppressWarnings(print(result$map))
 bcraoi_v5 <- result$subUnits
 print(bcraoi_v5)
@@ -102,17 +102,17 @@ Users can download density maps for species using the `getlayerNM` function. Use
 library(terra)
 
 # Check which species under a the COSEWIC act are available
-cosewic_spp <- sppList("v5_demo", "COSEWIC_Status")
+cosewic_spp <- sppList("v5", "COSEWIC_Status")
 print(cosewic_spp)
 
 # Identify BCR that intersect the area of interest
-aoi_sf <- vect(system.file("extdata", "vignette_poly_LAEA.shp", package = "BAMexploreR"))
-result <- mapBCR("v5_demo", ext=aoi_sf) 
+aoi_sf <- vect(system.file("extdata", "vignette_poly_5072.shp", package = "BAMexploreR"))
+result <- mapBCR("v5", ext=aoi_sf) 
 bcraoi_v5 <- result$subUnits
 
 
 # From the cosewic_spp list, download TEWA and VESP density maps for BCRs intersecting user AOI for the year 2010.
-result <- getlayerNM(c("TEWA", "VESP"), "v5_demo", destfile = tempdir(), ext= bcraoi_v5, year = "2010")
+result <- getlayerNM(c("TEWA", "VESP"), "v5", destfile = tempdir(), crop_ext= aoi_sf , year = "2010")
 plot(result$TEWA)
 ```
 

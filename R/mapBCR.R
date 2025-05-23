@@ -29,10 +29,10 @@ mapBCR <- function(version, ext) {
   # Need output path
   if (missing(ext)) {
     if(version == "v4" || version == "v4_demo" ){
-      ext <- terra::vect(system.file("extdata", "BAM_BCRNMv4_LAEA.shp", package = "BAMexploreR"))
+      ext <- terra::vect(system.file("extdata", "BAM_BCRNMv4_5072.shp", package = "BAMexploreR"))
       add_sf <- FALSE
     }else if (version == "v5" || version == "v5_demo" ){
-      ext <- terra::vect(system.file("extdata", "BAM_BCRNMv5_LAEA.shp", package = "BAMexploreR"))
+      ext <- terra::vect(system.file("extdata", "BAM_BCRNMv5_5072.shp", package = "BAMexploreR"))
       add_sf <- FALSE
     }else{
       stop("The version is not recognised by the function. BAM National Models are only available for v4 and v5.")
@@ -40,7 +40,7 @@ mapBCR <- function(version, ext) {
   }
 
   # Need SpatVector or SpatRaster and projection
-  if(!class(ext)[1] %in% c("SpatVector", "SpatRaster")){
+  if(!inherits(ext, "SpatVector") && !inherits(ext, "SpatRaster")){
     stop("You need to provide a SpatRast or a SpatVect")
   }else{
     if (nchar(terra::crs(ext)) == 0) {
@@ -48,12 +48,12 @@ mapBCR <- function(version, ext) {
     }
   }
 
-  if(version == "v4" || version == "v4_demo"){
-    base_bcr <- terra::vect(system.file("extdata", "BAM_BCRNMv4_LAEA.shp", package = "BAMexploreR"))
+  if(version == "v4"){
+    base_bcr <- terra::vect(system.file("extdata", "BAM_BCRNMv4_5072.shp", package = "BAMexploreR"))
     ncat <-16
-  }else if(version == "v5" || version == "v5_demo"){
-    base_bcr <- terra::vect(system.file("extdata", "BAM_BCRNMv5_LAEA.shp", package = "BAMexploreR"))
-    ncat <-32
+  }else if(version == "v5"){
+    base_bcr <- terra::vect(system.file("extdata", "BAM_BCRNMv5_5072.shp", package = "BAMexploreR"))
+    ncat <-33
   }else{
     stop("Model version doesn't exist.")
   }
