@@ -39,7 +39,7 @@ Collate:
     'getlayerNM.R'
     'mapBCR.R'
     'interactionsNM.R'
-    'occurrenceNM'
+    'occurrenceNM.R'
     'partial_dependenceNM.R'
     'plot_importanceNM.R'
     'pop_sizeNM.R'
