@@ -63,4 +63,3 @@ guild_opt <- c("COSEWIC_Status",
                "Long_Distance_Migrants")
 
 use_data(guild_opt, internal = FALSE, overwrite = TRUE)
-
