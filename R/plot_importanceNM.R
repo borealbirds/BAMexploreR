@@ -21,10 +21,10 @@
 #' @param colours A \code{character} vector of hex codes for the colours to use in the ggplot (optional).
 #' If \code{NULL}, default colours are used.
 #'
-#' @return A ggplot displaying percent covariate importance by variable class, grouped by the `group` argument.
+#' @return A ggplot displaying percent covariate importance by variable class, grouped by the \code{group} argument.
 #' Percent importance is used to allow comparisions across groups that have
 #' differing total covariate importance.
-#' If `plot = FALSE` the processed data is returned as a `data.frame`.
+#' If \code{plot = FALSE} the processed data is returned as a \code{data.frame}.
 #'
 #' @importFrom dplyr group_by filter summarise left_join mutate
 #' @importFrom rlang syms
