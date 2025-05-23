@@ -25,11 +25,11 @@
 #' @export
 #' @rdname getlayerNM
 #' @examples
-#' bird <- getlayerNM("BAOR", "v4", tempfile())
+#' bird <- getlayerNM("TEWA", "v4", tempfile())
 #'
-#' bird <- getlayerNM("BAOR", "v4", destfile = tempdir())
+#' bird <- getlayerNM("TEWA", "v4", destfile = tempdir())
 #'
-#' bird <- getlayerNM("BAOR", "v4", destfile = ".", crop_ext = NULL)
+#' bird <- getlayerNM("TEWA", "v4", destfile = ".", crop_ext = NULL)
 #'
 #'
 getlayerNM <- function(spList, version, destfile, crop_ext = NULL,  year = NULL, bcrNM= "mosaic") {
@@ -143,6 +143,7 @@ getlayerNM <- function(spList, version, destfile, crop_ext = NULL,  year = NULL,
       }
       writeBin(content(GET(file_url), "raw"), temp_file)
       tiff_data <- rast(temp_file)
+      tiff_data <- readAll(tiff_data)
 
       if(!terra::same.crs(tiff_data, "EPSG:5072")) {
         tiff_data <- terra::project(tiff_data, "EPSG:5072")
@@ -167,8 +168,8 @@ getlayerNM <- function(spList, version, destfile, crop_ext = NULL,  year = NULL,
       outList <- c(outList, setNames(list(tiff_data), species_code))
 
       # Delete the temporary file
-      file.remove(temp_file)
-      rm(tiff_data)
+      #file.remove(temp_file)
+      #rm(tiff_data)
       return(outList)
     }else if(is.null(crop_ext)){
       if(version == "v4"){
@@ -194,8 +195,8 @@ getlayerNM <- function(spList, version, destfile, crop_ext = NULL,  year = NULL,
 
         # Store result and clean up
         outList[[species_code]] <- tiff_data
-        file.remove(temp_file)
-        rm(tiff_data)
+        #file.remove(temp_file)
+        #rm(tiff_data)
       }else if (version == "v5"){
         if(length(bcrNM)>1 && !"mosaic" %in% bcrNM){
           file_name <- paste0(species_code, "_mosaic_", year, ".tiff")
@@ -226,8 +227,8 @@ getlayerNM <- function(spList, version, destfile, crop_ext = NULL,  year = NULL,
 
         # Store result and clean up
         outList[[species_code]] <- tiff_data
-        file.remove(temp_file)
-        rm(tiff_data)
+        #file.remove(temp_file)
+        #rm(tiff_data)
       }
       return(outList)
     }
@@ -238,6 +239,10 @@ getlayerNM <- function(spList, version, destfile, crop_ext = NULL,  year = NULL,
     outList <- batch_download(s, version, crop_ext, bcrNM)
   }
 
+  temp_file <- tempfile(fileext = ".tif")
+  on.exit({
+    if (file.exists(temp_file)) file.remove(temp_file)
+  })
   # Return the results as a list
   return(outList)
 
