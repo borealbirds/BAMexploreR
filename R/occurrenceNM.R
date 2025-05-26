@@ -41,9 +41,9 @@
 #'
 #'@export
 #'@examples
-#'# alder flycatcher, BCR10
-#' raster <- terra::rast(x="G:/Shared drives/BAM_NationalModels4/NationalModels4.0/May2020/pred250-ALFL-BCR_10-boot-1.tif")
-#'
+#' # Tennessee Warbler
+#' tewa <- getlayerNM("TEWA", "v4", destfile = tempdir())
+#' occurrenceNM(tewa$TEWA)
 
 occurrenceNM <- function(raster, quantile=NULL, plot=TRUE){
 
