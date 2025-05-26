@@ -92,14 +92,17 @@ occurrenceNM <- function(raster, quantile=NULL, plot=TRUE){
   # write the binary values into a raster object
   binary_raster <- terra::setValues(raster, pixels_binary)
 
-  # plot if asked for
+  # mask the original raster with above threshold values
+  threshold_raster <- terra::setValues(raster, ifelse(dpp >= optimum_threshold, dpp, 0))
+
+  # plot occurrence map
   if (plot==TRUE){
     terra::plot(binary_raster, main=paste("density threshold =", round(optimum_threshold, digits = 5)))
   }
 
   # estimate impact of thresholding on population estimate
   og_pop_size <- BAMexploreR::pop_sizeNM(raster) |> mutate(type = "no_threshold")
-  threshold_pop_size <- BAMexploreR::pop_sizeNM(binary_raster) |> mutate(type = "with_threshold")
+  threshold_pop_size <- BAMexploreR::pop_sizeNM(threshold_raster) |> mutate(type = "with_threshold")
 
   pop_summary <- bind_rows(og_pop_size, threshold_pop_size)
 
