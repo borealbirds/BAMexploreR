@@ -40,7 +40,7 @@ the point on the Lorenz curve where the tangent has a slope of 1 and \code{p - L
 is maximized. See \code{?opticut::lorenz} for details.
 }
 \examples{
-# Tennessee Warbler
+# find Tennessee Warbler core habitat
 tewa <- getlayerNM("TEWA", "v4", destfile = tempdir())
 occurrenceNM(tewa$TEWA)
 }

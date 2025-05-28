@@ -20,7 +20,7 @@ Vector of bcr that overlay the study area.
 Retrieve list of BCR overlaid by the study area
 }
 \examples{
-subUnit<- mapBCR("v5")
+subUnit<- getBCR("v5")
 }
 \author{
 Melina Houle

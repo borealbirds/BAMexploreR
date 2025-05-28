@@ -28,7 +28,7 @@
 #'
 #' @importFrom dplyr group_by filter summarise left_join mutate
 #' @importFrom rlang syms
-#' @importFrom ggplot2 ggplot aes geom_errorbar geom_point labs theme theme_classic element_text
+#' @importFrom ggplot2 ggplot aes geom_errorbar geom_point labs theme theme_classic element_text position_dodge
 #' @importFrom tidyr drop_na
 #'
 #' @export
@@ -40,14 +40,14 @@
 #' plot_importanceNM(group = "spp", species = "TOSO", bcr = "all", plot=TRUE)
 #'
 #' # Example of plotting covariate importance for two warbler species from three BCRs, using custom colours:
-#'  plot_importanceNM(group = "spp", species = c("BAWW", "CAWA"),
-#'  bcr = c("can12", "can13", "can14"),  colours = c("#1f78b4", "#33a02c"))
+#' plot_importanceNM(group = "spp", species = c("BAWW", "CAWA"),
+#' bcr = c("can12", "can13", "can14"),  colours = c("#1f78b4", "#33a02c"))
 #'
 #'
 #'
 ##################################################################################
 
-plot_importanceNM <- function(species = "all", bcr = "all", group = NULL, version = "v5", plot = TRUE, colours = NULL) {
+plot_importanceNM <- function(species = "all", bcr = "all", group = "spp", version = "v5", plot = TRUE, colours = NULL) {
 
   # validate data version
   if (!version %in% c("v4", "v5")) {

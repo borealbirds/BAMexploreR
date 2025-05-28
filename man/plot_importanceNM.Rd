@@ -7,7 +7,7 @@
 plot_importanceNM(
   species = "all",
   bcr = "all",
-  group = NULL,
+  group = "spp",
   version = "v5",
   plot = TRUE,
   colours = NULL
@@ -49,8 +49,8 @@ by variable class, with options to group by BCR (Bird Conservation Region) or sp
 plot_importanceNM(group = "spp", species = "TOSO", bcr = "all", plot=TRUE)
 
 # Example of plotting covariate importance for two warbler species from three BCRs, using custom colours:
- plot_importanceNM(group = "spp", species = c("BAWW", "CAWA"),
- bcr = c("can12", "can13", "can14"),  colours = c("#1f78b4", "#33a02c"))
+plot_importanceNM(group = "spp", species = c("BAWW", "CAWA"),
+bcr = c("can12", "can13", "can14"),  colours = c("#1f78b4", "#33a02c"))
 
 
 

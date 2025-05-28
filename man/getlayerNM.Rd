@@ -29,7 +29,9 @@ Or downloading valid BCR polygons from list, type: mapBCR("v4") or mapBCR("v5")}
 \item{bcrNM}{character; vector representing the BCR according to model version. Default is "mosaic".}
 }
 \value{
-Invoked for its side-effect of downloading files to the \code{destfile/} directory.
+A list of `SpatRaster` objects. In addition to returning these objects,
+the function also downloads raster files to the directory specified by \code{destfile},
+as a side-effect.
 }
 \description{
 Download National Model species specific output map raster based on list of species
@@ -40,7 +42,6 @@ bird <- getlayerNM("TEWA", "v4", tempfile())
 bird <- getlayerNM("TEWA", "v4", destfile = tempdir())
 
 bird <- getlayerNM("TEWA", "v4", destfile = ".", crop_ext = NULL)
-
 
 }
 \author{
