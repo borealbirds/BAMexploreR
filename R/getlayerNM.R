@@ -96,7 +96,6 @@ getlayerNM <- function(spList, version, destfile, crop_ext = NULL,  year = NULL,
 
   if (!missing(destfile)) {
     setwd(destfile)
-    on.exit(setwd(cwd))
   }
 
   # Set url based on version
@@ -229,6 +228,7 @@ getlayerNM <- function(spList, version, destfile, crop_ext = NULL,  year = NULL,
     if (file.exists(temp_file)) file.remove(temp_file)
   })
   # Return the results as a list
+  setwd(cwd)
   return(outList)
 
 }
