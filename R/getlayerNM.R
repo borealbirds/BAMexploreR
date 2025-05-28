@@ -13,19 +13,11 @@
 #' @param year character; Specify the year for which the density map were generated. Only in v5.
 #'
 #' @param bcrNM character; vector representing the BCR according to model version. Default is "mosaic".
-
-#' @return Invoked for its side-effect of downloading files to the \code{destfile/} directory.
 #'
-#' @importFrom dplyr pull
-#' @importFrom magrittr %>%
-#' @importFrom httr GET content
-#' @importFrom tools file_ext file_path_sans_ext
-#' @importFrom stringr str_sub
-#' @importFrom terra vect rast project crop values
-#' @docType methods
-#' @author Melina Houle
-#' @export
-#' @rdname getlayerNM
+#' @return A list of `SpatRaster` objects. In addition to returning these objects,
+#' the function also downloads raster files to the directory specified by \code{destfile},
+#' as a side-effect.
+#'
 #' @examples
 #' bird <- getlayerNM("TEWA", "v4", tempfile())
 #'
@@ -33,13 +25,21 @@
 #'
 #' bird <- getlayerNM("TEWA", "v4", destfile = ".", crop_ext = NULL)
 #'
+#' @author Melina Houle
+#' @docType methods
+#' @rdname getlayerNM
+#' @export
+#'
+#' @importFrom dplyr pull
+#' @importFrom magrittr %>%
+#' @importFrom httr GET content
+#' @importFrom tools file_ext file_path_sans_ext
+#' @importFrom stringr str_sub
+#' @importFrom terra vect rast project crop values crs writeRaster same.crs
+#' @importFrom stats setNames
 #'
 getlayerNM <- function(spList, version, destfile, crop_ext = NULL,  year = NULL, bcrNM= "mosaic") {
   # Valid Model versions
-
-  if (getRversion() >= "2.15.1") {
-    utils::globalVariables(".")
-  }
 
   if (!version %in% c("v4", "v5")) {
     stop("Model version doesn't exist.")
@@ -158,8 +158,8 @@ getlayerNM <- function(spList, version, destfile, crop_ext = NULL,  year = NULL,
 
     #crop raster to extent
     crop_raster <- function(r, ext) {
-      r_proj <- project(ext, r)
-      crop(r, r_proj, snap = "near", mask = TRUE)
+      r_proj <- terra::project(ext, r)
+      terra::crop(r, r_proj, snap = "near", mask = TRUE)
     }
 
     # Get file info
@@ -206,7 +206,7 @@ getlayerNM <- function(spList, version, destfile, crop_ext = NULL,  year = NULL,
     if (!terra::same.crs(tiff_data, "EPSG:5072"))
       tiff_data <- terra::project(tiff_data, "EPSG:5072")
 
-    writeRaster(tiff_data, file.path(destfile, out_name), overwrite = TRUE)
+    terra::writeRaster(tiff_data, file.path(destfile, out_name), overwrite = TRUE)
     return(setNames(list(tiff_data), species_code))
   }
 

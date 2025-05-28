@@ -36,7 +36,6 @@
 #'@importFrom opticut lorenz quantile opticut
 #'@importFrom terra rast values
 #'
-#'
 #'@export
 #'@examples
 #' # Tennessee Warbler

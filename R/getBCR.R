@@ -14,7 +14,7 @@
 #' @rdname getBCR
 #' @export
 #' @examples
-#' subUnit<- mapBCR("v5")
+#' subUnit<- getBCR("v5")
 getBCR <- function(version, ext) {
   # Need output path
   if (missing(version)) {

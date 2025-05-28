@@ -24,7 +24,6 @@ Imports:
   gbm,
   tidyr,
   stats, 
-  splines, 
   tools,
   opticut,
   httr,
@@ -49,5 +48,6 @@ Collate:
     'pop_sizeNM.R'
     'stackedbarNM.R'
     'data-doc.R'
+    'utils.R'
 RoxygenNote: 7.3.2
 VignetteBuilder: knitr
