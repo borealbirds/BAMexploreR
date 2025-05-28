@@ -28,7 +28,7 @@
 #'
 #' @importFrom dplyr group_by filter summarise left_join mutate
 #' @importFrom rlang syms
-#' @importFrom ggplot2 ggplot aes geom_errorbar geom_point labs theme theme_classic element_text position_dodge
+#' @importFrom ggplot2 ggplot aes geom_errorbar geom_point labs theme theme_classic element_text position_dodge scale_colour_manual
 #' @importFrom tidyr drop_na
 #'
 #' @export
