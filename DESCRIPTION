@@ -27,7 +27,8 @@ Imports:
   tools,
   opticut,
   httr,
-  magrittr
+  magrittr,
+  opticut
 Suggests:
   knitr,
   rmarkdown,
