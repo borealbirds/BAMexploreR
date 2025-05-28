@@ -19,7 +19,6 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(BAMexploreR)
 devtools::load_all()
-library(googledrive)
 library(tmap)
 ```
 

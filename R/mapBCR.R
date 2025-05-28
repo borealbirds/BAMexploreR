@@ -5,7 +5,7 @@
 #'        National Model has its url access provided within the package.
 #' @param ext SpatVector, SpatExtent, or SpatRaster used to define the extent for the cropping.
 #'
-#' @return List containing vector of bcr that overlay the study area and a map illustrating the overlap.
+#' @return Map illustrating the BCR and overlap extent if provided.
 #'
 #' @import tmap
 #' @importFrom terra vect crs project
@@ -19,7 +19,6 @@
 #' @examples
 #' subUnit<- mapBCR("v5")
 mapBCR <- function(version, ext) {
-  add_sf <- TRUE
   tmap::tmap_mode("plot")
   # Need output path
   if (missing(version)) {
@@ -30,10 +29,8 @@ mapBCR <- function(version, ext) {
   if (missing(ext)) {
     if(version == "v4" || version == "v4_demo" ){
       ext <- terra::vect(system.file("extdata", "BAM_BCRNMv4_5072.shp", package = "BAMexploreR"))
-      add_sf <- FALSE
     }else if (version == "v5" || version == "v5_demo" ){
       ext <- terra::vect(system.file("extdata", "BAM_BCRNMv5_5072.shp", package = "BAMexploreR"))
-      add_sf <- FALSE
     }else{
       stop("The version is not recognised by the function. BAM National Models are only available for v4 and v5.")
     }
@@ -74,7 +71,7 @@ mapBCR <- function(version, ext) {
   user_sf <- sf::st_as_sf(ext)
 
   # Find intersections
-  if(add_sf){
+  if(!missing(ext)){
     intersected <- sf::st_intersects(base_sf, user_sf, sparse = FALSE)
     intersected_subUnits <- base_sf$subunit_ui[apply(intersected, 1, any)]
   }else{
@@ -98,7 +95,7 @@ mapBCR <- function(version, ext) {
 
       tmap::tm_layout(legend.outside = TRUE, legend.is.portrait = FALSE, legend.stack = "horizontal")
 
-  if(add_sf){
+  if(!missing(ext)){
     tmap <- tmap +
       tmap::tm_shape(user_sf) +
       tmap::tm_polygons(fill = NA, fill_alpha = 0, col = "red", col_alpha = 1, lwd = 2, fill.legend = NULL) +
@@ -107,5 +104,5 @@ mapBCR <- function(version, ext) {
   }
 
   # Return the results as a list
-  return(list(subUnits = intersected_subUnits, map = tmap))
+  return(tmap)
 }

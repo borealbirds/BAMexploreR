@@ -24,8 +24,6 @@
 #'
 #'@param plot Default is \code{TRUE} for visualizing occurrence patterns.
 #'
-#'@param
-#'
 #' @return A list with:
 #' \describe{
 #'   \item{raster}{A \code{SpatRaster} with binary presence (1) / absence (0) values.}

@@ -5,7 +5,14 @@
 \alias{getlayerNM}
 \title{Download National Model species specific output map raster based on list of species}
 \usage{
-getlayerNM(spList, version, destfile, ext = NULL, year = NULL)
+getlayerNM(
+  spList,
+  version,
+  destfile,
+  crop_ext = NULL,
+  year = NULL,
+  bcrNM = "mosaic"
+)
 }
 \arguments{
 \item{spList}{character. A vector of species to be downloaded.}
@@ -14,10 +21,12 @@ getlayerNM(spList, version, destfile, ext = NULL, year = NULL)
 
 \item{destfile}{character. Indicate output path where the downloaded file is saved.}
 
-\item{ext}{SpatVector, SpatExtent, or SpatRaster used to define the extent for the cropping.
+\item{crop_ext}{SpatVector or SpatRaster used to define the extent for the cropping.
 Or downloading valid BCR polygons from list, type: mapBCR("v4") or mapBCR("v5")}
 
 \item{year}{character; Specify the year for which the density map were generated. Only in v5.}
+
+\item{bcrNM}{character; vector representing the BCR according to model version. Default is "mosaic".}
 }
 \value{
 Invoked for its side-effect of downloading files to the \code{destfile/} directory.
@@ -26,11 +35,11 @@ Invoked for its side-effect of downloading files to the \code{destfile/} directo
 Download National Model species specific output map raster based on list of species
 }
 \examples{
-bird <- getlayerNM("BAOR", "v4", "mean",  tempfile())
+bird <- getlayerNM("TEWA", "v4", tempfile())
 
-bird <- getlayerNM("BAOR", "v4", destfile = tempdir(), layer = "mean", crop = FALSE)
+bird <- getlayerNM("TEWA", "v4", destfile = tempdir())
 
-bird <- getlayerNM("BAOR", "v4", destfile = ".", "mean", crop = FALSE, ext = NULL)
+bird <- getlayerNM("TEWA", "v4", destfile = ".", crop_ext = NULL)
 
 
 }

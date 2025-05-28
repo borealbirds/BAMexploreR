@@ -25,7 +25,10 @@ Imports:
   tidyr,
   stats, 
   splines, 
-  tools
+  tools,
+  opticut,
+  httr,
+  magrittr
 Suggests:
   knitr,
   rmarkdown,
@@ -37,6 +40,7 @@ LazyData: true
 Collate: 
     'sppList.R'
     'getlayerNM.R'
+    'getBCR.R'
     'mapBCR.R'
     'interactionsNM.R'
     'occurrenceNM.R'

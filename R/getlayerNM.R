@@ -17,6 +17,8 @@
 #' @return Invoked for its side-effect of downloading files to the \code{destfile/} directory.
 #'
 #' @importFrom dplyr pull
+#' @importFrom magrittr %>%
+#' @importFrom httr GET content
 #' @importFrom tools file_ext file_path_sans_ext
 #' @importFrom stringr str_sub
 #' @importFrom terra vect rast project crop values
@@ -34,6 +36,10 @@
 #'
 getlayerNM <- function(spList, version, destfile, crop_ext = NULL,  year = NULL, bcrNM= "mosaic") {
   # Valid Model versions
+
+  if (getRversion() >= "2.15.1") {
+    utils::globalVariables(".")
+  }
 
   if (!version %in% c("v4", "v5")) {
     stop("Model version doesn't exist.")
@@ -126,105 +132,6 @@ getlayerNM <- function(spList, version, destfile, crop_ext = NULL,  year = NULL,
   spList <- spList[spList %in% spv]
 
   outList <- list()
-  # Batch download function
-  batch_download2 <- function(species_code, version, year, crop_ext, bcrNM = "mosaic") {
-    cat(paste0("Downloading data for ", species_code, " from version ", version), "\n")
-    #browser()
-    if(inherits(crop_ext, "SpatVector") || inherits(crop_ext, "SpatRaster")){
-      temp_file <- tempfile(fileext = ".tif")
-      if(version == "v5"){
-        region <- "mosaic"
-        # Create a temporary file
-        file_name <- paste0(species_code, "_", region, "_", year, ".tif")
-        file_url <- file.path(url, species_code, region, file_name)
-      } else if(version == "v4"){
-        file_name <- paste0("pred-", species_code, "-CAN-Mean.tif")
-        file_url <- file.path(url, file_name)
-      }
-      writeBin(content(GET(file_url), "raw"), temp_file)
-      tiff_data <- rast(temp_file)
-      #tiff_data <- readAll(tiff_data)
-
-      if(!terra::same.crs(tiff_data, "EPSG:5072")) {
-        tiff_data <- terra::project(tiff_data, "EPSG:5072")
-      }
-
-      if(inherits(crop_ext, "SpatVector")){
-        tiff_data <- tiff_data %>%
-          crop(project(crop_ext, tiff_data), snap="near", mask=TRUE)
-        if(tools::file_ext(file_name) == "tif"){
-          out_name <- sub("(\\.tif)$", "_clip\\1", file_name)
-        }else{
-          out_name <- sub("(\\.tiff)$", "_clip\\1", file_name)
-        }
-      }else if(inherits(crop_ext, "SpatRaster")){
-        tiff_data <- tiff_data %>%
-          crop(project(crop_ext, tiff_data, align_only = TRUE), snap="near", mask=TRUE)
-        out_name <- sub("(\\.tif)$", "_clip\\1", file_name)
-      }else{
-        out_name <- paste0(species_code, "_", region, "_", year, ".tiff")
-      }
-    }else if("mosaic" %in% bcrNM){
-      if(version == "v4"){
-        # Create a temporary file
-        file_name <- paste0("pred-", species_code, "-CAN-Mean.tif")
-        file_url <- paste(url, file_name, sep= "/")
-        temp_file <- tempfile(fileext = ".tif")
-
-        writeBin(content(GET(file_url), "raw"), temp_file)
-        tiff_data <- rast(temp_file)
-
-      }else if (version == "v5"){
-        file_name <- paste0(species_code, "_mosaic_", year, ".tiff")
-        file_url <- paste(url, species_code, "mosaic", file_name, sep= "/")
-        writeBin(content(GET(file_url), "raw"), file.path(destfile, file_name))
-        tiff_data <- rast(file.path(destfile, file_name))
-      }
-
-    }else {
-     if(version == "v4"){
-       file_name <- paste0("pred-", species_code, "-CAN-Mean.tif")
-       file_url <- paste(url, file_name, sep= "/")
-       temp_file <- tempfile(fileext = ".tif")
-
-       writeBin(content(GET(file_url), "raw"), temp_file)
-       tiff_data <- rast(temp_file)
-       extent <- system.file("extdata", "BAM_BCRNMv4_5072.shp", package = "BAMexploreR")  %>%
-         vect()
-       extent <- extent[extent$subunit_ui %in% bcrNM, ]
-       tiff_data <- tiff_data %>%
-         crop(project(extent, tiff_data), snap="near", mask=TRUE)
-
-       file_name <- paste0("pred-", species_code, "-CAN-Mean_BCRclip.tif")
-
-     }else{ #version 5
-       if(length(bcrNM)>1){
-         file_name <- paste0(species_code, "_mosaic_", year, "_BCRclip.tif")
-         file_url <- paste(url, species_code, "mosaic", file_name, sep= "/")
-         writeBin(content(GET(file_url), "raw"), file.path(destfile, file_name))
-         tiff_data <- rast(file.path(destfile, file_name))
-         extent <- system.file("extdata", "BAM_BCRNMv5_5072.shp", package = "BAMexploreR")  %>%
-          vect()
-         extent <- extent[extent$subunit_ui %in% bcrNM, ]
-         tiff_data <- tiff_data %>%
-          crop(project(extent, tiff_data), snap="near", mask=TRUE)
-       }else if(length(bcrNM)==1){
-         file_name <- paste0(species_code, "_", bcrNM, "_", year, ".tif")
-         file_url <- paste(url, species_code, bcrNM, file_name, sep= "/")
-         writeBin(content(GET(file_url), "raw"), file.path(destfile, file_name))
-         tiff_data <- rast(file.path(destfile, file_name))
-       }
-     }
-    }
-
-    out_name <- paste0(tools::file_path_sans_ext(file_name), ".tif")
-    if(!terra::same.crs(tiff_data, "EPSG:5072")) {
-      tiff_data <- terra::project(tiff_data, "EPSG:5072")
-    }
-    writeRaster(tiff_data, file.path(destfile, out_name), overwrite=TRUE)
-    outList <- c(outList, setNames(list(tiff_data), species_code))
-    return(outList)
-  }
 
   batch_download <- function(species_code, version, year, crop_ext, bcrNM = "mosaic") {
     message("Downloading data for ", species_code, " from version ", version)
@@ -306,10 +213,12 @@ getlayerNM <- function(spList, version, destfile, crop_ext = NULL,  year = NULL,
   # Perform batch download for species in the list
   for (s in spList) {
    if(version == "v4"){
-     outList <- batch_download(species = s, year = y, version = version, crop_ext, bcrNM)
+     outspp <- batch_download(species = s, year = y, version = version, crop_ext, bcrNM)
+     outList <- append(outList, outspp)
    }else{
       for (y in year) {#v5
-       outList <- batch_download(species = s, year = y, version = version, crop_ext, bcrNM)
+        outspp <- batch_download(species = s, year = y, version = version, crop_ext, bcrNM)
+        outList <- append(outList, outspp)
       }
    }
   }

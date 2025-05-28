@@ -10,7 +10,6 @@
 #' @return A \code{tibble} with four columns: \code{population_size}, \code{mean_density} (per pixel), \code{sd_density}, \code{n_cells}
 #'
 #'
-#' @importFrom googledrive drive_ls drive_get drive_download drive_auth
 #' @importFrom tibble tibble
 #'
 #' @export

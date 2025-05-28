@@ -18,7 +18,7 @@ but with an adjustment for converting pixel values from males/ha to males/pixel.
 It also provides a basic summary of the input raster.
 }
 \examples{
-googledrive::drive_auth(scopes = "https://www.googleapis.com/auth/drive.readonly")
-root <- "G:/Shared drives/BAM_NationalModels5"
-raster <- terra::rast(x="G:/Shared drives/BAM_NationalModels4/NationalModels4.0/Feb2020/artifacts/CAWA/pred-CAWA-CAN-boot-7.tif")
+# download raster for Tennessee Warbler
+tewa <- getlayerNM("TEWA", "v4", destfile = tempdir())
+pop_sizeNM(tewa$TEWA) # 124 million
 }

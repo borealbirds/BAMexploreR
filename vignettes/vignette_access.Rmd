@@ -54,16 +54,13 @@ BAM National Density Model version 4 was generated within Canada boundary only u
 ```{r, fig.width=8, fig.height=6, message=FALSE, warning=FALSE}
 
 library(tmap)
-tmap_mode("plot")
+#tmap_mode("plot")
 
-mapBCRv4 <- mapBCR("v4") 
-mapBCRv4$map <- mapBCRv4$map + tmap::tm_layout(title = "BCR Mapping - Version 4", title.position = c("center", "top"))
-print(mapBCRv4$map) 
+BCRv4 <- getBCR("v4") 
 
-#Display available BCR for BAM NM version 5
-mapBCRv5<- mapBCR("v5")
-mapBCRv5$map <- mapBCRv5$map + tmap::tm_layout(title = "BCR Mapping - Version 5", title.position = c("center", "top"))
-print(mapBCRv5$map) 
+BCRv5<- getBCR("v5")
+#mapBCRv5$map <- mapBCRv5$map + tmap::tm_layout(title = "BCR Mapping - Version 5", title.position = c("center", "top"))
+#print(mapBCRv5$map) 
 
 ```
 
@@ -82,15 +79,19 @@ head(forest_v5)
 
 ```
 
-### Identify the zone of interest
+### Identify BCR intersecting the zone of interest
 Species-specific density maps are available at the national scale in version 4, while in version 5, they can be accessed at the BCR level. This functionality helps reduce overall download size. Since BCR names vary by version and country, the mapBCR function ensures the correct naming is used. Users can specify an extent and identify BCRs intersection the zone of interest. 
 
 ```{r bcr_list, fig.width=8, fig.height=6, echo = TRUE, results = 'markup', error = TRUE}
 aoi_sf <- vect(system.file("extdata", "vignette_poly_5072.shp", package = "BAMexploreR"))
-result <- mapBCR("v5", ext=aoi_sf) 
-suppressWarnings(print(result$map))
-bcraoi_v5 <- result$subUnits
-print(bcraoi_v5)
+
+# Extract BCR subunit from version 5 that intersect extent
+bcraoi_v5 <- getBCR("v5", ext=aoi_sf) 
+print(subUnit)
+
+# Map extent on BCR subunit
+map <- mapBCR("v5", ext=aoi_sf) + tmap::tm_layout(title = "BCR Mapping - Version 4", title.position = c("center", "top"))
+suppressWarnings(print(map)) + tmap::tm_layout(title = "BCR Mapping - Version 4", title.position = c("center", "top"))
 ```
 
 ### Download species specific density maps
@@ -101,18 +102,12 @@ Users can download density maps for species using the `getlayerNM` function. Use
 ```{r get_layer, fig.width=8, fig.height=6, echo = TRUE, results = 'markup', error = TRUE}
 library(terra)
 
-# Check which species under a the COSEWIC act are available
+# Check which species under a the COSEWIC Act are available
 cosewic_spp <- sppList("v5", "COSEWIC_Status")
 print(cosewic_spp)
 
-# Identify BCR that intersect the area of interest
-aoi_sf <- vect(system.file("extdata", "vignette_poly_5072.shp", package = "BAMexploreR"))
-result <- mapBCR("v5", ext=aoi_sf) 
-bcraoi_v5 <- result$subUnits
-
-
 # From the cosewic_spp list, download TEWA and VESP density maps for BCRs intersecting user AOI for the year 2010.
-result <- getlayerNM(c("TEWA", "VESP"), "v5", destfile = tempdir(), crop_ext= aoi_sf , year = "2010")
+result <- getlayerNM(cosewic_spp, "v5", destfile = tempdir(), year = "2010", bcrNM=bcraoi_v5)
 plot(result$TEWA)
 ```
 
