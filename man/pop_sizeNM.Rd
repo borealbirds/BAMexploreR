@@ -4,13 +4,13 @@
 \alias{pop_sizeNM}
 \title{Estimate population size from a density raster}
 \usage{
-pop_sizeNM(raster)
+pop_sizeNM(raster_list)
 }
 \arguments{
-\item{raster}{A \code{SpatRaster}. See \code{getlayerNM()} for accessing BAM's raster data.}
+\item{raster_list}{A list of \code{SpatRaster}s. See \code{getlayerNM()} for accessing BAM's raster data.}
 }
 \value{
-A \code{tibble} with four columns: \code{population_size}, \code{mean_density} (per pixel), \code{sd_density}, \code{n_cells}
+A \code{tibble} with five columns: \code{spp}, \code{population_size}, \code{mean_density} (per pixel), \code{sd_density}, \code{n_cells}
 }
 \description{
 This function is essentially a wrapper around \code{terra::values},
@@ -18,7 +18,7 @@ but with an adjustment for converting pixel values from males/ha to males/pixel.
 It also provides a basic summary of the input raster.
 }
 \examples{
-# download raster for Tennessee Warbler
-tewa <- getlayerNM("TEWA", "v4", destfile = tempdir())
-pop_sizeNM(tewa$TEWA) # 124 million
+# download rasters for Tennessee Warbler and Ovenbird
+rasters <- getlayerNM(c("TEWA", "OVEN"), "v4", destfile=tempdir())
+pop_sizeNM(rasters) # 111 million and 3.5 million, respectively
 }

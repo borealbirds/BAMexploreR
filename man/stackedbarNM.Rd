@@ -2,12 +2,12 @@
 % Please edit documentation in R/stackedbarNM.R
 \name{stackedbarNM}
 \alias{stackedbarNM}
-\title{This function plots stacked bar charts.}
+\title{Visualize Covariate Importance as Stacked Bar Charts}
 \usage{
 stackedbarNM(
   species = "all",
   bcr = "all",
-  groups = NULL,
+  groups = c("spp", "var_class"),
   version = "v5",
   plot = TRUE,
   colours = NULL
@@ -21,6 +21,7 @@ stackedbarNM(
 \item{groups}{A \code{character} of two grouping variables for summarising covariate importance.
 The first group element is plotted on the x-axis as bins each containing a stacked bar,
 while the second group element is shown by fill colours in the stacked bars.
+Valid strings are any two of: \code{"spp"} (species), \code{"bcr"} (BCR), \code{var}, or \code{var_class}.
 Please see the examples below for a visualization.}
 
 \item{version}{A \code{character}. Defaults to \code{"v5"}. Loads BAM's covariate importance data,
@@ -37,9 +38,24 @@ If \code{NULL}, default colours are used.}
 A stacked bar chart.
 }
 \description{
-This function plots stacked bar charts.
+Creates stacked bar plots showing the proportion of model covariates importance
+in predicting bird abundance.
+}
+\details{
+Stacked bars can be grouped by species, variable class, or
+Bird Conservation Region (BCR). For example, grouping by species and variable class creates
+a plot where a stacked bar is created for each species, and each bar is split into the proportion
+of covariate importance that each of nine variable classes contributed, pooled across the specified BCRs.
 }
 \examples{
+# Compare covariate importance (binned by variable class) for all species in all BCRs
+stackedbarNM(species = "all", bcr = "all",  groups = c("spp", "var_class"))
+
+# Compare covariate importance (binned by variable class) in the Prairies (BCRs 11, 6-1, 6-0)
+# to the Pacific Coast across (BCR 5) all species
+prairies_to_coast <- c("can11", "can60", "can61", "can5")
+stackedbarNM(species = "all", bcr = prairies_to_coast, groups=c("bcr", "var_class"))
+
 # Compare covariate importance (binned by variable class) for four
 # warbler species in BCR14
 warblers <- c("CAWA", "BAWW", "BTNW", "BLBW")

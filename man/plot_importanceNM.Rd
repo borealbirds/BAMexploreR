@@ -38,7 +38,7 @@ differing total covariate importance.
 If \code{plot = FALSE} the processed data is returned as a \code{data.frame}.
 }
 \description{
-This function plots mean relative covariate importance (with bootstrap variation)
+Plots mean relative covariate importance (with bootstrap variation)
 by variable class, with options to group by BCR (Bird Conservation Region) or species.
 }
 \examples{
