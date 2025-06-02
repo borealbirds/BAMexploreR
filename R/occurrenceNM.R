@@ -41,7 +41,7 @@
 #' input density raster re-coded to presence (1) / absence (0) values.
 #'
 #'
-#'@importFrom opticut lorenz quantile.lorenz
+#'@importFrom opticut lorenz iquantile
 #'@importFrom terra rast values
 #'
 #'@export
@@ -79,7 +79,7 @@ occurrenceNM <- function(raster, quantile=NULL, plot=TRUE){
       # `L` for ordered cumulative abundance quantiles (versus non-cumulative)
       # `threshold` partitions "1-threshold" proportion of values as presence (1) and the rest ("threshold") as absence (0)
       # e.g. for `threshold=0.8` the densest 20% of values are assigned as presence (1) and the rest as absence (0)
-      optimum_threshold <- opticut::quantile.lorenz(lorenz_fit, probs = quantile, type = "L")
+      optimum_threshold <- iquantile(lorenz_fit, probs = quantile, type = "L")
       names(optimum_threshold) <- "optimum threshold"
 
     } # finish finding optimum threshold
