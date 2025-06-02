@@ -1,6 +1,10 @@
 ##################################################################################
+#' Visualize Covariate Importance as Stacked Bar Charts
 #'
-#' This function plots stacked bar charts.
+#' Creates stacked bar plots showing the proportion of model covariates importance
+#' in predicting bird abundance.
+#'
+#'
 #'
 #' @param species A \code{character} specifying the species to filter by. The default is \code{"all"}, which includes all species in the dataset.
 #'
@@ -22,6 +26,12 @@
 #' If \code{NULL}, default colours are used.
 #'
 #' @return A stacked bar chart.
+#'
+#' @details Stacked bars can be grouped by species, variable class, or
+#' Bird Conservation Region (BCR). For example, grouping by species and variable class creates
+#' a plot where a stacked bar is created for each species, and each bar is split into the proportion
+#' of covariate importance that each variable class contributed pooled across the specified BCRs.
+#'
 #'
 #' @importFrom rlang syms
 #' @importFrom dplyr filter summarise group_by left_join mutate

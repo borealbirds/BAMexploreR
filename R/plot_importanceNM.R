@@ -1,7 +1,7 @@
 ##################################################################################
 #' Plot Side-by-Side Variation in Covariate Importance by Variable Class
 #'
-#' This function plots mean relative covariate importance (with bootstrap variation)
+#' Plots mean relative covariate importance (with bootstrap variation)
 #' by variable class, with options to group by BCR (Bird Conservation Region) or species.
 #'
 #' @param species A \code{character} specifying the species to filter by. The default is \code{"all"}, which includes all species in the dataset.
