@@ -1,7 +1,7 @@
 ##################################################################################
 #' Plot Side-by-Side Variation in Covariate Importance by Variable Class
 #'
-#' Plots mean relative covariate importance (with bootstrap variation)
+#' @description Plot mean relative covariate importance (with bootstrap variation)
 #' by variable class, with options to group by BCR (Bird Conservation Region) or species.
 #'
 #' @param species A \code{character} specifying the species to filter by. The default is \code{"all"}, which includes all species in the dataset.
@@ -25,6 +25,8 @@
 #' Percent importance is used to allow comparisions across groups that have
 #' differing total covariate importance.
 #' If \code{plot = FALSE} the processed data is returned as a \code{data.frame}.
+#'
+#' @details
 #'
 #' @importFrom dplyr group_by filter summarise left_join mutate
 #' @importFrom rlang syms

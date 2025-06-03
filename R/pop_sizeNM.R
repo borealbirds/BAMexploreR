@@ -1,7 +1,7 @@
 ##################################################################################
 #' Estimate population size from a density raster
 #'
-#' This function is essentially a wrapper around \code{terra::values},
+#' @description This function is essentially a wrapper around \code{terra::values},
 #' but with an adjustment for converting pixel values from males/ha to males/pixel.
 #' It also provides a basic summary of the input raster.
 #'
@@ -18,6 +18,8 @@
 #' @examples
 #' # download rasters for Tennessee Warbler and Ovenbird
 #' rasters <- getlayerNM(c("TEWA", "OVEN"), "v4", destfile=tempdir())
+#'
+#' # get summaries of population size
 #' pop_sizeNM(rasters) # 111 million and 3.5 million, respectively
 
 pop_sizeNM <- function(raster_list){
