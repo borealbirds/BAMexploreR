@@ -33,10 +33,12 @@
 #' proportion of area (sorted by bird density, \code{p}) and the y-axis represents the cumulative
 #' proportion of the raster's total population (\code{L}). If bird density were uniform across
 #' space, the plot would follow a line with a slope of 1. In reality birds are not distributed evenly
-#' on the landscape. \code{lorenz()} estimates a
-#' pixel density threshold separating "presence" from "absence". The threshold is defined as
-#' the point on the Lorenz curve where the tangent has a slope of 1 and \code{p - L}
+#' on the landscape. \code{lorenz()} estimates a pixel density threshold separating "presence" from "absence".
+#' The threshold is defined as the point on the Lorenz curve where the tangent has a slope of 1 and \code{p - L}
 #' is maximized. See \code{?opticut::lorenz} for details.
+#' Note that in some cases, the Lorenz-derived threshold is similar to the mean density, however, they
+#' estimate different ecological quantities and are not inherently equal.
+#'
 #'
 #'
 #'
