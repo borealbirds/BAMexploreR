@@ -20,5 +20,7 @@ It also provides a basic summary of the input raster.
 \examples{
 # download rasters for Tennessee Warbler and Ovenbird
 rasters <- getlayerNM(c("TEWA", "OVEN"), "v4", destfile=tempdir())
+
+# get summaries of population size
 pop_sizeNM(rasters) # 111 million and 3.5 million, respectively
 }

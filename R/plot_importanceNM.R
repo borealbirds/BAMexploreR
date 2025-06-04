@@ -26,7 +26,8 @@
 #' differing total covariate importance.
 #' If \code{plot = FALSE} the processed data is returned as a \code{data.frame}.
 #'
-#' @details
+#' @details Bootstrap variation (per species x BCR) is propagated by
+#' taking the root sum square of standard deviation values.
 #'
 #' @importFrom dplyr group_by filter summarise left_join mutate
 #' @importFrom rlang syms

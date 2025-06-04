@@ -38,8 +38,12 @@ differing total covariate importance.
 If \code{plot = FALSE} the processed data is returned as a \code{data.frame}.
 }
 \description{
-Plots mean relative covariate importance (with bootstrap variation)
+Plot mean relative covariate importance (with bootstrap variation)
 by variable class, with options to group by BCR (Bird Conservation Region) or species.
+}
+\details{
+Bootstrap variation (per species x BCR) is propagated by
+taking the root sum square of standard deviation values.
 }
 \examples{
 
