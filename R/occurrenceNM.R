@@ -13,7 +13,7 @@
 #' @param quantile Default is \code{"by_lorenz"}, and the  optimum threshold is estimated via
 #' \code{opticut::lorenz()} as the pixel density when the slope of the tangent of the Lorenz function is 1.
 #' If a custom threshold is preferred, set this argument using a \code{numeric} between 0 and 1.
-#' Indicates a cumulative proportion of pixels, above which all raster pixel values are assigned as "presence".
+#' This value indicates a cumulative proportion of pixels, above which all raster pixel values are assigned as "presence".
 #' Raster pixel values below the quantile are assigned "absent". E.g. By setting \code{quantile=0.8},
 #' the threshold density for separating presence versus absence is whatever pixel value accumulates 80% of the total
 #' pixels from the raster.
@@ -50,11 +50,21 @@
 #' @export
 #' @examples
 #'
-#' # download rasters for Tennessee Warbler and Ovenbird
+#' # download v4 rasters for Tennessee Warbler and Ovenbird
 #' rasters <- getlayerNM(c("TEWA", "OVEN"), "v4", destfile=tempdir())
 #'
 #' # visualize core habitat
 #' occurrenceNM(rasters)
+#'
+#' # set custom threshold and compare core habitat
+#' occurrenceNM(rasters, quantile=0.8)
+#'
+#' # analyse core habitat in a custom area, using v5 predictions for Tennessee Warbler
+#' aoi_sf <- vect(system.file("extdata", "vignette_poly_5072.shp", package = "BAMexploreR"))
+#' rasterv5 <- getlayerNM("TEWA", "v5",  crop_ext = aoi_sf, destfile = tempdir(), year = "2020")
+#' occurrenceNM(rasterv5)
+#'
+#'
 
 occurrenceNM <- function(raster_list, quantile="by_lorenz", plot=TRUE){
 
@@ -62,8 +72,21 @@ occurrenceNM <- function(raster_list, quantile="by_lorenz", plot=TRUE){
   stopifnot(is.list(raster_list))
   stopifnot(all(purrr::map_lgl(raster_list, ~ inherits(.x, "SpatRaster"))))
 
+  # extract the mean if the SpatRaster has a "mean" layer
+  extract_mean_layer <- function(raster_i){
+
+    if ("mean" %in% names(raster_i)){
+
+       return(raster_i[["mean"]])
+
+    } else return(raster_i)
+  }
+
+  raster_list <- lapply(raster_list, extract_mean_layer)
+
+
   # define thresholding function for a single raster
-  threshold_estimate <- function(raster_i, spp){
+  estimate_threshold <- function(raster_i, spp){
 
     # retrieve density per pixel, retain this vector with NAs to preserve pixel positions
     dpp <- terra::values(raster_i, na.rm=FALSE)
@@ -74,25 +97,26 @@ occurrenceNM <- function(raster_list, quantile="by_lorenz", plot=TRUE){
     # estimate threshold from a Lorenz curve
     lorenz_fit <- opticut::lorenz(dpp_no_nas)
 
-      if (quantile == "by_lorenz"){
+    # apply threshold
+    if (quantile == "by_lorenz"){
 
-        # locate the pixel value where the tangent approaches 1:1
-        t_pixel <- summary(lorenz_fit)["t"]
+      # locate the pixel value where the tangent approaches 1:1
+      t_pixel <- summary(lorenz_fit)["t"]
 
-        # "x" is the bird density when "t" approaches 1:1
-        # ("p" is the proportion of pixels, "L" is the proportion of birds)
-        optimum_threshold <- lorenz_fit[t_pixel, "x"]
-        names(optimum_threshold) <- "optimum threshold"
+      # "x" is bird density when "t_pixel" approaches 1:1
+      # ("p" is the proportion of pixels, "L" is the proportion of birds)
+      optimum_threshold <- lorenz_fit[t_pixel, "x"]
+      names(optimum_threshold) <- "optimum threshold"
 
-      } else {
+    } else {
 
-        # `L` for ordered cumulative abundance quantiles (versus non-cumulative)
-        # `threshold` partitions "1-threshold" proportion of values as presence (1) and the rest ("threshold") as absence (0)
-        # e.g. for `threshold=0.8` the densest 20% of values are assigned as presence (1) and the rest as absence (0)
-        optimum_threshold <- iquantile(lorenz_fit, probs = quantile, type = "L")
-        names(optimum_threshold) <- "optimum threshold"
+      # `L` for ordered cumulative abundance quantiles (versus non-cumulative)
+      # `threshold` partitions "1 minus threshold" proportion of values as presence (1) and the rest ("threshold") as absence (0)
+      # e.g. for `threshold=0.8` the densest 20% of values are assigned as presence (1) and the rest as absence (0)
+      optimum_threshold <- quantile(lorenz_fit, probs = quantile, type = "L")
+      names(optimum_threshold) <- "optimum threshold"
 
-    } # finish finding optimum threshold
+   } # finish finding optimum threshold
 
     # create binarized density raster based on the current threshold
     # note: need to preserve NA positions from the original raster to
@@ -109,37 +133,47 @@ occurrenceNM <- function(raster_list, quantile="by_lorenz", plot=TRUE){
     # mask the original raster with above threshold values
     threshold_raster <- terra::setValues(raster_i, ifelse(dpp >= optimum_threshold, dpp, 0))
 
+    # count occurrence pixels before and after thresholding
+    n_pixels <- terra::global(raster_i >= 0, "sum", na.rm = TRUE)[1,1]
+    n_core_pixels <- terra::global(binary_raster == 1, "sum", na.rm = TRUE)[1,1]
+
+    # get pixel area in square kilometers
+    pixel_area_km2 <- (terra::res(raster_i)[1] * terra::res(raster_i)[2]) / 1e6  # convert square meters to square km
+
+    # total area of core habitat in km2
+    og_area_km2 <- n_pixels * pixel_area_km2
+    core_area_km2 <- n_core_pixels * pixel_area_km2
+
+
     # plot occurrence map
     if (plot==TRUE){
-      terra::plot(binary_raster, main=paste("density threshold =", round(optimum_threshold, digits = 5)))
+      terra::plot(binary_raster, main=paste("density threshold =", round(optimum_threshold, digits = 4), paste("\n", spp)))
     }
 
     return(list(occurrence_raster = binary_raster,
                 threshold_raster = threshold_raster,
-                threshold = optimum_threshold))
+                threshold = optimum_threshold,
+                og_area_km2 = og_area_km2,
+                core_area_km2 = core_area_km2))
 
   } # close thresholding function
 
 
   # apply threshold estimate to user's list of rasters
-  output_list <- purrr::imap(raster_list, threshold_estimate)
+  output_list <- purrr::imap(raster_list, estimate_threshold)
 
-  # extract output rasters for population estimatation
-  occurrence_rasters <- purrr::map(output_list, "occurrence_raster")
-  threshold_rasters <- purrr::map(output_list, "threshold_raster")
+  # extract other area data from list output
   thresholds <- purrr::map_dbl(output_list, "threshold")
+  og_area <- tibble(spp = names(output_list), type="no_threshold", area_km2=purrr::map_dbl(output_list, "og_area_km2"))
+  threshold_area <- tibble(spp = names(output_list), type="with_threshold", area_km2=purrr::map_dbl(output_list, "core_area_km2"))
 
-  # estimate population size
-  og_pop_size <- BAMexploreR::pop_sizeNM(raster_list) |> mutate(type = "no_threshold")
-  threshold_pop_size <- BAMexploreR::pop_sizeNM(threshold_rasters) |> mutate(type = "with_threshold")
-
-  pop_summary <-
-    bind_rows(og_pop_size, threshold_pop_size) |>
+  occurrence_summary <-
+    bind_rows(og_area, threshold_area) |>
     arrange(spp)
 
   return(list(
-    occurrence_rasters = occurrence_rasters,
-    population_summary = pop_summary))
+    occurrence_rasters = purrr::map(output_list, "occurrence_raster"),
+    occurrence_summary = occurrence_summary))
 
 }
 

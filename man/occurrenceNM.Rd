@@ -12,14 +12,12 @@ occurrenceNM(raster_list, quantile = "by_lorenz", plot = TRUE)
 \item{quantile}{Default is \code{"by_lorenz"}, and the  optimum threshold is estimated via
 \code{opticut::lorenz()} as the pixel density when the slope of the tangent of the Lorenz function is 1.
 If a custom threshold is preferred, set this argument using a \code{numeric} between 0 and 1.
-Indicates a cumulative proportion of pixels, above which all raster pixel values are assigned as "presence".
+This value indicates a cumulative proportion of pixels, above which all raster pixel values are assigned as "presence".
 Raster pixel values below the quantile are assigned "absent". E.g. By setting \code{quantile=0.8},
 the threshold density for separating presence versus absence is whatever pixel value accumulates 80% of the total
 pixels from the raster.}
 
 \item{plot}{Default is \code{TRUE} for visualizing occurrence patterns.}
-
-\item{raster}{A raster of the "Area of Interest". Defined and created via Melina's function(s).}
 }
 \value{
 A list with:
@@ -51,9 +49,19 @@ estimate different ecological quantities and are not inherently equal.
 }
 \examples{
 
-# download rasters for Tennessee Warbler and Ovenbird
+# download v4 rasters for Tennessee Warbler and Ovenbird
 rasters <- getlayerNM(c("TEWA", "OVEN"), "v4", destfile=tempdir())
 
 # visualize core habitat
 occurrenceNM(rasters)
+
+# set custom threshold and compare core habitat
+occurrenceNM(rasters, quantile=0.8)
+
+# analyse core habitat in a custom area, using v5 predictions for Tennessee Warbler
+aoi_sf <- vect(system.file("extdata", "vignette_poly_5072.shp", package = "BAMexploreR"))
+rasterv5 <- getlayerNM("TEWA", "v5",  crop_ext = aoi_sf, destfile = tempdir(), year = "2020")
+occurrenceNM(rasterv5)
+
+
 }
