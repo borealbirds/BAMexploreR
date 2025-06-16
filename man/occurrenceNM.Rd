@@ -23,11 +23,9 @@ pixels from the raster.}
 A list with:
 \describe{
   \item{raster}{A \code{SpatRaster} with binary presence (1) / absence (0) values.}
-  \item{threshold}{A \code{numeric} value: the estimated density threshold.}
-  \item{population_summary}{A \code{data.frame} with estimated total population size,
-  mean, and standard deviation, before and after thresholding.
-  See: \code{BAMexploreR::pop_sizeNM()}}
-}
+  \item{occurrence_summary}{A \code{data.frame} with estimated area of occupancy
+  in km², before and after thresholding.}
+  }
 }
 \description{
 This function fits a Lorenz curve to a raster's density
