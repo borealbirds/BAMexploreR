@@ -23,8 +23,6 @@
 #'
 #' bird <- getlayerNM("TEWA", "v4", destfile = tempdir())
 #'
-#' bird <- getlayerNM("TEWA", "v4", destfile = ".", crop_ext = NULL)
-#'
 #' @author Melina Houle
 #' @docType methods
 #' @rdname getlayerNM
@@ -98,33 +96,31 @@ getlayerNM <- function(spList, version, destfile, crop_ext = NULL,  year = NULL,
     setwd(destfile)
   }
 
-  # Set url based on version
-  url <- version.url$url[version.url$version == version]
-  response <- httr::GET(url)
-  content_text <- httr::content(response, "text")
-  # Create list of available species
-  if(version == "v4"){
-    tiff_files <- regmatches(content_text, gregexpr('href="([^"]+\\.tif)"', content_text))
-    tiff_files <- unlist(tiff_files)
-    tiff_files <- gsub('href="|/"', '', tiff_files)
-    spv <- tiff_files %>%
-      stringr::str_sub(start = 6, end = 9)
-  }else if(version == "v5"){
-    subdirs <- regmatches(content_text, gregexpr('href="([^"]+/)"', content_text))
-    subdirs <- unlist(subdirs)
-    spv <- gsub('href="|/"', '', subdirs) %>%
-      .[!(. %in% "/data")]
-    flevel1 <- paste0(subdirs, "/")
-  }
+  spv <- sppList(version, "speciesCode")
+  ## Set url based on version
+  #url <- version.url$url[version.url$version == version]
+  #response <- httr::GET(url)
+  #content_text <- httr::content(response, "text")
+  ## Create list of available species
+  #if(version == "v4"){
+  #  tiff_files <- regmatches(content_text, gregexpr('href="([^"]+\\.tif)"', content_text))
+  #  tiff_files <- unlist(tiff_files)
+  #  tiff_files <- gsub('href="|/"', '', tiff_files)
+  #  spv <- tiff_files %>%
+  #    stringr::str_sub(start = 6, end = 9)
+  #}else if(version == "v5"){
+  #  subdirs <- regmatches(content_text, gregexpr('href="([^"]+/)"', content_text))
+  #  subdirs <- unlist(subdirs)
+  #  spv <- gsub('href="|/"', '', subdirs) %>%
+  #    .[!(. %in% "/data")]
+  #  flevel1 <- paste0(subdirs, "/")
+  #}
 
   # Check if provided species list is in the available species codes. Display erroneous
   uspecies <- spList[!spList %in% spv]
   if (length(uspecies) > 0) {
-    tryCatch({
-      warning(paste0("The following species aren't available for processing: ", paste(uspecies, collapse = ", ")))
-    }, warning = function(w) {
-      message(w$message)
-    })
+    message("The following species aren't available for processing: ",
+            paste(uspecies, collapse = ", "))
   }
 
   # Create valid species vector
@@ -132,7 +128,7 @@ getlayerNM <- function(spList, version, destfile, crop_ext = NULL,  year = NULL,
 
   outList <- list()
 
-  batch_download <- function(species_code, version, year, crop_ext, bcrNM = "mosaic") {
+  batch_download <- function(species_code, version, year = NULL, crop_ext, bcrNM = "mosaic") {
     message("Downloading data for ", species_code, " from version ", version)
 
     # get file name and URL
@@ -162,6 +158,7 @@ getlayerNM <- function(spList, version, destfile, crop_ext = NULL,  year = NULL,
     }
 
     # Get file info
+    url <- version.url$url[version.url$version == version]
     file_info <- get_file_info()
     file_name <- file_info$name
     file_url  <- file_info$url
@@ -212,7 +209,7 @@ getlayerNM <- function(spList, version, destfile, crop_ext = NULL,  year = NULL,
   # Perform batch download for species in the list
   for (s in spList) {
    if(version == "v4"){
-     outspp <- batch_download(species = s, year = y, version = version, crop_ext, bcrNM)
+     outspp <- batch_download(species = s, year = NULL, version = version, crop_ext, bcrNM)
      outList <- append(outList, outspp)
    }else{
       for (y in year) {#v5

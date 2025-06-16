@@ -16,16 +16,26 @@
 #' @importFrom httr GET content
 #' @importFrom dplyr pull mutate filter
 #' @importFrom stringr str_sub
+#' @importFrom tidyselect all_of
+#'
 #' @docType methods
 #' @author Melina Houle
 #' @rdname sppList
 #' @export
 #' @examples
 
-#' speciesList <- sppList("v4", "mean", "species_code", guild)
+#' speciesList <- sppList("v4", "species_code")
 sppList <- function(version, type, guild = NULL) {
   load(system.file("R/sysdata.rda", package = "BAMexploreR"))
   spdt <- spp_List
+
+  if (!version %in% c("v4", "v5")) {
+    stop("Invalid version argument. Must be either 'v4' or 'v5'.")
+  }
+
+  if (!type %in% c("speciesCode", "commonName", "scientificName")) {
+    stop("Invalid type argument. Must be one of 'speciesCode', 'commonName' or 'scientificName'.")
+  }
 
   if(is.null(guild)){
     spcode <- spdt %>% dplyr::pull("speciesCode")
@@ -33,7 +43,7 @@ sppList <- function(version, type, guild = NULL) {
     print("Guild is invalid")
   }else{
     spcode <- spdt %>%
-      dplyr::filter(if_any(all_of(guild), ~ . == 1)) %>%  # Use if_any to check across multiple columns
+      dplyr::filter(dplyr::if_any(tidyselect::all_of(guild), ~ . == 1)) %>%  # Use if_any to check across multiple columns
       dplyr::pull("speciesCode")  # Extract species code
   }
 
@@ -41,7 +51,7 @@ sppList <- function(version, type, guild = NULL) {
   response <- httr::GET(url)
   content_text <- httr::content(response, "text")
   if (httr::status_code(response) == 200) {
-    if(version == "v4" || version == "v4_demo"){
+    if(version == "v4"){
       # Use regular expressions to parse
       tiff_files <- regmatches(content_text, gregexpr('href="([^"]+\\.tif)"', content_text))
       tiff_files <- unlist(tiff_files)
@@ -50,7 +60,7 @@ sppList <- function(version, type, guild = NULL) {
         stringr::str_sub(start = 6, end = 9) %>%
         .[.%in%spcode]
       return(spList)
-    } else if(version == "v5" || version == "v5_demo"){
+    } else if(version == "v5"){
       # Use regular expressions to parse
       subdirs <- regmatches(content_text, gregexpr('href="([^"]+/)"', content_text))
       subdirs <- unlist(subdirs)

@@ -19,15 +19,15 @@ Imports:
   rlang,
   ggplot2,
   stringr, 
-  purrr, 
   tibble,
-  gbm,
   tidyr,
   stats, 
   tools,
   opticut,
   httr,
-  magrittr
+  magrittr, 
+  purrr, 
+  tidyselect
 Suggests:
   knitr,
   rmarkdown,

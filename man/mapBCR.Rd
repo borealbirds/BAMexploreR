@@ -5,7 +5,7 @@
 \alias{mapBCR}
 \title{Retrieve list of BCR overlaid by the study area}
 \usage{
-mapBCR(version, ext)
+mapBCR(version, ext = NULL)
 }
 \arguments{
 \item{version}{character; Indicate the version of the National Model requested. Each version of the

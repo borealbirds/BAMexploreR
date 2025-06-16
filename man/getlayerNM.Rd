@@ -41,8 +41,6 @@ bird <- getlayerNM("TEWA", "v4", tempfile())
 
 bird <- getlayerNM("TEWA", "v4", destfile = tempdir())
 
-bird <- getlayerNM("TEWA", "v4", destfile = ".", crop_ext = NULL)
-
 }
 \author{
 Melina Houle

@@ -12,6 +12,7 @@
 #'
 #' @importFrom tibble tibble
 #' @importFrom purrr list_rbind imap
+#' @importFrom stats sd
 #'
 #'
 #' @export

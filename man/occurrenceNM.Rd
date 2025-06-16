@@ -7,6 +7,8 @@
 occurrenceNM(raster_list, quantile = "by_lorenz", plot = TRUE)
 }
 \arguments{
+\item{raster_list}{A raster of the "Area of Interest". Defined and created via Melina's function(s).}
+
 \item{quantile}{Default is \code{"by_lorenz"}, and the  optimum threshold is estimated via
 \code{opticut::lorenz()} as the pixel density when the slope of the tangent of the Lorenz function is 1.
 If a custom threshold is preferred, set this argument using a \code{numeric} between 0 and 1.

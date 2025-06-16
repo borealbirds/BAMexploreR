@@ -42,7 +42,8 @@
 #' # This is a species with relatively high bootstrap variance.
 #' plot_importanceNM(group = "spp", species = "TOSO", bcr = "all", plot=TRUE)
 #'
-#' # Example of plotting covariate importance for two warbler species from three BCRs, using custom colours:
+#' # Example of plotting covariate importance for two warbler species from three BCRs,
+#' # using custom colours:
 #' plot_importanceNM(group = "spp", species = c("BAWW", "CAWA"),
 #' bcr = c("can12", "can13", "can14"),  colours = c("#1f78b4", "#33a02c"))
 #'
@@ -58,11 +59,12 @@ plot_importanceNM <- function(species = "all", bcr = "all", group = "spp", versi
   }
 
   # load bam_covariate_importance_v* from data folder
+  load(system.file("R/sysdata.rda", package = "BAMexploreR"))
   if (version == "v5") {
-    data("bam_covariate_importance_v5", package = "BAMexploreR")
+    #data("bam_covariate_importance_v5", package = "BAMexploreR")
     data <- bam_covariate_importance_v5
   } else {
-    data("bam_covariate_importance_v4", package = "BAMexploreR")
+    #data("bam_covariate_importance_v4", package = "BAMexploreR")
     data <- bam_covariate_importance_v4
   }
 
@@ -90,9 +92,8 @@ plot_importanceNM <- function(species = "all", bcr = "all", group = "spp", versi
   }
 
   # filter for user-specified BCRs
-  # use .env because `bcr` is also a column name in `data`
   if (!any(bcr == "all")) {
-    data <- dplyr::filter(data, bcr %in% .env$bcr)
+    data <- dplyr::filter(data, bcr %in% !!bcr)
   }
 
   # check if user specified `colours` match the number of levels in `group`.

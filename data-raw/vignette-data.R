@@ -31,8 +31,8 @@ spp_List <- read.csv("./data-raw/sppList.csv", header= TRUE)
 ###############################################################
 ### create 3st internal data: version 4 model covariate importance
 ###############################################################
-load("./data/bam_covariate_importance_v4.rda")
-load("./data/bam_covariate_importance_v5.rda")
+load("./data-raw/bam_covariate_importance_v4.rda")
+load("./data-raw/bam_covariate_importance_v5.rda")
 ###############################################################
 ### create 4th internal data: Covariate LookUp table
 ###############################################################

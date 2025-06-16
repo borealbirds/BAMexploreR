@@ -18,30 +18,27 @@
 #' @export
 #' @examples
 #' subUnit<- mapBCR("v5")
-mapBCR <- function(version, ext) {
+mapBCR <- function(version, ext = NULL) {
   tmap::tmap_mode("plot")
-  # Need output path
-  if (missing(version)) {
-    stop("You must specified either v4 or v5")
-  }
 
-  # Need output path
-  if (missing(ext)) {
-    if(version == "v4" || version == "v4_demo" ){
-      ext <- terra::vect(system.file("extdata", "BAM_BCRNMv4_5072.shp", package = "BAMexploreR"))
-    }else if (version == "v5" || version == "v5_demo" ){
-      ext <- terra::vect(system.file("extdata", "BAM_BCRNMv5_5072.shp", package = "BAMexploreR"))
-    }else{
-      stop("The version is not recognised by the function. BAM National Models are only available for v4 and v5.")
-    }
+  if (!version %in% c("v4", "v5")) {
+    stop("Invalid version argument. Must be either 'v4' or 'v5'.")
   }
 
   # Need SpatVector or SpatRaster and projection
-  if(!inherits(ext, "SpatVector") && !inherits(ext, "SpatRaster")){
-    stop("You need to provide a SpatRast or a SpatVect")
-  }else{
-    if (nchar(terra::crs(ext)) == 0) {
-      stop("CRS is missing or empty.")
+  if (missing(ext)) {
+    if(version == "v4"){
+      ext <- terra::vect(system.file("extdata", "BAM_BCRNMv4_5072.shp", package = "BAMexploreR"))
+    }else {
+      ext <- terra::vect(system.file("extdata", "BAM_BCRNMv5_5072.shp", package = "BAMexploreR"))
+    }
+  }else {
+    if(!inherits(ext, "SpatVector") && !inherits(ext, "SpatRaster")){
+      stop("You need to provide a SpatRast or a SpatVect")
+    }else{
+      if (nchar(terra::crs(ext)) == 0) {
+        stop("CRS is missing or empty.")
+      }
     }
   }
 
@@ -53,6 +50,10 @@ mapBCR <- function(version, ext) {
     ncat <-33
   }else{
     stop("Model version doesn't exist.")
+  }
+
+  if (length(terra::intersect(base_bcr, ext)) == 0) {
+    warning("The provided extent does not intersect with any BCR sub-units.")
   }
 
   label_sf <- sf::st_as_sf(data.frame(
@@ -70,13 +71,6 @@ mapBCR <- function(version, ext) {
   base_sf <- sf::st_as_sf(base_bcr)
   user_sf <- sf::st_as_sf(ext)
 
-  # Find intersections
-  if(!missing(ext)){
-    intersected <- sf::st_intersects(base_sf, user_sf, sparse = FALSE)
-    intersected_subUnits <- base_sf$subunit_ui[apply(intersected, 1, any)]
-  }else{
-    intersected_subUnits <-base_sf$subunit_ui
-  }
   # Create the tmap
   # Generate a larger palette and subset it to get exactly 25 colors
   custom_palette <- RColorBrewer::brewer.pal(12, "Set3")  # Generate 12 colors from the Set3 palette

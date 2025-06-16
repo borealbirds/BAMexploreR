@@ -8,7 +8,7 @@
 #' input density raster re-coded to presence (1) / absence (0) values.
 #'
 #'
-#' @param raster A raster of the "Area of Interest". Defined and created via Melina's function(s).
+#' @param raster_list A raster of the "Area of Interest". Defined and created via Melina's function(s).
 #'
 #' @param quantile Default is \code{"by_lorenz"}, and the  optimum threshold is estimated via
 #' \code{opticut::lorenz()} as the pixel density when the slope of the tangent of the Lorenz function is 1.

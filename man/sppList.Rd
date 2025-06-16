@@ -25,7 +25,7 @@ The function produce a character vector of species available to download. To
 retrieve available species, the function derive the list using the version, and type of output
 }
 \examples{
-speciesList <- sppList("v4", "mean", "species_code", guild)
+speciesList <- sppList("v4", "species_code")
 }
 \author{
 Melina Houle

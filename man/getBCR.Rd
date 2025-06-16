@@ -5,7 +5,7 @@
 \alias{getBCR}
 \title{Retrieve list of BCR overlaid by the study area}
 \usage{
-getBCR(version, ext)
+getBCR(version, ext = NULL)
 }
 \arguments{
 \item{version}{character; Indicate the version of the National Model requested. Each version of the

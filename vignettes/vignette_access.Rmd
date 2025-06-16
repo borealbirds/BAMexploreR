@@ -7,6 +7,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -34,9 +35,7 @@ This vignette will guide you through the basic usage of accessing the data using
 
 You can install the development version of `BAMexploreR` from [GitHub](https://github.com/) with:
 
-```{r, eval=FALSE}
-# install.packages("devtools")
-devtools::install_github("borealbirds/BAMexploreR", force = TRUE, dependencies = TRUE)
+```{r setup, include = TRUE, message=FALSE, warning=FALSE}
 library(BAMexploreR)
 ```
 
@@ -51,7 +50,7 @@ All data used in this example are included in the package and are described in t
 ## Subunit naming convention
 BAM National Density Model version 4 was generated within Canada boundary only using the delineation of BCR intersecting the provinces, while version 5 encompassed both Canada and North of the USA. In version 5, because most of the spatial layers used to develop the models were country specific, we used as model-building units the combination of bird conservation regions (BCRs) intersected with Canada-USA jurisdictional boundaries. Those subunits changed overtime based on decision making by the different agencies. For both version, each subunits use acronym of the country as prefix followed by the number of the BCR unit. Delineation of the subunit can be viewed using the `mapBCR` function. It is possible to provide an extent (**ext**) that represent a study region and have it overlaid on the BCRs delineation.
 
-```{r, fig.width=8, fig.height=6, message=FALSE, warning=FALSE}
+```{r overall_bcr_list, fig.width=8, fig.height=6, message=FALSE, warning=FALSE}
 
 library(tmap)
 #tmap_mode("plot")
@@ -82,7 +81,7 @@ head(forest_v5)
 ### Identify BCR intersecting the zone of interest
 Species-specific density maps are available at the national scale in version 4, while in version 5, they can be accessed at the BCR level. This functionality helps reduce overall download size. Since BCR names vary by version and country, the mapBCR function ensures the correct naming is used. Users can specify an extent and identify BCRs intersection the zone of interest. 
 
-```{r bcr_list, fig.width=8, fig.height=6, echo = TRUE, results = 'markup', error = TRUE}
+```{r aoi_bcr_list, fig.width=8, fig.height=6, echo = TRUE, results = 'markup', error = TRUE}
 aoi_sf <- vect(system.file("extdata", "vignette_poly_5072.shp", package = "BAMexploreR"))
 
 # Extract BCR subunit from version 5 that intersect extent

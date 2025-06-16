@@ -62,12 +62,17 @@
 
 stackedbarNM <- function(species = "all", bcr = "all",  groups = c("spp", "var_class"), version ="v5", plot = TRUE, colours = NULL){
 
+  if (!version %in% c("v4", "v5")) {
+    stop("Invalid version argument. Must be either 'v4' or 'v5'.")
+  }
+
   # load bam_covariate_importance_v* from data folder
+  load(system.file("R/sysdata.rda", package = "BAMexploreR"))
   if (version == "v5") {
-    data("bam_covariate_importance_v5", package = "BAMexploreR")
+    #data("bam_covariate_importance_v5", package = "BAMexploreR")
     data <- bam_covariate_importance_v5
   } else {
-    data("bam_covariate_importance_v4", package = "BAMexploreR")
+    #data("bam_covariate_importance_v4", package = "BAMexploreR")
     data <- bam_covariate_importance_v4
   }
 
