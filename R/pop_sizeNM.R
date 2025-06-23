@@ -25,11 +25,19 @@
 #' # get summaries of population size
 #' pop_sizeNM(rasters) # 111 million and 3.5 million, respectively
 
-pop_sizeNM <- function(raster_list, crop_ext, group){
-
+pop_sizeNM <- function(raster_list, crop_ext= NULL, group = NULL){
   # check for valid input
   stopifnot(is.list(raster_list))
   stopifnot(all(purrr::map_lgl(raster_list, ~ inherits(.x, "SpatRaster"))))
+
+  raster_list_mean <- map(raster_list, function(r) {
+    lyr_names <- trimws(names(r))
+    if ("mean" %in% lyr_names) {
+      r[["mean"]]
+    } else {
+      r  # or return r if you want to keep it as-is
+    }
+  })
 
   # Reproject crop_ext
   cat("Aligning projections\n")
@@ -46,31 +54,43 @@ pop_sizeNM <- function(raster_list, crop_ext, group){
   }
 
   # Aggregate crop_ext by grouping variable
-  crop_ext_grp <- if(!is.na(group)){
+  crop_ext_grp <- if(!is.null(group)){
     aggregate(crop_ext, by = group)
   } else {crop_ext}
 
   # define crop function
   crop_raster <- function(r, ext) {
-    r_proj <- terra::project(ext, r)
-    terra::crop(r, r_proj, snap = "near", mask = TRUE)
+    terra::crop(r, ext, snap = "near", mask = TRUE)
   }
 
-  # define pop estimate function for a single raster
   pop_estimate <- function(raster_i, crop_ext_grp, group, spp) {
+    # ——————————————————————————————
+    # 1) handle NULL crop_ext_grp by extracting all pixels
+    # ——————————————————————————————
+    if (is.null(crop_ext_grp)) {
+      # Create a data.frame with one row per pixel:
+      values <- terra::values(raster_i, mat = FALSE)
+      # data.frame with a dummy 'ID' column so the rest of your code works:
+      pixel_values <- data.frame(ID = seq_along(values), mean = values)
 
-    # extract for each polygon
-    pixel_values <- extract(raster_i, crop_ext_grp)
+    } else {
+      # normal case
+      pixel_values <- terra::extract(raster_i, crop_ext_grp)
+      value_col <- setdiff(names(pixel_values), "ID")
 
-    # summarize
-    # each pixel represents individuals per hectare, but the pixels themselves are 100 ha (1km^2)
-    # so need to multiply by 100 ha/pixel to get individuals per pixel
-    if(!is.na(group)){
+      # rename it to "density"
+      pixel_values <- pixel_values %>%
+        dplyr::rename(mean = all_of(value_col))
+    }
 
+    # ——————————————————————————————
+    # 2) the rest of your code stays unchanged
+    # ——————————————————————————————
+    if (!is.na(group)) {
       group_summary <- dplyr::left_join(pixel_values,
                                         as.data.frame(crop_ext_grp) |>
-                                          dplyr::mutate(ID = dplyr::row_number()),
-                                        by="ID") |>
+                                          dplyr::mutate(ID = row_number()),
+                                        by = "ID") |>
         dplyr::rename(density = mean) |>
         dplyr::filter(!is.na(density)) |>
         dplyr::group_by(dplyr::across(dplyr::all_of(group))) |>
@@ -83,32 +103,34 @@ pop_sizeNM <- function(raster_list, crop_ext, group){
 
       #rename the group column
       colnames(group_summary) <- c("group", colnames(group_summary[2:ncol(group_summary)]))
-
     } else {
-
       group_summary <- pixel_values |>
         dplyr::rename(density = mean) |>
         dplyr::filter(!is.na(density)) |>
-        dplyr::summarize(total_pop = sum(density)*100,
-                         mean_density = mean(density),
-                         sd_density = sd(density),
-                         n_cells = dplyr::n()) |>
-        dplyr::mutate(group = NA,
+        dplyr::summarise(
+          total_pop   = sum(density) * 100,
+          mean_density = mean(density),
+          sd_density   = sd(density),
+          n_cells      = n()
+        ) |>
+        dplyr::mutate(group   = NA,
                       species = spp) |>
-        dplyr::select(group, dplyr::everything())
-
+        dplyr::select(group, everything())
     }
 
     return(group_summary)
-
   }
 
   # crop (this will speed things up for small AOIs)
-  crop_list <- purrr::imap(raster_list, ~ crop_raster(.x, crop_ext_grp))
+  if (is.null(crop_ext)) {
+    crop_list <- raster_list_mean
+  } else {
+    crop_list <- purrr::imap(raster_list_mean, ~ crop_raster(.x, crop_ext_grp))
+  }
 
   # calculate
   cat("Calculating population size - be patient!\n")
-  if(!is.na(group)){
+  if(!is.null(group)){
     list_of_summaries <- purrr::imap_dfr(crop_list, ~pop_estimate(
       raster_i = .x,
       crop_ext_grp = crop_ext_grp,
