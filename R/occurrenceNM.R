@@ -44,7 +44,7 @@
 #' @importFrom terra rast values setValues
 #' @importFrom dplyr arrange bind_rows
 #' @importFrom purrr map imap map_dbl
-#'
+#' @importFrom tibble tibble
 #' @export
 #' @examples
 #'
@@ -162,8 +162,8 @@ occurrenceNM <- function(raster_list, quantile="by_lorenz", plot=TRUE){
 
   # extract other area data from list output
   thresholds <- purrr::map_dbl(output_list, "threshold")
-  og_area <- tibble(spp = names(output_list), type="no_threshold", area_km2=purrr::map_dbl(output_list, "og_area_km2"))
-  threshold_area <- tibble(spp = names(output_list), type="with_threshold", area_km2=purrr::map_dbl(output_list, "core_area_km2"))
+  og_area <- tibble::tibble(spp = names(output_list), type="no_threshold", area_km2=purrr::map_dbl(output_list, "og_area_km2"))
+  threshold_area <- tibble::tibble(spp = names(output_list), type="with_threshold", area_km2=purrr::map_dbl(output_list, "core_area_km2"))
 
   occurrence_summary <-
     bind_rows(og_area, threshold_area) |>

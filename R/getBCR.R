@@ -16,7 +16,6 @@
 #' @examples
 #' subUnit<- getBCR("v5")
 getBCR <- function(version, ext = NULL) {
-  # Need output path
 
   if (!version %in% c("v4", "v5")) {
     stop("Invalid version argument. Must be either 'v4' or 'v5'.")

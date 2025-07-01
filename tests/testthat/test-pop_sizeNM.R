@@ -2,6 +2,7 @@ library(testthat)
 library(BAMexploreR)
 library(sf)
 library(terra)
+library(glue)
 
 # Check that pop_sizeNM handles filtering by species
 test_that("pop_sizeNM handles raster list", {
@@ -55,9 +56,9 @@ test_that("pop_sizeNM throws error on invalid input", {
 # Test that Crop work
 test_that("pop_sizeNM throws error on invalid cropping", {
   rasters <- getlayerNM("TEWA", "v5", destfile=tempdir())
+  aoi_sf <- vect(system.file("extdata", "vignette_poly_5072.shp", package = "BAMexploreR"))
   result <- pop_sizeNM(rasters, crop_ext=aoi_sf )
 
-  aoi_sf <- vect(system.file("extdata", "vignette_poly_5072.shp", package = "BAMexploreR"))
   rast_full <- terra::rast(ext = ext(aoi_sf), res = 1080, crs = crs(aoi_sf))
   values(rast_full) <- 1
   cropped  <- crop(rast_full, aoi_sf)

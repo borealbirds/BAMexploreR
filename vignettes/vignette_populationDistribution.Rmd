@@ -1,0 +1,93 @@
+---
+title: "<span style='font-size: 14px;'>BAM National Models Density Map</span><br><strong>Accessing the data</strong>"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{model_distribution}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "",
+  message = FALSE,
+  warning = FALSE
+)
+```
+
+
+
+## Overview
+The BAMexploreR package contains functions to explore bird :
+vignette demonstrates how to use the **occurrenceNM()** and **pop_sizeNM()** functions to estimate species presence and population size from spatial raster data.
+
+These functions work with downloaded a list of raster acquired using getLayer function.
+
+
+### occurrenceNM(): Estimate Presence Using Abundance Thresholds
+
+Description
+The occurrenceNM() function takes one or more abundance rasters (one per species) and determines a presence-absence threshold for each using the Lorenz curve method. The function then estimates the proportion of area where the species is present.
+
+Arguments
+- raster_list: A list of SpatRaster objects (one per species).
+
+- quantile: Method to derive the threshold; default is "by_lorenz".
+
+- plot: Logical, if TRUE returns a ggplot object showing the Lorenz curve and selected threshold.
+
+📤 Output
+A tibble with the following columns:
+
+- species: Name or index of the species.
+
+- threshold: Abundance value used to classify presence.
+
+- presence_prop: Proportion of area where abundance exceeds the threshold.
+
+
+## Installation
+
+You can install the development version of `BAMexploreR` from [GitHub](https://github.com/) with:
+
+```{r setup, include = TRUE, message=FALSE, warning=FALSE}
+library(BAMexploreR)
+```
+
+### Data
+All data used in this example are included in the package and are described in the help files.
+```{r, eval = FALSE}
+?spp_List
+
+```
+
+
+
+## Example workflow
+
+### Mapping species occurence 
+
+```{r get_layer, fig.width=8, fig.height=6, echo = TRUE, results = 'markup', error = TRUE}
+library(terra)
+
+aoi_sf <- vect(system.file("extdata", "vignette_poly_5072.shp", package = "BAMexploreR"))
+
+# Download TEWA and CAWA distribution maps and calculate population size within the area of interest 
+result <- getlayerNM("TEWA", "v5", destfile = tempdir(), crop_ext = aoi_sf, year = "2010")
+occ_results <- occurrenceNM(result)
+```
+
+## Citation
+
+Please cite the _BAMexploreR_ package when using it in publications. To cite the latest official version, please use:
+
+
+```{r, echo = FALSE, results = "asis"}
+dev_version <- packageDescription("BAMexploreR")$Version
+cat(paste0("\\> Houle M, Boehm M, Wu SC, Knight E, ... (", format(Sys.time(), "%Y"),"). BAMexploreR: Evaluating boreal birds density in Canada using R. R package version ", dev_version, ". Available at https://github.com/borealbirds/BAMexploreR\n"))
+```
+
+
+

@@ -4,13 +4,17 @@
 \alias{pop_sizeNM}
 \title{Estimate population size from a density raster}
 \usage{
-pop_sizeNM(raster_list)
+pop_sizeNM(raster_list, crop_ext = NULL, group = NULL)
 }
 \arguments{
 \item{raster_list}{A list of \code{SpatRaster}s. See \code{getlayerNM()} for accessing BAM's raster data.}
+
+\item{crop_ext}{SpatVector used to define the extent for the cropping and grouping of population estimates.}
+
+\item{group}{Optional character value of column in SpatVector used for grouping population estimates.}
 }
 \value{
-A \code{tibble} with five columns: \code{spp}, \code{population_size}, \code{mean_density} (per pixel), \code{sd_density}, \code{n_cells}
+A \code{tibble} with six columns: \code{group} \code{species}, \code{population_size}, \code{mean_density} (per pixel), \code{sd_density}, \code{n_cells}
 }
 \description{
 This function is essentially a wrapper around \code{terra::values},

@@ -67,7 +67,7 @@ stackedbarNM <- function(species = "all", bcr = "all",  groups = c("spp", "var_c
   }
 
   # load bam_covariate_importance_v* from data folder
-  load(system.file("R/sysdata.rda", package = "BAMexploreR"))
+  #load(system.file("R/sysdata.rda", package = "BAMexploreR"))
   if (version == "v5") {
     #data("bam_covariate_importance_v5", package = "BAMexploreR")
     data <- bam_covariate_importance_v5

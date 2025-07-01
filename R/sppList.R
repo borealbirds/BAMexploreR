@@ -24,9 +24,10 @@
 #' @export
 #' @examples
 
-#' speciesList <- sppList("v4", "species_code")
+#' speciesList <- sppList("v4", "speciesCode")
 sppList <- function(version, type, guild = NULL) {
-  load(system.file("R/sysdata.rda", package = "BAMexploreR"))
+  #load(system.file("R/sysdata.rda", package = "BAMexploreR"))
+  #load("R/sysdata.rda")
   spdt <- spp_List
 
   if (!version %in% c("v4", "v5")) {

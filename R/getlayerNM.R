@@ -38,7 +38,6 @@
 #'
 getlayerNM <- function(spList, version, destfile, crop_ext = NULL,  year = NULL, bcrNM= "mosaic") {
   # Valid Model versions
-
   if (!version %in% c("v4", "v5")) {
     stop("Model version doesn't exist.")
   }
@@ -55,6 +54,9 @@ getlayerNM <- function(spList, version, destfile, crop_ext = NULL,  year = NULL,
   }
 
   if (!is.null(bcrNM)){
+    if (!is.character(bcrNM)) {
+      stop("bcrNM` must be a character vector representing valid BCR codes (e.g., 'can5', 'can80'). You provided an object of class: ", class(bcrNM)[1])
+    }
     if(version == "v5"){
       valid_bcrs <- c("mosaic", "can3", "can5", "can9", "can10", "can11", "can12", "can13", "can14",
                       "can40", "can41", "can42", "can60", "can61", "can70", "can71", "can72", "can80",
@@ -97,24 +99,6 @@ getlayerNM <- function(spList, version, destfile, crop_ext = NULL,  year = NULL,
   }
 
   spv <- sppList(version, "speciesCode")
-  ## Set url based on version
-  #url <- version.url$url[version.url$version == version]
-  #response <- httr::GET(url)
-  #content_text <- httr::content(response, "text")
-  ## Create list of available species
-  #if(version == "v4"){
-  #  tiff_files <- regmatches(content_text, gregexpr('href="([^"]+\\.tif)"', content_text))
-  #  tiff_files <- unlist(tiff_files)
-  #  tiff_files <- gsub('href="|/"', '', tiff_files)
-  #  spv <- tiff_files %>%
-  #    stringr::str_sub(start = 6, end = 9)
-  #}else if(version == "v5"){
-  #  subdirs <- regmatches(content_text, gregexpr('href="([^"]+/)"', content_text))
-  #  subdirs <- unlist(subdirs)
-  #  spv <- gsub('href="|/"', '', subdirs) %>%
-  #    .[!(. %in% "/data")]
-  #  flevel1 <- paste0(subdirs, "/")
-  #}
 
   # Check if provided species list is in the available species codes. Display erroneous
   uspecies <- spList[!spList %in% spv]

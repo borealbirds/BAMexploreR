@@ -13,9 +13,10 @@
 #'
 #'
 #' @importFrom dplyr left_join mutate row_number rename group_by ungroup summarize all_of n filter
-#' @importFrom purrr imap imp_dfr
+#' @importFrom purrr imap
 #' @importFrom stats sd
-#'
+#' @importFrom tidyselect everything
+#' @importFrom terra aggregate
 #'
 #' @export
 #' @examples
@@ -55,7 +56,7 @@ pop_sizeNM <- function(raster_list, crop_ext= NULL, group = NULL){
 
   # Aggregate crop_ext by grouping variable
   crop_ext_grp <- if(!is.null(group)){
-    aggregate(crop_ext, by = group)
+    terra::aggregate(crop_ext, by = group)
   } else {crop_ext}
 
   # define crop function
@@ -115,7 +116,7 @@ pop_sizeNM <- function(raster_list, crop_ext= NULL, group = NULL){
         ) |>
         dplyr::mutate(group   = NA,
                       species = spp) |>
-        dplyr::select(group, everything())
+        dplyr::select(group, tidyselect::everything())
     }
 
     return(group_summary)
