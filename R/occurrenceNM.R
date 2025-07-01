@@ -162,12 +162,12 @@ occurrenceNM <- function(raster_list, quantile="by_lorenz", plot=TRUE){
 
   # extract other area data from list output
   thresholds <- purrr::map_dbl(output_list, "threshold")
-  og_area <- tibble::tibble(spp = names(output_list), type="no_threshold", area_km2=purrr::map_dbl(output_list, "og_area_km2"))
-  threshold_area <- tibble::tibble(spp = names(output_list), type="with_threshold", area_km2=purrr::map_dbl(output_list, "core_area_km2"))
+  og_area <- tibble::tibble(species = names(output_list), type="no_threshold", area_km2=purrr::map_dbl(output_list, "og_area_km2"))
+  threshold_area <- tibble::tibble(species = names(output_list), type="with_threshold", area_km2=purrr::map_dbl(output_list, "core_area_km2"))
 
   occurrence_summary <-
     bind_rows(og_area, threshold_area) |>
-    arrange(spp)
+    arrange(species)
 
   return(list(
     occurrence_rasters = purrr::map(output_list, "occurrence_raster"),
