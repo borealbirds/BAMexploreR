@@ -89,14 +89,14 @@ getlayerNM <- function(spList, version, destfile, crop_ext = NULL,  year = NULL,
     }
   }
 
-  cwd <- getwd()
+  #cwd <- getwd()
   if (!file.exists(destfile)) {
     dir.create(destfile, showWarnings = FALSE)
   }
 
-  if (!missing(destfile)) {
-    setwd(destfile)
-  }
+  #if (!missing(destfile)) {
+  #  setwd(destfile)
+  #}
 
   spv <- sppList(version, "speciesCode")
 
@@ -209,7 +209,7 @@ getlayerNM <- function(spList, version, destfile, crop_ext = NULL,  year = NULL,
     if (file.exists(temp_file)) file.remove(temp_file)
   })
   # Return the results as a list
-  setwd(cwd)
+  #setwd(cwd)
   return(outList)
 
 }

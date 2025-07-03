@@ -26,7 +26,7 @@ Over the years, BAM developed generalized analytical approaches to model species
 `BAMexploreR` is a package for downloading and analyzing boreal bird species data from the BAM National Model v4 and v5. Functions in the package perform the following tasks:
 
 - **Accessing the data** - list the species for which National models were created, specify and map bcr unit available for each National model version and download species output.
-- **Population & distribution** - blabla.
+- **Population & distribution** - explore boreal bird species distribution and estimate population metrics using raster outputs from predictive models.
 - **Covariate interpretation** - blabla.
  
 This vignette will guide you through the basic usage of accessing the data using the package, including how to download specific species using region subunit or custom extent.

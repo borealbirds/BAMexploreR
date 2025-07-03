@@ -9,7 +9,7 @@
 #' @param crop_ext SpatVector used to define the extent for the cropping and grouping of population estimates.
 #' @param group Optional character value of column in SpatVector used for grouping population estimates.
 #'
-#' @return A \code{tibble} with six columns: \code{group} \code{species}, \code{population_size}, \code{mean_density} (per pixel), \code{sd_density}, \code{n_cells}
+#' @return A \code{tibble} with six columns: \code{group}, \code{total_pop}, \code{mean_density} (per pixel), \code{sd_density}, \code{n_cells}, \code{species}
 #'
 #'
 #' @importFrom dplyr left_join mutate row_number rename group_by ungroup summarize all_of n filter

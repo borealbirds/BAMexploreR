@@ -21,7 +21,7 @@ test_that("occurrenceNM returns expected structure", {
   out <- occurrenceNM(raster_list = r1, plot = FALSE)
 
   expect_s3_class(out$occurrence_summary, "data.frame")
-  expect_named(out$occurrence_summary, c("spp", "type", "area_km2"))  # adapt to your column names
+  expect_named(out$occurrence_summary, c("species", "type", "area_km2"))  # adapt to your column names
   expect_equal(nrow(out$occurrence_summary), 4)
   expect_s4_class(out$occurrence_rasters$TEWA, "SpatRaster")
 })

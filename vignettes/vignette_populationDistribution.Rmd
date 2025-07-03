@@ -1,5 +1,5 @@
 ---
-title: "<span style='font-size: 14px;'>BAM National Models Density Map</span><br><strong>Accessing the data</strong>"
+title: "BAM National Models - Mapping Species Occurrence and Density"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{model_distribution}
@@ -9,6 +9,7 @@ vignette: >
 
 
 ```{r, include = FALSE}
+options(rmarkdown.html_vignette.check_title = FALSE)
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "",
@@ -18,65 +19,103 @@ knitr::opts_chunk$set(
 ```
 
 
-
-## Overview
-The BAMexploreR package contains functions to explore bird :
-vignette demonstrates how to use the **occurrenceNM()** and **pop_sizeNM()** functions to estimate species presence and population size from spatial raster data.
-
-These functions work with downloaded a list of raster acquired using getLayer function.
+The BAMexploreR package provides tools to explore boreal bird species distribution and estimate population metrics using raster outputs from predictive models. The following core functions are designed to support conservation planning and ecological analysis:
 
 
-### occurrenceNM(): Estimate Presence Using Abundance Thresholds
+### occurrenceNM()
 
-Description
-The occurrenceNM() function takes one or more abundance rasters (one per species) and determines a presence-absence threshold for each using the Lorenz curve method. The function then estimates the proportion of area where the species is present.
+The **occurrenceNM()** function estimates a species' presence/absence threshold based on a Lorenz curve, which summarizes the spatial inequality in predicted occurrence probabilities. This function helps distinguish between areas of high and low predicted use, by determining a threshold value that defines the most likely occupied areas.
 
 Arguments
-- raster_list: A list of SpatRaster objects (one per species).
+
+- raster_list: A named list of SpatRaster objects, each representing predicted density for a species.
 
 - quantile: Method to derive the threshold; default is "by_lorenz".
 
-- plot: Logical, if TRUE returns a ggplot object showing the Lorenz curve and selected threshold.
+- plot: Logical, if TRUE returns a map with binary presence (1) / absence (0) values.
 
 📤 Output
+
 A tibble with the following columns:
 
-- species: Name or index of the species.
+- species: Species code identifying the species.
 
-- threshold: Abundance value used to classify presence.
+- type: Indicates whether a presence/absence threshold was applied when calculating the area.Values are "no_threshold" or "with_threshold".
 
-- presence_prop: Proportion of area where abundance exceeds the threshold.
+- area_km2: The total area (in square kilometers) where predicted abundance exceeds the threshold (if applied).
 
 
-## Installation
+### pop_sizeNM()
 
-You can install the development version of `BAMexploreR` from [GitHub](https://github.com/) with:
+The **pop_sizeNM()** function estimates the total population size by summarizing predicted densities of males across a spatial extent. This function supports cropping to a defined area (e.g., a region of interest) and group-based summaries if the extent includes a grouping variable (e.g., subregions, jurisdictions).
 
-```{r setup, include = TRUE, message=FALSE, warning=FALSE}
-library(BAMexploreR)
-```
+Arguments
 
-### Data
-All data used in this example are included in the package and are described in the help files.
-```{r, eval = FALSE}
-?spp_List
+- raster_list: A named list of SpatRaster objects, each representing predicted density for a species.
 
-```
+- crop_ext: A SpatVector defining the spatial extent for the cropping and grouping of population estimates.
+
+- group: (Optional) Name of the column in crop_ext to use for grouping population estimates.
+
+📤 Output
+
+A tibble with the following columns:
+
+- group: Group identifier, such as a region or subunit (set to NA if no grouping was applied).
+
+- total_pop: Estimated total number of males across the area (inferred from pixel-level densities).
+
+- mean_density: Average predicted density (males per pixel).
+
+- sd_density: Standard deviation of predicted densities.
+
+- n_cells: Number of raster cells included in the calculation.
+
+- species: Species code identifying the species.
 
 
 
 ## Example workflow
 
-### Mapping species occurence 
+### Set  the area of interest (AOI) as the Canadian extent of BCRs 10 and 11 
 
-```{r get_layer, fig.width=8, fig.height=6, echo = TRUE, results = 'markup', error = TRUE}
+```{r select_aoi, fig.width=8, fig.height=6, echo = TRUE, results = 'markup', error = TRUE}
+library(BAMexploreR)
 library(terra)
+library(dplyr)
 
-aoi_sf <- vect(system.file("extdata", "vignette_poly_5072.shp", package = "BAMexploreR"))
+# Load and extract Canada BCRs 10 and 11
+bcr_v5 <- vect(system.file("extdata", "BAM_BCRNMv5_5072.shp", package = "BAMexploreR"))
+aoi_sf <- bcr_v5[bcr_v5$subunit_ui %in% c("can10", "can11"), ]
 
-# Download TEWA and CAWA distribution maps and calculate population size within the area of interest 
-result <- getlayerNM("TEWA", "v5", destfile = tempdir(), crop_ext = aoi_sf, year = "2010")
-occ_results <- occurrenceNM(result)
+plot(bcr_v5, main = "AOI defined by the Canadian extent of BCRs 10 and 11")
+plot(aoi_sf, col = "red", add = TRUE)
+ 
+
+```
+
+### Mapping species occurence for TEWA and BBWO within the AOI
+
+
+```{r map_occurence, fig.width=8, fig.height=6, message = FALSE, warning= FALSE, echo = TRUE, results = 'markup', error = TRUE}
+# Download TEWA and BBWO distribution maps and map presence/absence through the aoi 
+results <- getlayerNM(c("TEWA", "BBWO"), "v5", destfile = tempdir(), crop_ext = aoi_sf, year = "2010")
+occ_results <- occurrenceNM(results, plot = TRUE)
+
+```
+
+
+### Estimating species specific population size within the AOI per BCR
+
+
+```{r map_density, fig.width=8, fig.height=6, message = FALSE, warning= FALSE, echo = TRUE, error = TRUE}
+library(knitr)
+
+# Calculate population size based on BAM National Model density raster
+occ_results <- pop_sizeNM(results, crop_ext = aoi_sf, group = "subunit_ui")
+
+# Show results
+kable(occ_results, caption = "Estimated population size grouped by BCR")
 ```
 
 ## Citation

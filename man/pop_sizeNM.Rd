@@ -14,7 +14,7 @@ pop_sizeNM(raster_list, crop_ext = NULL, group = NULL)
 \item{group}{Optional character value of column in SpatVector used for grouping population estimates.}
 }
 \value{
-A \code{tibble} with six columns: \code{group} \code{species}, \code{population_size}, \code{mean_density} (per pixel), \code{sd_density}, \code{n_cells}
+A \code{tibble} with six columns: \code{group}, \code{total_pop}, \code{mean_density} (per pixel), \code{sd_density}, \code{n_cells}, \code{species}
 }
 \description{
 This function is essentially a wrapper around \code{terra::values},
