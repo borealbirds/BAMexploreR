@@ -22,9 +22,9 @@ knitr::opts_chunk$set(
 The BAMexploreR package provides tools to explore boreal bird species distribution and estimate population metrics using raster outputs from predictive models. The following core functions are designed to support conservation planning and ecological analysis:
 
 
-### occurrenceNM()
+### bam_occurrence()
 
-The **occurrenceNM()** function estimates a species' presence/absence threshold based on a Lorenz curve, which summarizes the spatial inequality in predicted occurrence probabilities. This function helps distinguish between areas of high and low predicted use, by determining a threshold value that defines the most likely occupied areas.
+The **bam_occurrence()** function estimates a species' presence/absence threshold based on a Lorenz curve, which summarizes the spatial inequality in predicted occurrence probabilities. This function helps distinguish between areas of high and low predicted use, by determining a threshold value that defines the most likely occupied areas.
 
 Arguments
 
@@ -45,9 +45,9 @@ A tibble with the following columns:
 - area_km2: The total area (in square kilometers) where predicted abundance exceeds the threshold (if applied).
 
 
-### pop_sizeNM()
+### bam_pop_size()
 
-The **pop_sizeNM()** function estimates the total population size by summarizing predicted densities of males across a spatial extent. This function supports cropping to a defined area (e.g., a region of interest) and group-based summaries if the extent includes a grouping variable (e.g., subregions, jurisdictions).
+The **bam_pop_size()** function estimates the total population size by summarizing predicted densities of males across a spatial extent. This function supports cropping to a defined area (e.g., a region of interest) and group-based summaries if the extent includes a grouping variable (e.g., subregions, jurisdictions).
 
 Arguments
 
@@ -77,30 +77,30 @@ A tibble with the following columns:
 
 ## Example workflow
 
-### Set  the area of interest (AOI) as the Canadian extent of BCRs 10 and 11 
+### Set  the area of interest (AOI) as the Canadian extent of BCRs 61 and 62 
 
 ```{r select_aoi, fig.width=8, fig.height=6, echo = TRUE, results = 'markup', error = TRUE}
 library(BAMexploreR)
 library(terra)
 library(dplyr)
 
-# Load and extract Canada BCRs 10 and 11
+# Load and extract Canada BCRs 61 and 62
 bcr_v5 <- vect(system.file("extdata", "BAM_BCRNMv5_5072.shp", package = "BAMexploreR"))
-aoi_sf <- bcr_v5[bcr_v5$subunit_ui %in% c("can10", "can11"), ]
+aoi_sf <- bcr_v5[bcr_v5$subunit_ui %in% c("can61", "can62"), ]
 
-plot(bcr_v5, main = "AOI defined by the Canadian extent of BCRs 10 and 11")
+plot(bcr_v5, main = "AOI defined by the Canadian extent of BCRs 61 and 62")
 plot(aoi_sf, col = "red", add = TRUE)
  
 
 ```
 
-### Mapping species occurence for TEWA and BBWO within the AOI
+### Mapping species occurence for CAWA and OVEN within the AOI
 
 
 ```{r map_occurence, fig.width=8, fig.height=6, message = FALSE, warning= FALSE, echo = TRUE, results = 'markup', error = TRUE}
 # Download TEWA and BBWO distribution maps and map presence/absence through the aoi 
-results <- getlayerNM(c("TEWA", "BBWO"), "v5", destfile = tempdir(), crop_ext = aoi_sf, year = "2010")
-occ_results <- occurrenceNM(results, plot = TRUE)
+results <- bam_get_layer(c("CAWA", "OVEN"), "v5", destfile = tempdir(), crop_ext = aoi_sf, year = "2010")
+occ_results <- bam_occurrence(results, plot = TRUE)
 
 ```
 
@@ -112,7 +112,7 @@ occ_results <- occurrenceNM(results, plot = TRUE)
 library(knitr)
 
 # Calculate population size based on BAM National Model density raster
-occ_results <- pop_sizeNM(results, crop_ext = aoi_sf, group = "subunit_ui")
+occ_results <- bam_pop_size(results, crop_ext = aoi_sf, group = "subunit_ui")
 
 # Show results
 kable(occ_results, caption = "Estimated population size grouped by BCR")

@@ -7,7 +7,7 @@
 \format{
 A character vector with 12 elements:
 \describe{
-  \item{COSEWIC_Status}{The conservation status of species.}
+  \item{COSEWIC}{The conservation status of species.}
   \item{Cavity_Birds}{Species that nest in cavities.}
   \item{Waterfowl}{Bird species that primarily live on or near water.}
   \item{Marine_Birds}{Bird species that live in marine environments.}
@@ -34,5 +34,6 @@ The groups include categories such as "Waterfowl", "Birds of Prey", and "Shorebi
 \examples{
 data(guild_opt)
 head(guild_opt)
+
 }
 \keyword{datasets}

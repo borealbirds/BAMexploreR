@@ -11,11 +11,11 @@
 #' @importFrom sf st_as_sf st_intersects
 #' @docType methods
 #' @author Melina Houle
-#' @rdname getBCR
+#' @rdname bam_get_bcr
 #' @export
 #' @examples
-#' subUnit<- getBCR("v5")
-getBCR <- function(version, ext = NULL) {
+#' subUnit<- bam_get_bcr("v5")
+bam_get_bcr <- function(version, ext = NULL) {
 
   if (!version %in% c("v4", "v5")) {
     stop("Invalid version argument. Must be either 'v4' or 'v5'.")

@@ -49,22 +49,22 @@
 #' @examples
 #'
 #' # download v4 rasters for Tennessee Warbler and Ovenbird
-#' rasters <- getlayerNM(c("TEWA", "OVEN"), "v4", destfile=tempdir())
+#' rasters <- bam_get_layer(c("TEWA", "OVEN"), "v4", destfile=tempdir())
 #'
 #' # visualize core habitat
-#' occurrenceNM(rasters)
+#' bam_occurrence(rasters)
 #'
 #' # set custom threshold and compare core habitat
-#' occurrenceNM(rasters, quantile=0.8)
+#' bam_occurrence(rasters, quantile=0.8)
 #'
 #' # analyse core habitat in a custom area, using v5 predictions for Tennessee Warbler
 #' aoi_sf <- vect(system.file("extdata", "vignette_poly_5072.shp", package = "BAMexploreR"))
-#' rasterv5 <- getlayerNM("TEWA", "v5",  crop_ext = aoi_sf, destfile = tempdir(), year = "2020")
-#' occurrenceNM(rasterv5)
+#' rasterv5 <- bam_get_layer("TEWA", "v5",  crop_ext = aoi_sf, destfile = tempdir(), year = "2020")
+#' bam_occurrence(rasterv5)
 #'
 #'
 
-occurrenceNM <- function(raster_list, quantile="by_lorenz", plot=TRUE){
+bam_occurrence <- function(raster_list, quantile="by_lorenz", plot=TRUE){
 
   # check for valid input
   stopifnot(is.list(raster_list))

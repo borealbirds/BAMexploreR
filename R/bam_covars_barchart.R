@@ -43,24 +43,24 @@
 #' @examples
 
 #' # Compare covariate importance (binned by variable class) for all species in all BCRs
-#' stackedbarNM(species = "all", bcr = "all",  groups = c("spp", "var_class"))
+#' bam_covars_barchart(species = "all", bcr = "all",  groups = c("spp", "var_class"))
 #'
 #' # Compare covariate importance (binned by variable class) in the Prairies (BCRs 11, 6-1, 6-0)
 #' # to the Pacific Coast across (BCR 5) all species
 #' prairies_to_coast <- c("can11", "can60", "can61", "can5")
-#' stackedbarNM(species = "all", bcr = prairies_to_coast, groups=c("bcr", "var_class"))
+#' bam_covars_barchart(species = "all", bcr = prairies_to_coast, groups=c("bcr", "var_class"))
 #'
 #' # Compare covariate importance (binned by variable class) for four
 #' # warbler species in BCR14
 #' warblers <- c("CAWA", "BAWW", "BTNW", "BLBW")
-#' stackedbarNM(species = warblers, bcr = "can14", groups = c("spp", "var_class"))
+#' bam_covars_barchart(species = warblers, bcr = "can14", groups = c("spp", "var_class"))
 #'
 #' # Compare covariate importance for a single warbler species
 #' # relative to the total influence that covariate had across all warblers.
-#' stackedbarNM(species = warblers, bcr = "can14", groups = c("var", "spp"))
+#' bam_covars_barchart(species = warblers, bcr = "can14", groups = c("var", "spp"))
 
 
-stackedbarNM <- function(species = "all", bcr = "all",  groups = c("spp", "var_class"), version ="v5", plot = TRUE, colours = NULL){
+bam_covars_barchart <- function(species = "all", bcr = "all",  groups = c("spp", "var_class"), version ="v5", plot = TRUE, colours = NULL){
 
   if (!version %in% c("v4", "v5")) {
     stop("Invalid version argument. Must be either 'v4' or 'v5'.")

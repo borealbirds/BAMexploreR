@@ -8,7 +8,7 @@
 #' @param destfile character. Indicate output path where the downloaded file is saved.
 #'
 #' @param crop_ext SpatVector or SpatRaster used to define the extent for the cropping.
-#' Or downloading valid BCR polygons from list, type: mapBCR("v4") or mapBCR("v5")
+#' Or downloading valid BCR polygons from list, type: \code{bam_map_bcr("v4")} or \code{bam_map_bcr("v5")}
 #'
 #' @param year character; Specify the year for which the density map were generated. Only in v5.
 #'
@@ -19,13 +19,13 @@
 #' as a side-effect.
 #'
 #' @examples
-#' bird <- getlayerNM("TEWA", "v4", tempfile())
+#' bird <- bam_get_layer("TEWA", "v4", tempfile())
 #'
-#' bird <- getlayerNM("TEWA", "v4", destfile = tempdir())
+#' bird <- bam_get_layer("TEWA", "v4", destfile = tempdir())
 #'
 #' @author Melina Houle
 #' @docType methods
-#' @rdname getlayerNM
+#' @rdname bam_get_layer
 #' @export
 #'
 #' @importFrom dplyr pull
@@ -36,7 +36,7 @@
 #' @importFrom terra vect rast project crop values crs writeRaster same.crs
 #' @importFrom stats setNames
 #'
-getlayerNM <- function(spList, version, destfile, crop_ext = NULL,  year = NULL, bcrNM= "mosaic") {
+bam_get_layer <- function(spList, version, destfile, crop_ext = NULL,  year = NULL, bcrNM= "mosaic") {
   # Valid Model versions
   if (!version %in% c("v4", "v5")) {
     stop("Model version doesn't exist.")
@@ -98,7 +98,7 @@ getlayerNM <- function(spList, version, destfile, crop_ext = NULL,  year = NULL,
   #  setwd(destfile)
   #}
 
-  spv <- sppList(version, "speciesCode")
+  spv <- bam_spp_list(version, "speciesCode")
 
   # Check if provided species list is in the available species codes. Display erroneous
   uspecies <- spList[!spList %in% spv]

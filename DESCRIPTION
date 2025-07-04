@@ -38,15 +38,16 @@ License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Collate: 
-    'sppList.R'
-    'getlayerNM.R'
-    'getBCR.R'
-    'mapBCR.R'
-    'occurrenceNM.R'
-    'plot_importanceNM.R'
-    'pop_sizeNM.R'
-    'stackedbarNM.R'
+    'bam_spp_list.R'
+    'bam_get_layer.R'
+    'bam_get_bcr.R'
+    'bam_map_bcr.R'
+    'bam_occurrence.R'
+    'bam_covars_importance.R'
+    'bam_pop_size.R'
+    'bam_covars_barchart.R'
     'data-doc.R'
+    'spp_tbl-doc.R'
     'utils.R'
 RoxygenNote: 7.3.2
 VignetteBuilder: knitr

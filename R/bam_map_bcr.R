@@ -14,11 +14,11 @@
 #' @importFrom sf st_as_sf st_intersects
 #' @docType methods
 #' @author Melina Houle
-#' @rdname mapBCR
+#' @rdname bam_map_bcr
 #' @export
 #' @examples
-#' subUnit<- mapBCR("v5")
-mapBCR <- function(version, ext = NULL) {
+#' subUnit<- bam_map_bcr("v5")
+bam_map_bcr <- function(version, ext = NULL) {
   tmap::tmap_mode("plot")
 
   if (!version %in% c("v4", "v5")) {
@@ -92,8 +92,8 @@ mapBCR <- function(version, ext = NULL) {
   if(!missing(ext)){
     tmap <- tmap +
       tmap::tm_shape(user_sf) +
-      tmap::tm_polygons(fill = NA, fill_alpha = 0, col = "red", col_alpha = 1, lwd = 2, fill.legend = NULL) +
-      tmap::tm_add_legend(type = "polygons", labels = "User AOI", fill = NA, col = "red") + # Add legend item for user_sf
+      tmap::tm_polygons(fill = NA, fill_alpha = 0, col = "black", col_alpha = 1, lwd = 3, fill.legend = NULL) +
+      tmap::tm_add_legend(type = "polygons", labels = "User AOI", fill = NA, col = "black") + # Add legend item for user_sf
       tmap::tm_layout(legend.outside = TRUE, legend.stack = "vertical")
   }
 

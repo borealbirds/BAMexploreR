@@ -6,26 +6,18 @@ library(usethis)
 ###############################################################
 # version URL data file
 version.url <- tibble(
-  version = c("v4_demo",
-              "v5_demo",
-              "v4",
-              "v5",
-              "v4_GD",
-              "v5_GD"),
-  url = c("http://206.12.92.143/data/NationalModelv4_sample",
-          "http://206.12.92.143/data/NationalModelv5",
-          "http://206.12.92.143/data/NationalModelv4",
-          "http://206.12.92.143/data/NationalModelv5",
-          "https://drive.google.com/drive/u/1/folders/1aJUZr4fACdD02H8AYejR2XG6zuA6E492",
-          "https://drive.google.com/drive/u/1/folders/1snHdBwcVyUYCbwYJSCWm5506fiBEYal-")
+  version = c("v4",
+              "v5"),
+  url = c("http://206.12.92.143/data/NationalModelv4",
+          "http://206.12.92.143/data/NationalModelv5")
 )
 
 ###############################################################
 ### create 2nd internal data: most updated species list
 ###############################################################
 # species list URL data file
-spp_List <- read.csv("./data-raw/sppList.csv", header= TRUE)
-#use_data(spp_List, internal = FALSE, overwrite = TRUE)
+spp_tbl <- read.csv("./data-raw/sppList.csv", header= TRUE)
+use_data(spp_tbl, internal = FALSE, overwrite = TRUE)
 
 
 ###############################################################
@@ -33,23 +25,18 @@ spp_List <- read.csv("./data-raw/sppList.csv", header= TRUE)
 ###############################################################
 load("./data-raw/bam_covariate_importance_v4.rda")
 load("./data-raw/bam_covariate_importance_v5.rda")
-###############################################################
-### create 4th internal data: Covariate LookUp table
-###############################################################
-#
+
 
 ###############################################################
 ### Generate internal data
 ###############################################################
-use_data(version.url, spp_List, bam_covariate_importance_v4, bam_covariate_importance_v5, internal = TRUE, overwrite = TRUE)
-#use_data(version.url, spp_List, internal = TRUE, overwrite = TRUE)
-
+use_data(version.url, spp_tbl, bam_covariate_importance_v4, bam_covariate_importance_v5, internal = TRUE, overwrite = TRUE)
 
 ###############################################################
 ### Generate external data
 ###############################################################
 # guild list URL data file
-guild_opt <- c("COSEWIC_Status",
+guild_opt <- c("COSEWIC",
                "Cavity_Birds",
                "Waterfowl",
                "Marine_Birds",

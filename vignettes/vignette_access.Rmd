@@ -20,93 +20,78 @@ knitr::opts_chunk$set(
 
 
 ## Introduction
-Over the years, BAM developed generalized analytical approaches to model species densities in relation to environmental covariates using bird survey. Two versions of the BAM National Models are now available. Version 4 was released in 2020 and modeled species-specific density in the boreal region independently in 16 regional sub-units (portions of BCRs separated by provincial boundaries), while version 5 extends across the Canadian border and includes the northern United States within the boreal and hemiboreal regions. In order to integrate possible changes in population density due to environmental variations, version 5 focused on choosing products that could be temporally matched to bird survey data to accurately represent the environmental conditions during the time of survey, which led to 5-year intervals species-specific density maps (1985-2020). In version 4, we provided an overall mean density predictions. In version 5, we expanded our geospatial products to complement these predictions by incorporating measures of variation, sampling density, and areas of extrapolation, offering better context for interpreting and applying our density models. Those different layers are all package as a stack of raster. 
 
-
-`BAMexploreR` is a package for downloading and analyzing boreal bird species data from the BAM National Model v4 and v5. Functions in the package perform the following tasks:
-
-- **Accessing the data** - list the species for which National models were created, specify and map bcr unit available for each National model version and download species output.
-- **Population & distribution** - explore boreal bird species distribution and estimate population metrics using raster outputs from predictive models.
-- **Covariate interpretation** - blabla.
- 
 This vignette will guide you through the basic usage of accessing the data using the package, including how to download specific species using region subunit or custom extent.
 
-## Installation
-
-You can install the development version of `BAMexploreR` from [GitHub](https://github.com/) with:
-
-```{r setup, include = TRUE, message=FALSE, warning=FALSE}
-library(BAMexploreR)
-```
-
-### Data
-All data used in this example are included in the package and are described in the help files.
-```{r, eval = FALSE}
-?guild_opt
-?spp_List
-
-```
 
 ## Subunit naming convention
-BAM National Density Model version 4 was generated within Canada boundary only using the delineation of BCR intersecting the provinces, while version 5 encompassed both Canada and North of the USA. In version 5, because most of the spatial layers used to develop the models were country specific, we used as model-building units the combination of bird conservation regions (BCRs) intersected with Canada-USA jurisdictional boundaries. Those subunits changed overtime based on decision making by the different agencies. For both version, each subunits use acronym of the country as prefix followed by the number of the BCR unit. Delineation of the subunit can be viewed using the `mapBCR` function. It is possible to provide an extent (**ext**) that represent a study region and have it overlaid on the BCRs delineation.
+BAM National Density Model version 4 was generated within Canada boundary only using the delineation of BCR intersecting the provinces, while version 5 encompassed both Canada and North of the USA. In version 5, because most of the spatial layers used to develop the models were country specific, we used as model-building units the combination of bird conservation regions (BCRs) intersected with Canada-USA jurisdictional boundaries. Those subunits changed overtime based on decision making by the different agencies. For both version, each subunits use acronym of the country as prefix followed by the number of the BCR unit. Delineation of the subunit can be viewed using the `bam_map_bcr` function. It is possible to provide an extent (**ext**) that represent a study region and have it overlaid on the BCRs delineation.
 
-```{r overall_bcr_list, fig.width=8, fig.height=6, message=FALSE, warning=FALSE}
+### National Model v4 BCR naming convention
 
+```{r list_BCRv4, fig.width=8, fig.height=6, message=FALSE, warning=FALSE}
 library(tmap)
-#tmap_mode("plot")
+library(BAMexploreR)
 
-BCRv4 <- getBCR("v4") 
-
-BCRv5<- getBCR("v5")
-#mapBCRv5$map <- mapBCRv5$map + tmap::tm_layout(title = "BCR Mapping - Version 5", title.position = c("center", "top"))
-#print(mapBCRv5$map) 
+bam_map_bcr("v4")
+bam_get_bcr("v4") 
 
 ```
+
+
+### National Model v5 BCR naming convention
+
+```{r list_BCRv5, fig.width=8, fig.height=6, message=FALSE, warning=FALSE}
+bam_map_bcr("v5")
+bam_get_bcr("v5")
+
+```
+
 
 ## Example workflow
 
 ### Identify species available
-BAM National Models were generated for 143 species. Users can access the species available for the version of the model specified using the `sppList` function. The function has a `guild` parameters that allow the user to filter species avaiable based on a specific species group. The species groups follow the classification used by The State of Canada's Birds, which categorizes species based on broad biomes and groups with distinct and noteworthy trends. While some species may belong to multiple groups, only those that are truly representative of a given group are included. The following workflow demonstrates how to generate a species list based on available model output version, filtering by a species groups categories used by The State of the Canada's birds such as 'Forest_Bird'.User can check the species group categories and definition by accessing `guild_opt` documentation. 
+BAM National Models were generated for 143 species. Users can access the species available for the version of the model specified using the `bam_spp_list` function. The function has a `guild` parameters that allow the user to filter species avaiable based on a specific species group. The species groups follow the classification used by The State of Canada's Birds, which categorizes species based on broad biomes and groups with distinct and noteworthy trends. While some species may belong to multiple groups, only those that are truly representative of a given group are included. The following workflow demonstrates how to generate a species list based on available model output version, filtering by a species groups categories used by The State of the Canada's birds such as 'Forest_Bird'.User can check the species group categories and definition by accessing `guild_opt` documentation. 
 
 
 ```{r species_list, echo = TRUE, results = 'markup', error = TRUE}
 # Generate a vector of Forest bird species available in version 5. 
 # If guild is not provided, the function will return all species avaialble for a specific version of the model.
-forest_v5 <- sppList("v5_demo", "species_code", "Forest_Birds")
+forest_v5 <- bam_spp_list("v5", "speciesCode", "Forest_Birds")
 
 head(forest_v5)
 
 ```
 
 ### Identify BCR intersecting the zone of interest
-Species-specific density maps are available at the national scale in version 4, while in version 5, they can be accessed at the BCR level. This functionality helps reduce overall download size. Since BCR names vary by version and country, the mapBCR function ensures the correct naming is used. Users can specify an extent and identify BCRs intersection the zone of interest. 
+Species-specific density maps are available at the national scale in version 4, while in version 5, they can be accessed at the BCR level. This functionality helps reduce overall download size. Since BCR names vary by version and country, the **bam_map_bcr** function ensures the correct naming is used. Users can specify an extent and identify BCRs intersection the zone of interest. 
 
 ```{r aoi_bcr_list, fig.width=8, fig.height=6, echo = TRUE, results = 'markup', error = TRUE}
 aoi_sf <- vect(system.file("extdata", "vignette_poly_5072.shp", package = "BAMexploreR"))
 
 # Extract BCR subunit from version 5 that intersect extent
-bcraoi_v5 <- getBCR("v5", ext=aoi_sf) 
-print(subUnit)
+bcraoi_v5 <- bam_get_bcr("v5", ext=aoi_sf) 
+bcraoi_v5
 
 # Map extent on BCR subunit
-map <- mapBCR("v5", ext=aoi_sf) + tmap::tm_layout(title = "BCR Mapping - Version 4", title.position = c("center", "top"))
-suppressWarnings(print(map)) + tmap::tm_layout(title = "BCR Mapping - Version 4", title.position = c("center", "top"))
+map <- bam_map_bcr("v5", ext=aoi_sf) + tmap::tm_layout(title = "BCR Mapping - Version 5", title.position = c("center", "top"))
+suppressWarnings(print(map)) + tmap::tm_layout(title = "BCR Mapping - Version 5", title.position = c("center", "top"))
 ```
 
 ### Download species specific density maps
 
-Users can download density maps for species using the `getlayerNM` function. Users can restrict the download on specific species and extent to reduce overall download size. Since version 5 provide species specific density map on a 5 years interval, the user can specify which of the 9 maps to download. By the absence of a specific year, the density map of the year 2020 is provided. 
+Users can download density maps for species using the `bam_get_layer` function. Users can restrict the download on specific species and extent to reduce overall download size. Since version 5 provide species specific density map on a 5 years interval, the user can specify which of the 9 maps to download. By the absence of a specific year, the density map of the year 2020 is provided. 
 
 
 ```{r get_layer, fig.width=8, fig.height=6, echo = TRUE, results = 'markup', error = TRUE}
 library(terra)
 
 # Check which species under a the COSEWIC Act are available
-cosewic_spp <- sppList("v5", "COSEWIC_Status")
-print(cosewic_spp)
+cosewic_spp <- bam_spp_list("v5", guild= "COSEWIC")
+cosewic_spp
 
 # From the cosewic_spp list, download TEWA and VESP density maps for BCRs intersecting user AOI for the year 2010.
-result <- getlayerNM(cosewic_spp, "v5", destfile = tempdir(), year = "2010", bcrNM=bcraoi_v5)
+result <- bam_get_layer(cosewic_spp, "v5", destfile = tempdir(), year = "2010", bcrNM=bcraoi_v5)
 plot(result$TEWA)
 ```
 

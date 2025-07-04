@@ -1,0 +1,69 @@
+---
+title: "<span style='font-size: 14px;'>BAM Landbird Density Model</span><br><strong>Introdution</strong>"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{model_intro}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "",
+  message = FALSE,
+  warning = FALSE
+)
+```
+
+
+
+## Introduction
+Over the years, BAM developed generalized analytical approaches to model species densities in relation to environmental covariates using bird survey. Two versions of the BAM National Models are now available. Version 4 was released in 2020 and modeled species-specific density in the boreal region independently in 16 regional sub-units (portions of BCRs separated by provincial boundaries), while version 5 extends across the Canadian border and includes the northern United States within the boreal and hemiboreal regions. In order to integrate possible changes in population density due to environmental variations, version 5 focused on choosing products that could be temporally matched to bird survey data to accurately represent the environmental conditions during the time of survey, which led to 5-year intervals species-specific density maps (1985-2020). In version 4, we provided an overall mean density predictions. In version 5, we expanded our geospatial products to complement these predictions by incorporating measures of variation, sampling density, and areas of extrapolation, offering better context for interpreting and applying our density models. Those different layers are all package as a stack of raster. 
+
+`BAMexploreR` is a package for downloading and analyzing boreal bird species data from the BAM Landbird Model v4 and v5. Functions in the package perform the following tasks:
+
+- **Accessing the data** - list the species for which National models were created, specify and map bcr unit available for each National model version and download species output.
+- **Population & distribution** - explore boreal bird species distribution and estimate population metrics using raster outputs from predictive models.
+- **Covariate interpretation** - blabla.
+ 
+This vignette provides a general introduction to the BAMexploreR package, including an overview of its purpose, core functionality, and the data included with the package.
+
+It highlights the types of data embedded in the package (e.g., shapefiles, species lists) and explains how they support the functions used to explore species occurrence and density across the BCRs extent.
+
+This is intended as a starting point to familiarize users with the structure and content of the package before diving into specific workflows or analyses.
+
+## Installation
+
+You can install the development version of `BAMexploreR` from [GitHub](https://github.com/) with:
+
+```{r setup, include = TRUE, message=FALSE, warning=FALSE}
+library(BAMexploreR)
+```
+
+### Data
+
+
+#### spp_tbl
+BAM Landbird Density Models were developed for a defined set of species. To provide users with flexibility, a reference table was created allowing species to be identified using their species code, common name, or scientific name. Each species is also assigned to a species group (or guild), based on classifications from The State of Canada’s Birds report, which organizes species by broad biomes and groups that exhibit distinct and notable population trends.  
+
+```{r, eval = FALSE}
+head(spp_tbl)
+
+```
+
+
+
+## Citation
+
+Please cite the _BAMexploreR_ package when using it in publications. To cite the latest official version, please use:
+
+
+```{r, echo = FALSE, results = "asis"}
+dev_version <- packageDescription("BAMexploreR")$Version
+cat(paste0("\\> Houle M, Boehm M, Wu SC, Knight E, ... (", format(Sys.time(), "%Y"),"). BAMexploreR: Evaluating boreal birds density in Canada using R. R package version ", dev_version, ". Available at https://github.com/borealbirds/BAMexploreR\n"))
+```
+
+
+

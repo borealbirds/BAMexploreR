@@ -40,18 +40,18 @@
 #'
 #' # Example of plotting covariate importance for Townsend's Solitaire across all BCRs.
 #' # This is a species with relatively high bootstrap variance.
-#' plot_importanceNM(species = "TOSO")
+#' bam_covars_importance(species = "TOSO")
 #'
 #' # Example of plotting covariate importance for two warbler species from three BCRs,
 #' # using custom colours:
-#' plot_importanceNM(species = c("BAWW", "CAWA"), group = "spp",
+#' bam_covars_importance(species = c("BAWW", "CAWA"), group = "spp",
 #' bcr = c("can12", "can13", "can14"),  colours = c("#1f78b4", "#33a02c"))
 #'
 #'
 #'
 ##################################################################################
 
-plot_importanceNM <- function(species = "all", bcr = "all", group = "spp", version = "v5", plot = TRUE, colours = NULL) {
+bam_covars_importance <- function(species = "all", bcr = "all", group = "spp", version = "v5", plot = TRUE, colours = NULL) {
 
   # validate data version
   if (!version %in% c("v4", "v5")) {

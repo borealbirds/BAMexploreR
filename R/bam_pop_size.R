@@ -5,7 +5,7 @@
 #' but with an adjustment for converting pixel values from males/ha to males/pixel.
 #' It also provides a basic summary of the input raster.
 #'
-#' @param raster_list A list of \code{SpatRaster}s. See \code{getlayerNM()} for accessing BAM's raster data.
+#' @param raster_list A list of \code{SpatRaster}s. See \code{bam_get_layer()} for accessing BAM's raster data.
 #' @param crop_ext SpatVector used to define the extent for the cropping and grouping of population estimates.
 #' @param group Optional character value of column in SpatVector used for grouping population estimates.
 #'
@@ -21,12 +21,12 @@
 #' @export
 #' @examples
 #' # download rasters for Tennessee Warbler and Ovenbird
-#' rasters <- getlayerNM(c("TEWA", "OVEN"), "v4", destfile=tempdir())
+#' rasters <- bam_get_layer(c("TEWA", "OVEN"), "v4", destfile=tempdir())
 #'
 #' # get summaries of population size
-#' pop_sizeNM(rasters) # 111 million and 3.5 million, respectively
+#' bam_pop_size(rasters) # 111 million and 3.5 million, respectively
 
-pop_sizeNM <- function(raster_list, crop_ext= NULL, group = NULL){
+bam_pop_size <- function(raster_list, crop_ext= NULL, group = NULL){
   # check for valid input
   stopifnot(is.list(raster_list))
   stopifnot(all(purrr::map_lgl(raster_list, ~ inherits(.x, "SpatRaster"))))
@@ -96,11 +96,12 @@ pop_sizeNM <- function(raster_list, crop_ext= NULL, group = NULL){
         dplyr::filter(!is.na(density)) |>
         dplyr::group_by(dplyr::across(dplyr::all_of(group))) |>
         dplyr::summarize(total_pop = sum(density)*100,
-                         mean_density = mean(density),
-                         sd_density = sd(density),
+                         mean_density = round(mean(density), 3),
+                         sd_density = round(sd(density), 3),
                          n_cells = dplyr::n()) |>
         dplyr::ungroup() |>
-        dplyr::mutate(species = spp)
+        dplyr::mutate(species = spp) |>
+        dplyr::select(species, tidyselect::everything())
 
       #rename the group column
       colnames(group_summary) <- c("group", colnames(group_summary[2:ncol(group_summary)]))
@@ -110,13 +111,13 @@ pop_sizeNM <- function(raster_list, crop_ext= NULL, group = NULL){
         dplyr::filter(!is.na(density)) |>
         dplyr::summarise(
           total_pop   = sum(density) * 100,
-          mean_density = mean(density),
-          sd_density   = sd(density),
+          mean_density = round(mean(density), 3),
+          sd_density   = round(sd(density), 3),
           n_cells      = n()
         ) |>
         dplyr::mutate(group   = NA,
                       species = spp) |>
-        dplyr::select(group, tidyselect::everything())
+        dplyr::select(species, group, tidyselect::everything())
     }
 
     return(group_summary)
@@ -134,15 +135,15 @@ pop_sizeNM <- function(raster_list, crop_ext= NULL, group = NULL){
   if(!is.null(group)){
     list_of_summaries <- purrr::imap_dfr(crop_list, ~pop_estimate(
       raster_i = .x,
+      spp = .y,
       crop_ext_grp = crop_ext_grp,
-      group = group,
-      spp = .y))
+      group = group))
   } else {
     list_of_summaries <- purrr::imap_dfr(crop_list, ~pop_estimate(
       raster_i = .x,
+      spp = .y,
       crop_ext_grp = crop_ext_grp,
-      group = NA,
-      spp = .y))
+      group = NA))
   }
 
   # output

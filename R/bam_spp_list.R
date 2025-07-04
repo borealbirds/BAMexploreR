@@ -6,10 +6,10 @@
 #'
 #' @param version character; Indicate the version of the National Model requested. Each version of the
 #'        National Model has its url access provided within the package.
-#' @param type character; type of output provided in the list, either "speciesCode", "commonName" or "scientificName".
+#' @param type character; type of output provided in the list, either \code{"speciesCode"}, \code{"commonName"} or \code{"scientificName"}.Default is \code{"speciesCode"}.
 #' @param guild character; Specifies the guild to filter the species list, based on the classification used in The State of Canada’s Birds Report (Birds Canada, 2024).
 #'              By providing a guild (e.g., "Forest Birds"), the function will return only the species available within that specific category.
-#'              Accepted guild names include "Forest_Birds", "Grassland_Birds", "Waterfowl", and others as defined in the report.
+#'              Accepted guild names include \code{"Forest_Birds"}, \code{"Grassland_Birds"}, \code{"Waterfowl"}, and others as defined in the report.
 #'
 #' @return Vector of species name
 #'
@@ -20,15 +20,13 @@
 #'
 #' @docType methods
 #' @author Melina Houle
-#' @rdname sppList
+#' @rdname bam_spp_list
 #' @export
 #' @examples
 
-#' speciesList <- sppList("v4", "speciesCode")
-sppList <- function(version, type, guild = NULL) {
-  #load(system.file("R/sysdata.rda", package = "BAMexploreR"))
-  #load("R/sysdata.rda")
-  spdt <- spp_List
+#' speciesList <- bam_spp_list("v4", "speciesCode")
+bam_spp_list <- function(version, type = "speciesCode", guild = NULL) {
+  spdt <- spp_tbl
 
   if (!version %in% c("v4", "v5")) {
     stop("Invalid version argument. Must be either 'v4' or 'v5'.")
