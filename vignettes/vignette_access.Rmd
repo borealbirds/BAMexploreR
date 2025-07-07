@@ -1,5 +1,5 @@
 ---
-title: "<span style='font-size: 14px;'>BAM National Models Density Map</span><br><strong>Accessing the data</strong>"
+title: "<span style='font-size: 14px;'>BAM Landbird Density Models</span><br><strong>Accessing the data</strong>"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{model_access}
@@ -18,14 +18,67 @@ knitr::opts_chunk$set(
 ```
 
 
+This vignette will guide you through the basic usage of accessing the data using the package, including how to download specific species using region subunit or custom extent. The following core functions are designed to support accessing BAM Landbird Density maps:(** refer to paper)
 
-## Introduction
 
-This vignette will guide you through the basic usage of accessing the data using the package, including how to download specific species using region subunit or custom extent.
+### bam_map_bcr()
+
+The **bam_map_bcr()** function plots the BCR subunit boundaries for a chosen version and can optionally overlay a provided AOI SpatVector to highlight the area of interest.
+
+Arguments
+
+- version: Specifies which version of the National Model to use. Valid options are "v4" or "v5".
+
+- ext: SpatVector or SpatRaster used to define an area of interest.
+
+
+📤 Output
+
+Map illustrating the BCR and overlap extent if provided.
+
+
+### bam_get_bcr()
+
+The **bam_get_bcr()** function returns the list of Bird Conservation Region (BCR) subunits for a given model version. If an ext object is supplied, only those subunits that intersect the provided extent are returned.
+
+Arguments
+
+- version: Specifies which version of the National Model to use. Valid options are "v4" or "v5".
+
+- ext: (Optional) SpatVector or SpatRaster whose extent will be used to filter and return only intersecting BCR subunits.
+
+
+📤 Output
+
+A vector representing the name of the BCR subunits. 
+
+
+### bam_get_layer()
+
+The **bam_get_layer()** function download BAM species specific Landbird Density maps based on list of species. 
+
+Arguments
+
+- spList: A named list of SpatRaster objects, each representing predicted density for a species.
+
+- version: A character specifying which version of the BAM Landbird Density map to use. Valid options are "v4" or "v5".
+
+- destfile: A character indicating output path where the downloaded file is saved.
+
+- crop_ext: A SpatVector or SpatRaster used to define the extent for the cropping.
+
+- year: A character specifying the year for which the density map were generated. Only in v5. Valid options are "1985", "1990", "1995", "2000", "2005", "2010", "2015" and "2020". Default value is "2020".
+
+- bcrNM: A vector representing the BCR subunit name according to model version. Default is "mosaic".
+
+
+📤 Output
+
+A list of SpatRaster objects. In addition to returning these objects, the function also downloads raster files to the directory specified by destfile as a side-effect.
 
 
 ## Subunit naming convention
-BAM National Density Model version 4 was generated within Canada boundary only using the delineation of BCR intersecting the provinces, while version 5 encompassed both Canada and North of the USA. In version 5, because most of the spatial layers used to develop the models were country specific, we used as model-building units the combination of bird conservation regions (BCRs) intersected with Canada-USA jurisdictional boundaries. Those subunits changed overtime based on decision making by the different agencies. For both version, each subunits use acronym of the country as prefix followed by the number of the BCR unit. Delineation of the subunit can be viewed using the `bam_map_bcr` function. It is possible to provide an extent (**ext**) that represent a study region and have it overlaid on the BCRs delineation.
+BAM Landbird Density Models version 4 were generated within Canada boundary only using the delineation of BCR intersecting the provinces, while version 5 encompassed both Canada and North of the USA. In version 5, because most of the spatial layers used to develop the models were country specific, we used as model-building units the combination of bird conservation regions (BCRs) intersected with Canada-USA jurisdictional boundaries. Those subunits changed overtime based on decision making by the different agencies. For both version, each subunits use acronym of the country as prefix followed by the number of the BCR unit. Delineation of the subunit can be viewed using the `bam_map_bcr` function. It is possible to provide an extent (`ext`) that represent a study region and have it overlaid on the BCRs delineation.
 
 ### National Model v4 BCR naming convention
 
@@ -51,7 +104,7 @@ bam_get_bcr("v5")
 ## Example workflow
 
 ### Identify species available
-BAM National Models were generated for 143 species. Users can access the species available for the version of the model specified using the `bam_spp_list` function. The function has a `guild` parameters that allow the user to filter species avaiable based on a specific species group. The species groups follow the classification used by The State of Canada's Birds, which categorizes species based on broad biomes and groups with distinct and noteworthy trends. While some species may belong to multiple groups, only those that are truly representative of a given group are included. The following workflow demonstrates how to generate a species list based on available model output version, filtering by a species groups categories used by The State of the Canada's birds such as 'Forest_Bird'.User can check the species group categories and definition by accessing `guild_opt` documentation. 
+BAM Landbird Density Models were generated for 143 species. Users can access the species available for the version of the model specified using the `bam_spp_list` function. The function has a `guild` parameters that allow the user to filter species avaiable based on a specific species group. The species groups follow the classification used by The State of Canada's Birds, which categorizes species based on broad biomes and groups with distinct and noteworthy trends. While some species may belong to multiple groups, only those that are truly representative of a given group are included. The following workflow demonstrates how to generate a species list based on available model output version, filtering by a species groups categories used by The State of the Canada's birds such as 'Forest_Bird'.User can check the species group categories and definition by accessing `guild_opt` documentation. 
 
 
 ```{r species_list, echo = TRUE, results = 'markup', error = TRUE}

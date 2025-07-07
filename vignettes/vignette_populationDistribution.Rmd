@@ -1,5 +1,5 @@
 ---
-title: "BAM National Models - Mapping Species Occurrence and Density"
+title: "<span style='font-size: 14px;'>BAM Landbird Density Models</span><br><strong>Mapping Species Occurrence and Density</strong>"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{model_distribution}
@@ -84,11 +84,11 @@ library(BAMexploreR)
 library(terra)
 library(dplyr)
 
-# Load and extract Canada BCRs 61 and 62
+# Load and extract Canada BCRs 60 and 61
 bcr_v5 <- vect(system.file("extdata", "BAM_BCRNMv5_5072.shp", package = "BAMexploreR"))
-aoi_sf <- bcr_v5[bcr_v5$subunit_ui %in% c("can61", "can62"), ]
+aoi_sf <- bcr_v5[bcr_v5$subunit_ui %in% c("can60", "can61"), ]
 
-plot(bcr_v5, main = "AOI defined by the Canadian extent of BCRs 61 and 62")
+plot(bcr_v5, main = "AOI defined by the Canadian extent of BCRs 60 and 61")
 plot(aoi_sf, col = "red", add = TRUE)
  
 
@@ -99,7 +99,7 @@ plot(aoi_sf, col = "red", add = TRUE)
 
 ```{r map_occurence, fig.width=8, fig.height=6, message = FALSE, warning= FALSE, echo = TRUE, results = 'markup', error = TRUE}
 # Download TEWA and BBWO distribution maps and map presence/absence through the aoi 
-results <- bam_get_layer(c("CAWA", "OVEN"), "v5", destfile = tempdir(), crop_ext = aoi_sf, year = "2010")
+buildresults <- bam_get_layer(c("CAWA", "OVEN"), "v5", destfile = tempdir(), crop_ext = aoi_sf, year = "2010")
 occ_results <- bam_occurrence(results, plot = TRUE)
 
 ```
