@@ -1,9 +1,8 @@
 ##################################################################################
-#' Retrieve list of BCR overlaid by the study area
+#' Map the boundaries of BCR subunits for a specified version.
 #'
-#' @param version character; Indicate the version of the National Model requested. Each version of the
-#'        National Model has its url access provided within the package.
-#' @param ext SpatVector, SpatExtent, or SpatRaster used to define the extent for the cropping.
+#' @param version A \code{character} specifying which version of the National Model to use. Valid options are "v4" or "v5".
+#' @param ext A \code{SpatVector} or a \code{SpatRaster} used to define an area of interest.
 #'
 #' @return Map illustrating the BCR and overlap extent if provided.
 #'

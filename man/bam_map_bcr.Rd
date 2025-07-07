@@ -3,21 +3,20 @@
 \docType{methods}
 \name{bam_map_bcr}
 \alias{bam_map_bcr}
-\title{Retrieve list of BCR overlaid by the study area}
+\title{Map the boundaries of BCR subunits for a specified version.}
 \usage{
 bam_map_bcr(version, ext = NULL)
 }
 \arguments{
-\item{version}{character; Indicate the version of the National Model requested. Each version of the
-National Model has its url access provided within the package.}
+\item{version}{A \code{character} specifying which version of the National Model to use. Valid options are "v4" or "v5".}
 
-\item{ext}{SpatVector, SpatExtent, or SpatRaster used to define the extent for the cropping.}
+\item{ext}{A \code{SpatVector} or a \code{SpatRaster} used to define an area of interest.}
 }
 \value{
 Map illustrating the BCR and overlap extent if provided.
 }
 \description{
-Retrieve list of BCR overlaid by the study area
+Map the boundaries of BCR subunits for a specified version.
 }
 \examples{
 subUnit<- bam_map_bcr("v5")

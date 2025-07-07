@@ -1,20 +1,21 @@
 ##################################################################################
-#' Download National Model species specific output map raster based on list of species
+#' Download BAM species specific Landbird Models density maps based on list of species
 #'
-#' @param spList character. A vector of species to be downloaded.
+#' @param spList A \code{vector} of species to be downloaded.
 
-#' @param version character. Represents the version of the national model output to be downloaded.
+#' @param version A \code{character} specifying which version of the BAM Landbird Models to use. Valid options are "v4" or "v5".
 #'
-#' @param destfile character. Indicate output path where the downloaded file is saved.
+#' @param destfile A \code{character} indicating output path where the downloaded file is saved.
 #'
-#' @param crop_ext SpatVector or SpatRaster used to define the extent for the cropping.
+#' @param crop_ext A \code{SpatVector} or A \code{SpatRaster} used to define the extent for the cropping.
 #' Or downloading valid BCR polygons from list, type: \code{bam_map_bcr("v4")} or \code{bam_map_bcr("v5")}
 #'
-#' @param year character; Specify the year for which the density map were generated. Only in v5.
+#' @param year A \code{character} specifying the year for which the density map were generated. Only in v5.
+#' Valid options are "1985", "1990", "1995", "2000", "2005", "2010", "2015" and "2020". Default value is "2020".
 #'
-#' @param bcrNM character; vector representing the BCR according to model version. Default is "mosaic".
+#' @param bcrNM A \code{vector} representing the BCR subunit name according to model version. Default is "mosaic".
 #'
-#' @return A list of `SpatRaster` objects. In addition to returning these objects,
+#' @return A list of \code{SpatRaster} objects. In addition to returning these objects,
 #' the function also downloads raster files to the directory specified by \code{destfile},
 #' as a side-effect.
 #'
@@ -93,10 +94,6 @@ bam_get_layer <- function(spList, version, destfile, crop_ext = NULL,  year = NU
   if (!file.exists(destfile)) {
     dir.create(destfile, showWarnings = FALSE)
   }
-
-  #if (!missing(destfile)) {
-  #  setwd(destfile)
-  #}
 
   spv <- bam_spp_list(version, "speciesCode")
 

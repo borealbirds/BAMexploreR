@@ -3,21 +3,21 @@
 \docType{methods}
 \name{bam_get_bcr}
 \alias{bam_get_bcr}
-\title{Retrieve list of BCR overlaid by the study area}
+\title{Retrieve the list of BCR overlaid by the study area}
 \usage{
 bam_get_bcr(version, ext = NULL)
 }
 \arguments{
-\item{version}{character; Indicate the version of the National Model requested. Each version of the
-National Model has its url access provided within the package.}
+\item{version}{A \code{character} specifying which version of the BAM landbird model to use. Valid options are "v4" or "v5".}
 
-\item{ext}{SpatVector, SpatExtent, or SpatRaster used to define the extent for the cropping.}
+\item{ext}{A \code{SpatVector} or \code{SpatRaster} used to define the extent for the cropping. If \code{NULL}, the mosaic
+will be used as default.}
 }
 \value{
 Vector of bcr that overlay the study area.
 }
 \description{
-Retrieve list of BCR overlaid by the study area
+Retrieve the list of BCR overlaid by the study area
 }
 \examples{
 subUnit<- bam_get_bcr("v5")

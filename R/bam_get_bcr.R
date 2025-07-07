@@ -1,9 +1,9 @@
 ##################################################################################
-#' Retrieve list of BCR overlaid by the study area
+#' Retrieve the list of BCR overlaid by the study area
 #'
-#' @param version character; Indicate the version of the National Model requested. Each version of the
-#'        National Model has its url access provided within the package.
-#' @param ext SpatVector, SpatExtent, or SpatRaster used to define the extent for the cropping.
+#' @param version A \code{character} specifying which version of the BAM landbird model to use. Valid options are "v4" or "v5".
+#' @param ext A \code{SpatVector} or \code{SpatRaster} used to define the extent for the cropping. If \code{NULL}, the mosaic
+#'  will be used as default.
 #'
 #' @return Vector of bcr that overlay the study area.
 #'

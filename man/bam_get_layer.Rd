@@ -3,7 +3,7 @@
 \docType{methods}
 \name{bam_get_layer}
 \alias{bam_get_layer}
-\title{Download National Model species specific output map raster based on list of species}
+\title{Download BAM species specific Landbird Models density maps based on list of species}
 \usage{
 bam_get_layer(
   spList,
@@ -15,26 +15,27 @@ bam_get_layer(
 )
 }
 \arguments{
-\item{spList}{character. A vector of species to be downloaded.}
+\item{spList}{A \code{vector} of species to be downloaded.}
 
-\item{version}{character. Represents the version of the national model output to be downloaded.}
+\item{version}{A \code{character} specifying which version of the BAM Landbird Models to use. Valid options are "v4" or "v5".}
 
-\item{destfile}{character. Indicate output path where the downloaded file is saved.}
+\item{destfile}{A \code{character} indicating output path where the downloaded file is saved.}
 
-\item{crop_ext}{SpatVector or SpatRaster used to define the extent for the cropping.
+\item{crop_ext}{A \code{SpatVector} or A \code{SpatRaster} used to define the extent for the cropping.
 Or downloading valid BCR polygons from list, type: \code{bam_map_bcr("v4")} or \code{bam_map_bcr("v5")}}
 
-\item{year}{character; Specify the year for which the density map were generated. Only in v5.}
+\item{year}{A \code{character} specifying the year for which the density map were generated. Only in v5.
+Valid options are "1985", "1990", "1995", "2000", "2005", "2010", "2015" and "2020". Default value is "2020".}
 
-\item{bcrNM}{character; vector representing the BCR according to model version. Default is "mosaic".}
+\item{bcrNM}{A \code{vector} representing the BCR subunit name according to model version. Default is "mosaic".}
 }
 \value{
-A list of `SpatRaster` objects. In addition to returning these objects,
+A list of \code{SpatRaster} objects. In addition to returning these objects,
 the function also downloads raster files to the directory specified by \code{destfile},
 as a side-effect.
 }
 \description{
-Download National Model species specific output map raster based on list of species
+Download BAM species specific Landbird Models density maps based on list of species
 }
 \examples{
 bird <- bam_get_layer("TEWA", "v4", tempfile())
