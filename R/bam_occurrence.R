@@ -145,7 +145,9 @@ bam_occurrence <- function(raster_list, quantile="by_lorenz", plot=TRUE){
 
     # plot occurrence map
     if (plot==TRUE){
-      terra::plot(binary_raster, main=paste("density threshold =", round(optimum_threshold, digits = 4), paste("\n", spp)))
+      #terra::plot(binary_raster, main=paste("density threshold =", round(optimum_threshold, digits = 4), paste("\n", spp)))
+      terra::plot(binary_raster, main=paste0(spp, "\n", "density threshold = ", round(optimum_threshold, 4)),
+                  col = c("#CCCCCC", "#666666"),levels = c(0, 1), legend = TRUE)
     }
 
     return(list(occurrence_raster = binary_raster,
