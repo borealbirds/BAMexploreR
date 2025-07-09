@@ -1,5 +1,5 @@
 ---
-title: "<span style='font-size: 14px;'>BAM Landbird Density Models</span><br><strong>Mapping Species Occurrence and Density</strong>"
+title: "<span style='font-size: 14px;'>BAMexploreR: model-based distribution, abundance, and habitat associations of boreal birds</span><br><strong>Distribution and Abundance</strong>"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{model_distribution}
