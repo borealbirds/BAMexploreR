@@ -1,0 +1,21 @@
+---
+title: "<span style='font-size: 14px;'>BAMexploreR: model-based distribution, abundance, and habitat associations of boreal birds</span><br><strong>Habitat Associations</strong>"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{model_distribution}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+options(rmarkdown.html_vignette.check_title = FALSE)
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "",
+  message = FALSE,
+  warning = FALSE
+)
+```
+
+This vignette will show you how to explore the important predictors of interest in BAM's landbird density models using `BAMExploreR` package. The machine learning models that BAM uses to produce these models provide an estimate of the importance of a given variable
+For more information on the BAM landbird density models, please see the 'Introduction' vignette.
