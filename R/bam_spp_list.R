@@ -74,7 +74,10 @@ bam_spp_list <- function(version, type = "speciesCode", guild = NULL) {
 
   # Extract species list
   if(type=="speciesCode"){
-    sp <-spList
+    sp <- spdt %>%
+      dplyr::filter(speciesCode %in% spList,
+                    speciesCode %in% spcode) %>%
+      dplyr::pull(speciesCode)
   }else if(type=="commonName") {
     sp <- spdt %>%
       dplyr::filter(speciesCode %in% spList,
