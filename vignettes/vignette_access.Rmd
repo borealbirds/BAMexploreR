@@ -24,8 +24,10 @@ This vignette will show you how to access the BAM landbird density models using 
 
 ### Model subregions
 The BAM landbird density models are produced by modelling multiple ecologically-distinct regions and mosaicing the model predictions together into a seamless layer.
+
 - **Version 4 regions**: Bird Conservation Regions (BCRs).
 - **Version 5 regions**: The intersection of national boundaries and udpated Bird Conservation Regions (BCRs).
+
 You can choose to access the predictions for the entire modelled area or a custom set of model subregions using an area of interest. For more information on the BAM landbird density models, please see the 'Introduction' vignette.
 
 ### Subregion naming convention
@@ -112,7 +114,7 @@ guild_opt
 In our example, we'll get four-letter AOU codes for 'COSEWIC' species available in version 5 of the models. You can also check the . 
 
 ```{r species_list_code, echo = TRUE, results = 'markup', error = TRUE}
-# Generate a vector of Forest bird species codes available in version 5. 
+# Generate a vector of COSEWIC species codes available in version 5. 
 cosewic_v5 <- bam_spp_list("v5", "speciesCode", "COSEWIC")
 cosewic_v5
 ```
@@ -120,7 +122,7 @@ cosewic_v5
 We can also retrieve the common names for our COSEWIC species.
 
 ```{r species_list_common, echo = TRUE, results = 'markup', error = TRUE}
-# Generate a vector of Forest bird species codes available in version 5. 
+# Generate a vector of COSEWIC species common names available in version 5. 
 cosewic_v5_cn <- bam_spp_list("v5", "commonName", "COSEWIC")
 cosewic_v5_cn
 ```
@@ -131,18 +133,27 @@ Next, we'll need to determine the area of interest for accessing the model produ
 
 You can choose to access the predictions for the entire modelled area, just a single model subregion (version 5 only), or a custom area of interest. Since model subregion names vary by version and country, the `bam_map_bcr` function ensures the correct naming is used. You can specify an extent and identify BCRs intersection the area of interest.
 
-For our example, we'll use an example area of interest that intersects multiple model subregions in the boreal plains and shield for our model download.
+For our example, we'll use an example area of interest that intersects multiple model subregions in the boreal plains and shield for our model download. Let's get the list of model subregions that interest with our area of interest.
 
-```{r aoi_bcr_list, fig.width=8, fig.height=6, echo = TRUE, results = 'markup', error = TRUE}
+```{r aoi_bcr_list, echo = TRUE, results = 'markup', error = TRUE}
+library(terra)
+
+# Use the example aoi SpatVector provided in the package
 aoi_sf <- vect(system.file("extdata", "vignette_poly_5072.shp", package = "BAMexploreR"))
 
-# Extract BCR subunit from version 5 that intersect extent
+# Extract subregions from version 5 that intersect the aoi
 bcraoi_v5 <- bam_get_bcr("v5", ext=aoi_sf) 
 bcraoi_v5
+```
 
-# Map extent on BCR subunit
-map <- bam_map_bcr("v5", ext=aoi_sf) + tmap::tm_layout(title = "BCR Mapping - Version 5", title.position = c("center", "top"))
-suppressWarnings(print(map)) + tmap::tm_layout(title = "BCR Mapping - Version 5", title.position = c("center", "top"))
+And we can also visualize where our area of interest fall on the map of all the model subregions for version 5.
+
+```{r aoi_bcr_map, echo = TRUE, results = 'markup', error = TRUE, fig.width=8, fig.height=6}
+# Map aoi on the map of model subregions
+map <- bam_map_bcr("v5", ext=aoi_sf) +
+  tmap::tm_layout(title = "Model Subregions - Version 5", title.position = c("center", "top"))
+suppressWarnings(print(map)) +
+  tmap::tm_layout(title = "Model Subregions - Version 5", title.position = c("center", "top"))
 ```
 
 ### 3. Download species specific density maps
@@ -151,24 +162,22 @@ Now that we have our species and area of interest, we can download the model pre
 
 We will download density maps for species using the `bam_get_layer` function. In version 5, we also have the option of downloading multiple years of predictions, as the density models are available for five-year intervals from 1990 to 2020 (default is 2020). 
 
-Let's down the model products for our list of COSEWIC species for the model subregions in our area of interest. To speed things up, we'll just pick two of our COSEWIC species.
+Let's down the model products for our list of COSEWIC species for the model subregions in our area of interest.
 
-```{r get_layer, fig.width=8, fig.height=6, echo = TRUE, results = 'markup', error = TRUE}
-
-cosewic_v5_dl <- cosewic_v5[]
-
+```{r get_layer, echo = TRUE, results = 'markup', error = TRUE}
 result <- bam_get_layer(cosewic_v5, "v5", destfile = tempdir(), year = "2020", bcrNM=bcraoi_v5)
 ```
 
 The output of the function is a list of SpatRaster objects. Each object has four bands:
+
 - **truncated_mean**: the mean predicted density in males/ha across 32 bootstraps, truncated to the probable range of the species
 - **mean**: the mean predicted density in males/ha across 32 bootstraps
 - **cv**: the coefficient of variation of predicted density across 32 bootstraps
 - **detections**: the mean density of detections of the species across 32 bootstraps
 
-We can plot these bands for one of our species of interest! Let's try Canada Warbler and .
+We can plot these bands for one of our species of interest! Let's try Canada Warbler.
 
-```{r plot_layer, fig.width=8, fig.height=6, echo = TRUE, results = 'markup', error = TRUE}
+```{r plot_layer, echo = TRUE, results = 'markup', error = TRUE, fig.width=8, fig.height=6}
 library(terra)
 
 result <- bam_get_layer(cosewic_v5, "v5", destfile = tempdir(), year = "2020", bcrNM=bcraoi_v5)
