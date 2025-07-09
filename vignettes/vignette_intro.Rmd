@@ -1,5 +1,5 @@
 ---
-title: "<span style='font-size: 14px;'>BAM Landbird Density Models</span><br><strong>Overview</strong>"
+title: "<span style='font-size: 14px;'>BAMexploreR: model-based distribution, abundance, and habitat associations of boreal birds</span><br><strong>Introduction</strong>"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{model_intro}
@@ -13,77 +13,152 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "",
   message = FALSE,
-  warning = FALSE
+  warning = FALSE,
+  rmarkdown.html_vignette.check_title = FALSE
 )
 ```
 
+Welcome! `BAMexploreR` is a package for downloading and analyzing landbird density models produced by the [Boreal Avian Modelling Centre (BAM)](https://borealbirds.ca/).
 
-Over the years, BAM developed generalized analytical approaches to model species densities in relation to environmental covariates using bird survey. Two versions of the BAM National Models are now available. Version 4 was released in 2020 and modeled species-specific density in the boreal region independently in 16 regional sub-units (portions of BCRs separated by provincial boundaries), while version 5 extends across the Canadian border and includes the northern United States within the boreal and hemiboreal regions. In order to integrate possible changes in population density due to environmental variations, version 5 focused on choosing products that could be temporally matched to bird survey data to accurately represent the environmental conditions during the time of survey, which led to 5-year intervals species-specific density maps (1985-2020). In version 4, we provided an overall mean density predictions. In version 5, we expanded our geospatial products to complement these predictions by incorporating measures of variation, sampling density, and areas of extrapolation, offering better context for interpreting and applying our density models. Those different layers are all package as a stack of raster. 
+This vignette provides a general introduction to the `BAMexploreR` package, including background on the BAM landbird density models and versions, an overview of the package purpose, core functionality, and the data included with the package. It highlights the types of data embedded in the package (e.g., shapefiles, species lists) and explains how they support the functions used to explore species occurrence and density across the BCRs extent. This is intended as a starting point to familiarize users with the structure and content of the package before diving into specific workflows or analyses.
 
-`BAMexploreR` is a package for downloading and analyzing boreal bird species data from the BAM Landbird Model v4 and v5. Functions in the package perform the following tasks:
+There are three general categories of tasks that `BAMexploreR` provides:
 
-- **Accessing the data** - list the species for which National models were created, specify and map bcr unit available for each National model version and download species output.
-- **Population & distribution** - explore boreal bird species distribution and estimate population metrics using raster outputs from predictive models.
-- **Covariate interpretation** - blabla.
- 
-This vignette provides a general introduction to the BAMexploreR package, including an overview of its purpose, core functionality, and the data included with the package.
+- **1. Access Models** - download rasters of the model predictions and uncertainty for pre-set regions or custom areas of interest.
+- **2. Distribution and Abundance** - explore bird species distribution and estimate population size using the downloaded rasters.
+- **3. Habitat Relationships** - explore important predictors of boreal bird abundance and distribution.
 
-It highlights the types of data embedded in the package (e.g., shapefiles, species lists) and explains how they support the functions used to explore species occurrence and density across the BCRs extent.
+In addition to this Introduction vignette, there is a vignette available for each of the three task categories.
 
-This is intended as a starting point to familiarize users with the structure and content of the package before diving into specific workflows or analyses.
+## BAM landbird density models
+
+### Background
+
+Reliable information on species’ population sizes, trends, habitat associations, and distributions is important for conservation and land-use planning, as well as status assessment and recovery planning for species at risk. However, the development of such estimates at a national scale is challenged by a variety of factors, including sparse data coverage in remote regions, differential habitat selection across large geographies, and variation in survey protocols.
+
+With these factors in mind, BAM developed a generalized analytical approach to model landbird species density in relation to environmental covariates, using in-person or ARU point-count surveys and widely available spatial predictors. We developed separate models for each geographic region (bird conservation regions) based on covariates such as tree species biomass (local and landscape scale), forest age, topography, land use, and climate. We used machine learning to allow for variable interactions and non-linear responses while avoiding time-consuming species-by-species parameterization. We applied cross-validation to avoid overfitting and bootstrap resampling to estimate uncertainty associated with our density estimates.
+
+**The model products are species-specific predictions of the density of breeding male birds per hectare at a 1km resolution across the boreal forest.**
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE, out.width='100%'}
+
+# Construct direct download link from Google Drive file ID
+file_id <- "1t9nNCmLoJV4CQoSR3Q_DCZ_CFrb-m3Pr"
+img_file <- tempfile(fileext = ".png")  # Create a temporary file with .png extension
+
+# Use the Google Drive direct download URL
+download.file(
+  url = paste0("https://drive.google.com/uc?export=download&id=", file_id),
+  destfile = img_file,
+  mode = "wb"
+)
+
+# Display the image
+knitr::include_graphics(img_file)
+
+```
+
+### Model versions
+Two versions of the BAM National Models are available in `BAMExploreR`. 
+
+| Feature                                                             | BAM V4                                                | BAM V5                                                                 |
+|---------------------------------------------------------------------|--------------------------------------------------------|------------------------------------------------------------------------|
+| **Release year**                                                   | 2020                                                 | 2025 |
+| **Species included**                                               | 143                                                  | 70 priority species (remaining 73 in progress) |
+| **Dataset size**                                                   | 0.3 million surveys                                  | 1.4 million surveys, including eBird |
+| **Geographic extent**                                              | Canada only                                          | Canada plus boreal and hemiboreal of US |
+| **Temporal resolution**                                            | Predictions for 2017                                 | Predictions at five-year intervals from 1985 to 2020 |
+| **Modelled sub-regions**                                           | Bird conservation region (BCR) and province          | Updated BCRs and country |
+| **Environmental covariates**                                       | Landcover, biomass, climate                          | Time-matched variables for vegetation biomass, human disturbance, and annual climate |
+| **Model reliability information**                                  | Cross-validated model performance                    | Cross-validated model performance, map of coefficient of variation across bootstraps, map of model extrapolation, map of detection distribution |
 
 ## Installation
 
-You can install the development version of `BAMexploreR` from [GitHub](https://github.com/) with:
+You can install and load `BAMexploreR` from [GitHub](https://github.com/borealbirds/BAMexploreR) with:
 
 ```{r setup, include = TRUE, message=FALSE, warning=FALSE}
+remotes::install_github('borealbirds/BAMExploreR')
 library(BAMexploreR)
 ```
 
-### Core Data
+## Core Data
 
-The package includes core data which are required for the function to run correctly. Those can also be access by the user to allow them to explore the functions. 
+There are several types of data embedded in the package to run the functions. Understanding these data types will help you use the functions.
 
-#### spp_tbl
+### Species table (spp_tbl)
 
-BAM Landbird Density Models were developed for a defined set of species. To provide users with flexibility, a reference table was created allowing species to be identified using their species code, common name, or scientific name. Each species is also assigned to a species group (or guild), based on classifications from The State of Canada’s Birds report, which organizes species by broad biomes and groups that exhibit distinct and notable population trends.  
+This reference table serves as a lookup of the species available for each version of the BAM landbird models using four-letter AOU code, common name, or scientific name.  The table also provides several ways of grouping species if you are interested in a particular suite of species including species of conservation concern, guild, and classifications from The State of Canada’s Birds report, which organizes species by broad biomes and groups that exhibit distinct and notable population trends.
+- **COSEWIC**: The conservation status of species according to the Committee on the Status of Endangered Wildlife in Canada (COSEWIC)
+- **Cavity_Birds**: Species that nest in cavities  
+- **Waterfowl**: Bird species that primarily live on or near water  
+- **Marine_Birds**: Bird species that live in marine environments  
+- **Shorebirds**: Bird species typically found along shorelines  
+- **Wetland_Birds**: Bird species that inhabit wetlands  
+- **Birds_of_Prey**: Raptors or predatory birds  
+- **Forest_Birds**: Bird species that live in forested areas  
+- **Grassland_Birds**: Bird species that inhabit grasslands  
+- **Aerial_Insectivores**: Birds that feed on insects while flying  
+- **Arctic_Birds**: Bird species found in Arctic regions  
+- **Long_Distance_Migrants**: Birds that migrate long distances between breeding and wintering grounds  
 
-```{r, eval = FALSE}
-head(spp_tbl)
+```{r, eval = TRUE, echo=TRUE}
+str(spp_tbl)
 
 ```
 
-#### BAM_BCRNMv4 and BAM_BCRNMv5
+### Modelling region maps (BAM_BCRNMv4, BAM_BCRNMv5)
 
-These two objects are SpatVectors containing the boundaries of BCR subunits for versions 4 and 5, respectively. The package also provides helper functions to retrieve the names of subunits corresponding to a specified version and easily visualize (map) those subunits within your analysis workflow (see Vignette_access)
+These two objects are SpatVectors containing the boundaries of the modelling subunits for versions 4 and 5. The package also provides helper functions to retrieve the names of subunits corresponding to a specified version and easily visualize (map) those subunits within your analysis workflow (see 'Model Access' vignette).
 
-
-#### guild_opt
-
-This dataset contains a vector of species groups used in analysis. The groups include :
-- COSEWIC: The conservation status of species.
-- Cavity_Birds}{Species that nest in cavities.
-- Waterfowl}{Bird species that primarily live on or near water.
-- Marine_Birds}{Bird species that live in marine environments.
-- Shorebirds}{Bird species typically found along shorelines.
-- Wetland_Birds}{Bird species that inhabit wetlands.
-- Birds_of_Prey}{Raptors or predatory birds.
-- Forest_Birds}{Bird species that live in forested areas.
-- Grassland_Birds}{Bird species that inhabit grasslands.
-- Aerial_Insectivores}{Birds that feed on insects while flying.
-- Arctic_Birds}{Bird species found in Arctic regions.
-- Long_Distance_Migrants}{Birds that migrate long distances between breeding and wintering grounds.
-
+```{r, fig.width=8, message=FALSE, warning=FALSE, echo=FALSE, out.width='100%'}
+library(tmap)
+bam_map_bcr("v5")
+```
 
 ## Citation
 
-Please cite the _BAMexploreR_ package when using it in publications. To cite the latest official version, please use:
-
+To cite `BAMexploreR` package and the BAM density models in publications, please cite the package and the publication:
 
 ```{r, echo = FALSE, results = "asis"}
-dev_version <- packageDescription("BAMexploreR")$Version
-cat(paste0("\\> Houle M, Boehm M, Wu SC, Knight E, ... (", format(Sys.time(), "%Y"),"). BAMexploreR: Evaluating boreal birds density in Canada using R. R package version ", dev_version, ". Available at https://github.com/borealbirds/BAMexploreR\n"))
+bibentry(
+  bibtype = "Manual",
+  title = "BAMexploreR: model-based density, distribution, and habitat associations of boreal birds",
+  author = c(
+    person("Mélina", "Houle"),
+    person("Mannfred", "Boehm"),
+    person("Siu Chung", "Wu"),
+    person("Elly C.", "Knight")
+    ),
+  year = format(Sys.Date(), "%Y"),
+  note = paste0("R package version ", packageDescription("BAMexploreR")$Version),
+  url = "https://github.com/borealbirds/BAMexploreR"
+)
 ```
 
-
+```{r, echo = FALSE, results = "asis"}
+bibentry(
+  bibtype = "Article",
+  title = "A generalized modeling framework for spatially extensive species abundance prediction and population estimation",
+  author = c(
+    person("Diana", "Stralberg"),
+    person("Péter", "Sólymos"),
+    person("Teegan D.S.", "Docherty"),
+    person("Andrew D.", "Crosby"),
+    person("Steven L.", "Van Wilgenburg"),
+    person("Elly C.", "Knight"),
+    person("Anna", "Drake"),
+    person("Mannfred M.A.", "Boehm"),
+    person("Samuel", "Haché"),
+    person("Lionel", "Leston"),
+    person("Judith D.", "Toms"),
+    person("Jeffrey R.", "Ball"),
+    person("Samantha J.", "Song"),
+    person("Fiona K.A.", "Schmiegelow"),
+    person("Steven G.", "Cumming"),
+    person("Erin M.", "Bayne")
+  ),
+  journal = "Ecosphere",
+  year = "In press"
+)
+```
 
