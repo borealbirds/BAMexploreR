@@ -1,0 +1,40 @@
+citHeader("To cite 'BAMexploreR' and the BAM density models in publications, please cite the package and the publication:")
+
+bibentry(
+  bibtype = "Manual",
+  title = "BAMexploreR: Evaluating boreal birds density in Canada using R",
+  author = c(
+    person("Mélina", "Houle"),
+    person("Mannfred", "Boehm"),
+    person("Siu Chung", "Wu"),
+    person("Elly", "C.", "Knight"),
+    ),
+  year = format(Sys.Date(), "%Y"),
+  note = paste0("R package version ", packageDescription("BAMexploreR")$Version),
+  url = "https://github.com/borealbirds/BAMexploreR"
+)
+
+bibentry(
+  bibtype = "Article",
+  title = "A generalized modeling framework for spatially extensive species abundance prediction and population estimation",
+  author = c(
+    person("Diana", "Stralberg"),
+    person("Péter", "Sólymos"),
+    person("Teegan", "D.S.", "Docherty"),
+    person("Andrew", "D.", "Crosby"),
+    person("Steven", "L.", "Van Wilgenburg"),
+    person("Elly", "C.", "Knight"),
+    person("Anna", "Drake"),
+    person("Mannfred", "M.A.", "Boehm"),
+    person("Samuel", "Haché"),
+    person("Lionel", "Leston"),
+    person("Judith", "D.", "Toms"),
+    person("Jeffrey", "R.", "Ball"),
+    person("Samantha", "J.", "Song"),
+    person("Fiona", "K.A.", "Schmiegelow"),
+    person("Steven", "G.", "Cumming"),
+    person("Erin", "M.", "Bayne")
+  ),
+  journal = "Ecosphere",
+  year = "In press"
+)
