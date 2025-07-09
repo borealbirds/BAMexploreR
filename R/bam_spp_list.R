@@ -65,7 +65,7 @@ bam_spp_list <- function(version, type = "speciesCode", guild = NULL) {
       spList <- gsub('href="|/"', '', subdirs) %>%
         .[!(. %in% "/data")]
     } else {
-      print("You must specified either v4 or v5")
+      print("You must specify either v4 or v5")
     }
   } else {
       # Return an error message if the request failed
@@ -77,11 +77,13 @@ bam_spp_list <- function(version, type = "speciesCode", guild = NULL) {
     sp <-spList
   }else if(type=="commonName") {
     sp <- spdt %>%
-      dplyr::filter(speciesCode %in% spList) %>%
+      dplyr::filter(speciesCode %in% spList,
+                    speciesCode %in% spcode) %>%
       dplyr::pull(commonName)
   }else if(type=="scientificName") {
     sp <- spdt %>%
-      dplyr::filter(speciesCode %in% spList) %>%
+      dplyr::filter(speciesCode %in% spList,
+                    speciesCode %in% spcode) %>%
       dplyr::pull(scientificName)
   }
  sp <- unique(sp)
