@@ -1,5 +1,5 @@
 ---
-title: "<span style='font-size: 14px;'>BAM Landbird Density Models</span><br><strong>Accessing the data</strong>"
+title: "<span style='font-size: 14px;'>BAMexploreR: model-based distribution, abundance, and habitat associations of boreal birds</span><br><strong>Model Access</strong>"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{model_access}
@@ -7,8 +7,8 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-
 ```{r, include = FALSE}
+options(rmarkdown.html_vignette.check_title = FALSE)
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "",
@@ -18,12 +18,31 @@ knitr::opts_chunk$set(
 ```
 
 
-This vignette will guide you through the basic usage of accessing the data using the package, including how to download specific species using region subunit or custom extent. The following core functions are designed to support accessing BAM Landbird Density maps:(** refer to paper)
+This vignette will show you how to access the BAM landbird density models using the `BAMExploreR` package. 
 
+## Background
+
+### Model subregions
+The BAM landbird density models are produced by modelling multiple ecologically-distinct regions and mosaicing the model predictions together into a seamless layer.
+- **Version 4 regions**: Bird Conservation Regions (BCRs).
+- **Version 5 regions**: The intersection of national boundaries and udpated Bird Conservation Regions (BCRs).
+You can choose to access the predictions for the entire modelled area or a custom set of model subregions using an area of interest. For more information on the BAM landbird density models, please see the 'Introduction' vignette.
+
+### Subregion naming convention
+Due to the intersection of country and BCR as the modelling subregions in version 5 of the BAM landbird models, we use a country prefix and BCR number to name the model subregion. Note that BCR labels differ betwen version 4 and version 5 due to changes made to several of the BCRs.
+
+```{r list_names, message=FALSE, warning=FALSE, echo=FALSE}
+library(BAMexploreR)
+cat("Version 4 subregion names: ", bam_get_bcr("v4"), "\n")
+
+cat("Version 5 subregion names: ", bam_get_bcr("v5"), "\n")
+
+```
+## Functions available
 
 ### bam_map_bcr()
 
-The **bam_map_bcr()** function plots the BCR subunit boundaries for a chosen version and can optionally overlay a provided AOI SpatVector to highlight the area of interest.
+**bam_map_bcr()** plots the model subregions for a chosen version and can optionally overlay a provided AOI SpatVector to highlight the area of interest.
 
 Arguments
 
@@ -39,7 +58,7 @@ Map illustrating the BCR and overlap extent if provided.
 
 ### bam_get_bcr()
 
-The **bam_get_bcr()** function returns the list of Bird Conservation Region (BCR) subunits for a given model version. If an ext object is supplied, only those subunits that intersect the provided extent are returned.
+**bam_get_bcr()** returns the list of model subregions for a given model version. If an ext object is supplied, only those subunits that intersect the provided extent are returned.
 
 Arguments
 
@@ -55,7 +74,7 @@ A vector representing the name of the BCR subunits.
 
 ### bam_get_layer()
 
-The **bam_get_layer()** function download BAM species specific Landbird Density maps based on list of species. 
+The **bam_get_layer()** function downloads the rasters for the BAM landbird density models for specified the species and area of interest.
 
 Arguments
 
@@ -74,50 +93,45 @@ Arguments
 
 📤 Output
 
-A list of SpatRaster objects. In addition to returning these objects, the function also downloads raster files to the directory specified by destfile as a side-effect.
-
-
-## Subunit naming convention
-BAM Landbird Density Models version 4 were generated within Canada boundary only using the delineation of BCR intersecting the provinces, while version 5 encompassed both Canada and North of the USA. In version 5, because most of the spatial layers used to develop the models were country specific, we used as model-building units the combination of bird conservation regions (BCRs) intersected with Canada-USA jurisdictional boundaries. Those subunits changed overtime based on decision making by the different agencies. For both version, each subunits use acronym of the country as prefix followed by the number of the BCR unit. Delineation of the subunit can be viewed using the `bam_map_bcr` function. It is possible to provide an extent (`ext`) that represent a study region and have it overlaid on the BCRs delineation.
-
-### National Model v4 BCR naming convention
-
-```{r list_BCRv4, fig.width=8, fig.height=6, message=FALSE, warning=FALSE}
-library(tmap)
-library(BAMexploreR)
-
-bam_map_bcr("v4")
-bam_get_bcr("v4") 
-
-```
-
-
-### National Model v5 BCR naming convention
-
-```{r list_BCRv5, fig.width=8, fig.height=6, message=FALSE, warning=FALSE}
-bam_map_bcr("v5")
-bam_get_bcr("v5")
-
-```
-
+A list of multiband SpatRaster objects. In addition to returning these objects, the function also downloads raster files to the directory specified by destfile as a side-effect.
 
 ## Example workflow
 
-### Identify species available
-BAM Landbird Density Models were generated for 143 species. Users can access the species available for the version of the model specified using the `bam_spp_list` function. The function has a `guild` parameters that allow the user to filter species avaiable based on a specific species group. The species groups follow the classification used by The State of Canada's Birds, which categorizes species based on broad biomes and groups with distinct and noteworthy trends. While some species may belong to multiple groups, only those that are truly representative of a given group are included. The following workflow demonstrates how to generate a species list based on available model output version, filtering by a species groups categories used by The State of the Canada's birds such as 'Forest_Bird'.User can check the species group categories and definition by accessing `guild_opt` documentation. 
+### 1. Identify species available
 
+The first step in accessing the BAM landbird density model products is determining the species of interest.
 
-```{r species_list, echo = TRUE, results = 'markup', error = TRUE}
-# Generate a vector of Forest bird species available in version 5. 
-# If guild is not provided, the function will return all species avaialble for a specific version of the model.
-forest_v5 <- bam_spp_list("v5", "speciesCode", "Forest_Birds")
+There are 143 species available in version 4 of the BAM landbird density models and 70 species available in version 5 (remaining 73 in progress). You can access the species available for the version of the model specified using the `bam_spp_list` function. The function has a `guild` parameter to filter the available species based on a specific species group, following the classifications used by The State of Canada's Birds, which categorizes species based on broad biomes and groups with distinct and noteworthy trends. Species listed as 'Special Concern', 'Threatened', or 'Endangered' by the Committee on the Status of Endangered Species in Canada (COSEWIC) is also available. If guild is not provided, the function will return all species available for the specified version of the model.
 
-head(forest_v5)
+Let's check the species group categories and definitions by accessing the `guild_opt` documentation.
 
+```{r species_groups, echo = TRUE, results = 'markup', error = TRUE}
+# Get the options for species grouping
+guild_opt
+```
+In our example, we'll get four-letter AOU codes for 'COSEWIC' species available in version 5 of the models. You can also check the . 
+
+```{r species_list_code, echo = TRUE, results = 'markup', error = TRUE}
+# Generate a vector of Forest bird species codes available in version 5. 
+cosewic_v5 <- bam_spp_list("v5", "speciesCode", "COSEWIC")
+cosewic_v5
 ```
 
-### Identify BCR intersecting the zone of interest
-Species-specific density maps are available at the national scale in version 4, while in version 5, they can be accessed at the BCR level. This functionality helps reduce overall download size. Since BCR names vary by version and country, the **bam_map_bcr** function ensures the correct naming is used. Users can specify an extent and identify BCRs intersection the zone of interest. 
+We can also retrieve the common names for our COSEWIC species.
+
+```{r species_list_common, echo = TRUE, results = 'markup', error = TRUE}
+# Generate a vector of Forest bird species codes available in version 5. 
+cosewic_v5_cn <- bam_spp_list("v5", "commonName", "Forest_Birds")
+cosewic_v5_cn
+```
+
+### 2. Identify BCR intersecting the area of interest
+
+Next, we'll need to determine the area of interest for accessing the model products. 
+
+You can choose to access the predictions for the entire modelled area, just a single model subregion (version 5 only), or a custom area of interest. Since model subregion names vary by version and country, the `bam_map_bcr` function ensures the correct naming is used. You can specify an extent and identify BCRs intersection the area of interest.
+
+For our example, we'll use an example area of interest that intersects multiple model subregions in the boreal plains and shield for our model download.
 
 ```{r aoi_bcr_list, fig.width=8, fig.height=6, echo = TRUE, results = 'markup', error = TRUE}
 aoi_sf <- vect(system.file("extdata", "vignette_poly_5072.shp", package = "BAMexploreR"))
@@ -131,32 +145,32 @@ map <- bam_map_bcr("v5", ext=aoi_sf) + tmap::tm_layout(title = "BCR Mapping - Ve
 suppressWarnings(print(map)) + tmap::tm_layout(title = "BCR Mapping - Version 5", title.position = c("center", "top"))
 ```
 
-### Download species specific density maps
+### 3. Download species specific density maps
 
-Users can download density maps for species using the `bam_get_layer` function. Users can restrict the download on specific species and extent to reduce overall download size. Since version 5 provide species specific density map on a 5 years interval, the user can specify which of the 9 maps to download. By the absence of a specific year, the density map of the year 2020 is provided. 
+Now that we have our species and area of interest, we can download our model products!
 
+We will download density maps for species using the `bam_get_layer` function. In version 5, we also have the option of downloading multiple years of predictions, as the density models are available for five-year intervals from 1990 to 2020 (default is 2020). 
+
+Let's down the model products for our list of COSEWIC species for the model subregions in our area of interest. To speed things up, we'll just pick two of our COSEWIC species.
 
 ```{r get_layer, fig.width=8, fig.height=6, echo = TRUE, results = 'markup', error = TRUE}
+
+cosewic_v5_dl <- cosewic_v5[]
+
+result <- bam_get_layer(cosewic_v5, "v5", destfile = tempdir(), year = "2020", bcrNM=bcraoi_v5)
+```
+
+The output of the function is a list of SpatRaster objects. Each object has four bands:
+- **truncated_mean**: the mean predicted density in males/ha across 32 bootstraps, truncated to the probable range of the species
+- **mean**: the mean predicted density in males/ha across 32 bootstraps
+- **cv**: the coefficient of variation of predicted density across 32 bootstraps
+- **detections**: the mean density of detections of the species across 32 bootstraps
+
+We can plot these bands for one of our species of interest! Let's try Canada Warbler.
+
+```{r plot_layer, fig.width=8, fig.height=6, echo = TRUE, results = 'markup', error = TRUE}
 library(terra)
 
-# Check which species under a the COSEWIC Act are available
-cosewic_spp <- bam_spp_list("v5", guild= "COSEWIC")
-cosewic_spp
-
-# From the cosewic_spp list, download TEWA and VESP density maps for BCRs intersecting user AOI for the year 2010.
-result <- bam_get_layer(cosewic_spp, "v5", destfile = tempdir(), year = "2010", bcrNM=bcraoi_v5)
-plot(result$TEWA)
+result <- bam_get_layer(cosewic_v5, "v5", destfile = tempdir(), year = "2020", bcrNM=bcraoi_v5)
+plot(result$CAWA)
 ```
-
-## Citation
-
-Please cite the _BAMexploreR_ package when using it in publications. To cite the latest official version, please use:
-
-
-```{r, echo = FALSE, results = "asis"}
-dev_version <- packageDescription("BAMexploreR")$Version
-cat(paste0("\\> Houle M, Boehm M, Wu SC, Knight E, ... (", format(Sys.time(), "%Y"),"). BAMexploreR: Evaluating boreal birds density in Canada using R. R package version ", dev_version, ". Available at https://github.com/borealbirds/BAMexploreR\n"))
-```
-
-
-
