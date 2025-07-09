@@ -2,12 +2,12 @@ citHeader("To cite 'BAMexploreR' and the BAM density models in publications, ple
 
 bibentry(
   bibtype = "Manual",
-  title = "BAMexploreR: Evaluating boreal birds density in Canada using R",
+  title = "BAMexploreR: model-based density, distribution, and habitat associations of boreal birds",
   author = c(
     person("Mélina", "Houle"),
     person("Mannfred", "Boehm"),
     person("Siu Chung", "Wu"),
-    person("Elly", "C.", "Knight"),
+    person("Elly C.", "Knight")
     ),
   year = format(Sys.Date(), "%Y"),
   note = paste0("R package version ", packageDescription("BAMexploreR")$Version),
@@ -20,20 +20,20 @@ bibentry(
   author = c(
     person("Diana", "Stralberg"),
     person("Péter", "Sólymos"),
-    person("Teegan", "D.S.", "Docherty"),
-    person("Andrew", "D.", "Crosby"),
-    person("Steven", "L.", "Van Wilgenburg"),
-    person("Elly", "C.", "Knight"),
+    person("Teegan D.S.", "Docherty"),
+    person("Andrew D.", "Crosby"),
+    person("Steven L.", "Van Wilgenburg"),
+    person("Elly C.", "Knight"),
     person("Anna", "Drake"),
-    person("Mannfred", "M.A.", "Boehm"),
+    person("Mannfred M.A.", "Boehm"),
     person("Samuel", "Haché"),
     person("Lionel", "Leston"),
-    person("Judith", "D.", "Toms"),
-    person("Jeffrey", "R.", "Ball"),
-    person("Samantha", "J.", "Song"),
-    person("Fiona", "K.A.", "Schmiegelow"),
-    person("Steven", "G.", "Cumming"),
-    person("Erin", "M.", "Bayne")
+    person("Judith D.", "Toms"),
+    person("Jeffrey R.", "Ball"),
+    person("Samantha J.", "Song"),
+    person("Fiona K.A.", "Schmiegelow"),
+    person("Steven G.", "Cumming"),
+    person("Erin M.", "Bayne")
   ),
   journal = "Ecosphere",
   year = "In press"
