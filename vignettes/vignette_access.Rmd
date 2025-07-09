@@ -34,7 +34,7 @@ Due to the intersection of country and BCR as the modelling subregions in versio
 ```{r list_names, message=FALSE, warning=FALSE, echo=FALSE}
 library(BAMexploreR)
 cat("Version 4 subregion names: ", bam_get_bcr("v4"), "\n")
-
+cat("  \n")
 cat("Version 5 subregion names: ", bam_get_bcr("v5"), "\n")
 
 ```
@@ -103,7 +103,7 @@ The first step in accessing the BAM landbird density model products is determini
 
 There are 143 species available in version 4 of the BAM landbird density models and 70 species available in version 5 (remaining 73 in progress). You can access the species available for the version of the model specified using the `bam_spp_list` function. The function has a `guild` parameter to filter the available species based on a specific species group, following the classifications used by The State of Canada's Birds, which categorizes species based on broad biomes and groups with distinct and noteworthy trends. Species listed as 'Special Concern', 'Threatened', or 'Endangered' by the Committee on the Status of Endangered Species in Canada (COSEWIC) is also available. If guild is not provided, the function will return all species available for the specified version of the model.
 
-Let's check the species group categories and definitions by accessing the `guild_opt` documentation.
+Let's check the species group categories by accessing the `guild_opt` object.
 
 ```{r species_groups, echo = TRUE, results = 'markup', error = TRUE}
 # Get the options for species grouping
@@ -121,11 +121,11 @@ We can also retrieve the common names for our COSEWIC species.
 
 ```{r species_list_common, echo = TRUE, results = 'markup', error = TRUE}
 # Generate a vector of Forest bird species codes available in version 5. 
-cosewic_v5_cn <- bam_spp_list("v5", "commonName", "Forest_Birds")
+cosewic_v5_cn <- bam_spp_list("v5", "commonName", "COSEWIC")
 cosewic_v5_cn
 ```
 
-### 2. Identify BCR intersecting the area of interest
+### 2. Identify model subregions that intersect the area of interest
 
 Next, we'll need to determine the area of interest for accessing the model products. 
 
@@ -147,7 +147,7 @@ suppressWarnings(print(map)) + tmap::tm_layout(title = "BCR Mapping - Version 5"
 
 ### 3. Download species specific density maps
 
-Now that we have our species and area of interest, we can download our model products!
+Now that we have our species and area of interest, we can download the model predictions!
 
 We will download density maps for species using the `bam_get_layer` function. In version 5, we also have the option of downloading multiple years of predictions, as the density models are available for five-year intervals from 1990 to 2020 (default is 2020). 
 
@@ -166,7 +166,7 @@ The output of the function is a list of SpatRaster objects. Each object has four
 - **cv**: the coefficient of variation of predicted density across 32 bootstraps
 - **detections**: the mean density of detections of the species across 32 bootstraps
 
-We can plot these bands for one of our species of interest! Let's try Canada Warbler.
+We can plot these bands for one of our species of interest! Let's try Canada Warbler and .
 
 ```{r plot_layer, fig.width=8, fig.height=6, echo = TRUE, results = 'markup', error = TRUE}
 library(terra)
