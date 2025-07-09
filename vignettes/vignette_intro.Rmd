@@ -9,12 +9,12 @@ vignette: >
 
 
 ```{r, include = FALSE}
+options(rmarkdown.html_vignette.check_title = FALSE)
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "",
   message = FALSE,
-  warning = FALSE,
-  rmarkdown.html_vignette.check_title = FALSE
+  warning = FALSE
 )
 ```
 
@@ -40,7 +40,7 @@ With these factors in mind, BAM developed a generalized analytical approach to m
 
 **The model products are species-specific predictions of the density of breeding male birds per hectare at a 1km resolution across the boreal forest.**
 
-```{r, message=FALSE, warning=FALSE, echo=FALSE, out.width='100%'}
+```{r plot_cawa, message=FALSE, warning=FALSE, echo=FALSE, out.width='100%'}
 
 # Construct direct download link from Google Drive file ID
 file_id <- "1t9nNCmLoJV4CQoSR3Q_DCZ_CFrb-m3Pr"
@@ -67,9 +67,9 @@ Two versions of the BAM National Models are available in `BAMExploreR`.
 | **Species included**                                               | 143                                                  | 70 priority species (remaining 73 in progress) |
 | **Dataset size**                                                   | 0.3 million surveys                                  | 1.4 million surveys, including eBird |
 | **Geographic extent**                                              | Canada only                                          | Canada plus boreal and hemiboreal of US |
-| **Temporal resolution**                                            | Predictions for 2017                                 | Predictions at five-year intervals from 1985 to 2020 |
-| **Modelled sub-regions**                                           | Bird conservation region (BCR) and province          | Updated BCRs and country |
-| **Environmental covariates**                                       | Landcover, biomass, climate                          | Time-matched variables for vegetation biomass, human disturbance, and annual climate |
+| **Temporal resolution**                                            | Predictions for 2017                                 | Predictions at five-year intervals from 1990 to 2020 |
+| **Model subregions**                                           | Bird conservation region (BCR)          | Updated BCRs and country |
+| **Environmental predictors**                                       | Landcover, biomass, climate                          | Time-matched variables for vegetation biomass, human disturbance, and annual climate |
 | **Model reliability information**                                  | Cross-validated model performance                    | Cross-validated model performance, map of coefficient of variation across bootstraps, map of model extrapolation, map of detection distribution |
 
 ## Installation
@@ -101,7 +101,7 @@ This reference table serves as a lookup of the species available for each versio
 - **Arctic_Birds**: Bird species found in Arctic regions  
 - **Long_Distance_Migrants**: Birds that migrate long distances between breeding and wintering grounds  
 
-```{r, eval = TRUE, echo=TRUE}
+```{r spp_tbl, eval = TRUE, echo=TRUE}
 str(spp_tbl)
 
 ```
@@ -110,7 +110,7 @@ str(spp_tbl)
 
 These two objects are SpatVectors containing the boundaries of the modelling subunits for versions 4 and 5. The package also provides helper functions to retrieve the names of subunits corresponding to a specified version and easily visualize (map) those subunits within your analysis workflow (see 'Model Access' vignette).
 
-```{r, fig.width=8, message=FALSE, warning=FALSE, echo=FALSE, out.width='100%'}
+```{r bam_map_bcr, fig.width=8, message=FALSE, warning=FALSE, echo=FALSE, out.width='100%'}
 library(tmap)
 bam_map_bcr("v5")
 ```
@@ -119,7 +119,7 @@ bam_map_bcr("v5")
 
 To cite `BAMexploreR` package and the BAM density models in publications, please cite the package and the publication:
 
-```{r, echo = FALSE, results = "asis"}
+```{r cite1, echo = FALSE, results = "asis"}
 bibentry(
   bibtype = "Manual",
   title = "BAMexploreR: model-based density, distribution, and habitat associations of boreal birds",
@@ -135,7 +135,7 @@ bibentry(
 )
 ```
 
-```{r, echo = FALSE, results = "asis"}
+```{r cite2, echo = FALSE, results = "asis"}
 bibentry(
   bibtype = "Article",
   title = "A generalized modeling framework for spatially extensive species abundance prediction and population estimation",
