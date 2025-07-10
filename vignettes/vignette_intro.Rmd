@@ -59,7 +59,7 @@ knitr::include_graphics(img_file)
 ```
 
 ### Model versions
-Two versions of the BAM National Models are available in `BAMExploreR`. 
+Two versions of the BAM landbird density models are available in `BAMExploreR`. 
 
 | Feature                                                             | BAM V4                                                | BAM V5                                                                 |
 |---------------------------------------------------------------------|--------------------------------------------------------|------------------------------------------------------------------------|

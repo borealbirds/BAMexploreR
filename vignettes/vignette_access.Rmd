@@ -48,7 +48,7 @@ cat("Version 5 subregion names: ", bam_get_bcr("v5"), "\n")
 
 Arguments
 
-- version: Specifies which version of the National Model to use. Valid options are "v4" or "v5".
+- version: Specifies which version of the landbird density models to use. Valid options are "v4" or "v5".
 
 - ext: SpatVector or SpatRaster used to define an area of interest.
 
@@ -64,7 +64,7 @@ Map illustrating the BCR and overlap extent if provided.
 
 Arguments
 
-- version: Specifies which version of the National Model to use. Valid options are "v4" or "v5".
+- version: Specifies which version of the landbird density model to use. Valid options are "v4" or "v5".
 
 - ext: (Optional) SpatVector or SpatRaster whose extent will be used to filter and return only intersecting BCR subunits.
 

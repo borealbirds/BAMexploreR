@@ -25,7 +25,7 @@ This vignette will show you how to work with the BAM landbird density models to 
 
 ### Density estimates
 
-The BAM landbird density models use the QPAD analytical approach for data integration, which uses statistical offsets to account for imperfect detection and produce estimates of population density. The model products are therefore species-specific predictions of the density of breeding male birds per hectare at a 1km resolution across the boreal forest! We can use those density surfaces for a variety of conservation and land-use planning applications. The `BAMexploreR` package provides functions for two core analytical tasks.
+The BAM landbird density models use the QPAD analytical approach for data integration, which uses statistical offsets to account for imperfect detection and produce estimates of population density. The model products are therefore species-specific predictions of the density of breeding male birds per hectare at a 1km resolution across the boreal forest! We can use those density surfaces for a variety of conservation and land-use planning applications. The `BAMexploreR` package provides functions for two core analytical tasks. For more information on the BAM landbird density models, please see the 'Introduction' vignette.
 
 ## Functions available
 
@@ -158,7 +158,7 @@ Let's use our same Canada Warbler example as before.
 ```{r density_aoi, message = FALSE, warning= FALSE, echo = TRUE, error = TRUE}
 library(knitr)
 
-# Calculate population size based on BAM National Model density raster
+# Calculate population size based on BAM landbird density raster
 pop_aoi_result <- bam_pop_size(result)
 
 # Show results
@@ -191,7 +191,7 @@ Looks good! Now we can use that new SpatVector with the BCRs to group our popula
 # Check what the BCR column name is called
 head(aoi_sf_bcr)
 
-# Calculate population size based on BAM National Model density raster
+# Calculate population size based on BAM landbird density raster
 pop_bcr_result <- bam_pop_size(result, crop_ext=aoi_sf_bcr, group="subunit_ui")
 
 # Show results
