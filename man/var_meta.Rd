@@ -3,7 +3,7 @@
 \docType{data}
 \name{var_meta}
 \alias{var_meta}
-\title{Table of variable metadata for BAM density models}
+\title{Title: Table of variable metadata for BAM density models}
 \format{
 A data frame with 326 rows and 12 columns:
 \describe{
