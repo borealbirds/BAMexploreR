@@ -29,7 +29,7 @@ A data frame with 143 rows and 16 columns:
 spp_tbl
 }
 \description{
-This dataset lists all species from which BAM National density model were generated. We applied species groups categories used by
+This dataset lists all species from which BAM landbird density models were generated. We applied species groups categories used by
 The State of the Canada's birds who classify species according to broad biomes and groups of species that are known to have distinct and noteworthy trends.
 The same species can be included in more than one group, but only species that are truly representative of a given group are included in each
 (Birds Canada and Environment and Climate Change Canada. 2024. The State of Canada’s Birds Report. Accessed from NatureCounts. DOI: 10.71842/8bab-ks08)
