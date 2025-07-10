@@ -17,5 +17,127 @@ knitr::opts_chunk$set(
 )
 ```
 
-This vignette will show you how to explore the important predictors of interest in BAM's landbird density models using `BAMExploreR` package. The machine learning models that BAM uses to produce these models provide an estimate of the importance of a given variable
-For more information on the BAM landbird density models, please see the 'Introduction' vignette.
+This vignette will show you how to explore the important predictors of interest in BAM's landbird density models using `BAMExploreR` package.
+
+## Background
+
+### Variable importance
+
+The machine learning models that BAM uses to produce these models provide an estimate of the percent importance of each variable in the model and we can summarize those importances to understand the important habitat relationships for species of interest in each model subregion. Note that these functions will only provide the *importance* of each variable, not the shape or direction of the relationship, which can be nonlinear and include complex interactions with other variables. For more information on the BAM landbird density models, please see the 'Introduction' vignette.
+
+## Functions available
+
+### bam_covars_importance()
+
+**bam_covars_importance()** plots mean relative covariate importance (with bootstrap variation) by variable class, with options to group by BCR (Bird Conservation Region) or species.
+
+Arguments
+
+- species: A character specifying the species to filter by.
+
+- bcr: A character specifying the Bird Conservation Regions (BCRs; model subregions) to filter by.
+
+- group: A character of two grouping variables for summarising covariate importance. Valid strings are "spp" (species) or "bcr".
+
+- version: Specifies which version of the landbird density model to use. Valid options are "v4" or "v5".
+
+- plot: Logical indicating whether to plot the results (TRUE) or return the processed data (FALSE).
+
+- colours: Character vector of hex codes for the colours to use in the ggplot (optional).
+
+📤 Output
+
+A ggplot displaying percent covariate importance by variable class, grouped by the group argument. Percent importance is used to allow comparisions across groups that have differing total covariate importance. If plot = FALSE the processed data is returned as a data.frame.
+
+### bam_covars_barchart()
+
+**bam_covars_barchart()** creates stacked bar plots showing the proportion of model covariates importance in predicting bird abundance.
+
+Arguments
+
+- species: A character specifying the species to filter by.
+
+- bcr: A character specifying the Bird Conservation Regions (BCRs; model subregions) to filter by.
+
+- groups: A character of two grouping variables for summarising covariate importance. The first group element is plotted on the x-axis as bins each containing a stacked bar, while the second group element is shown by fill colours in the stacked bars. Valid strings are any two of: "spp" (species), "bcr" (BCR), var, or var_class.
+
+- version: Specifies which version of the landbird density model to use. Valid options are "v4" or "v5".
+
+- plot: Logical indicating whether to plot the results (TRUE) or return the processed data (FALSE).
+
+- colours: Character vector of hex codes for the colours to use in the ggplot (optional).
+
+📤 Output
+
+A stacked bar chart
+
+## Example workflow
+
+### 1. Identify species & area of interest
+
+The first step in explore model predictors from the BAM landbird density models is to select the species and model subregions, or Bird Conservation Regions (BCRs) of interest.
+
+We'll use the same example as the previous vignette: species of conservation concern within an area of interest (AOI) across two sugbregions in the boreal plains and shield. We don't need to actually download any of the model products this time, just get our vectors of species and BCR.
+
+```{r aoi, echo = TRUE, results = 'markup', error = TRUE}
+library(BAMexploreR)
+
+# Generate a vector of COSEWIC species codes available in version 5. 
+cosewic_v5 <- bam_spp_list("v5", "speciesCode", "COSEWIC")
+
+# Use the example aoi SpatVector provided in the package
+aoi_sf <- vect(system.file("extdata", "vignette_poly_5072.shp", package = "BAMexploreR"))
+
+# Extract subregions from version 5 that intersect the aoi
+bcraoi_v5 <- bam_get_bcr("v5", ext=aoi_sf) 
+```
+
+### 2. Plot the covariates by variable group
+
+The `bam_covars_importance` function is a good way to start exploring variable importance because it summarizes the variable importance into nine general categories:
+
+- **Annual climate**: the climate of the preceeding year (e.g., mean temperature)
+- **Biomass**: structure of the vegetation (e.g., forest canopy height)
+- **Climate Normals**: climate averages from 1991 to 2020 (e.g., precipitation as snow)
+- **Disturbance**: anthropogenic disturbance (e.g., human footprint)
+- **Landcover**: general landcover class
+- **Method**: the general survey method (e.g., human point count)
+- **Road**: road density
+- **Topography**: description of the Earth's surface shape (e.g., topographic position index)
+- **Wetland**: availability of wetland areas (e.g., open water seasonality)
+- **Year**: the year the survey was conducted
+
+Let's look at the variable importance plot for our species and AOI.
+
+```{r cov_imp_plot, echo = TRUE, results = 'markup', error = TRUE}
+
+# Create plot of variable importance grouped by BCR
+bam_covars_importance(species = cosewic_v5, bcr = bcraoi_v5, group = "bcr", version = "v5", plot=TRUE)
+
+```
+
+We can see that the plot has error bars, indicating standard deviation across bootstraps. Alternatively, we can just return the raw data to look at the actual values. Let's try that
+
+```{r cov_imp_raw, echo = TRUE, results = 'markup', error = TRUE}
+
+# Create dataframe of variable importance grouped by BCR
+aoi_importance <- bam_covars_importance(species = cosewic_v5, bcr = bcraoi_v5, group = "bcr", version = "v5", plot=FALSE)
+
+aoi_importance
+
+```
+
+Now we're just looking at one species, Canada Warbler, but if we add another species and group by BCR, we get summarized statistics across species. Let's add Ovenbird and see what we get.
+
+```{r cov_imp_plot2, echo = TRUE, results = 'markup', error = TRUE}
+
+# Add ovenbird to our vector of species of interest
+cawa_oven <- c("OVEN", cosewic_v5)
+
+# Create plot of variable importance grouped by BCR
+bam_covars_importance(species = cosewic_v5, bcr = bcraoi_v5, group = "bcr", version = "v5", plot=TRUE)
+
+```
+
+It looks like biomass is pretty important! There is a metadata table for the model covariates stored in the package. Let's check out what goes into the biomass category.
+
