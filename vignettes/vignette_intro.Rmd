@@ -30,9 +30,9 @@ There are three general categories of tasks that `BAMexploreR` provides:
 
 In addition to this Introduction vignette, there is a vignette available for each of the three task categories.
 
-## BAM landbird density models
+## Background
 
-### Background
+### BAM landbird density models
 
 Reliable information on species’ population sizes, trends, habitat associations, and distributions is important for conservation and land-use planning, as well as status assessment and recovery planning for species at risk. However, the development of such estimates at a national scale is challenged by a variety of factors, including sparse data coverage in remote regions, differential habitat selection across large geographies, and variation in survey protocols.
 
@@ -80,6 +80,10 @@ You can install and load `BAMexploreR` from [GitHub](https://github.com/borealbi
 remotes::install_github('borealbirds/BAMExploreR')
 library(BAMexploreR)
 ```
+
+## Syntax
+
+All functions begin with a `bam_*` prefix to facilitate easy autocompletion of the functions when using `BAMExploreR` in RStudio.
 
 ## Core Data
 
