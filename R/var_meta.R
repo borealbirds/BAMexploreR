@@ -1,4 +1,4 @@
-#' Table of variable metadata for BAM density models
+#' Title: Table of variable metadata for BAM density models
 #'
 #' This dataset lists all variables used in the BAM landbird density models for version 4 and version 5
 #' The table contains information on the definitions of each variable and the source
