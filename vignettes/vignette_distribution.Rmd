@@ -19,12 +19,19 @@ knitr::opts_chunk$set(
 ```
 
 
-The BAMexploreR package provides tools to explore boreal bird species distribution and estimate population metrics using raster outputs from predictive models. The following core functions are designed to support conservation planning and ecological analysis:
+This vignette will show you how to work with the BAM landbird density models to evaluate distribution and population size with the `BAMExploreR` package. 
 
+## Background
+
+### Density estimates
+
+The BAM landbird density models use the QPAD analytical approach for data integration, which uses statistical offsets to account for imperfect detection and produce estimates of population density. The model products are therefore species-specific predictions of the density of breeding male birds per hectare at a 1km resolution across the boreal forest! We can use those density surfaces for a variety of conservation and land-use planning applications. The `BAMexploreR` package provides functions for two core analytical tasks.
+
+## Functions available
 
 ### bam_occurrence()
 
-The **bam_occurrence()** function estimates a species' presence/absence threshold based on a Lorenz curve, which summarizes the spatial inequality in predicted occurrence probabilities. This function helps distinguish between areas of high and low predicted use, by determining a threshold value that defines the most likely occupied areas.
+**bam_occurrence()** estimates a species' presence/absence threshold based on a Lorenz curve, which summarizes the spatial inequality in predicted occurrence probabilities. This function helps distinguish between areas of high and low predicted use, by determining a threshold value that defines the most likely occupied areas.
 
 Arguments
 
@@ -40,14 +47,14 @@ A tibble with the following columns:
 
 - species: Species code identifying the species.
 
-- type: Indicates whether a presence/absence threshold was applied when calculating the area.Values are "no_threshold" or "with_threshold".
+- type: Indicates whether a presence/absence threshold was applied when calculating the area. Values are "no_threshold" or "with_threshold".
 
 - area_km2: The total area (in square kilometers) where predicted abundance exceeds the threshold (if applied).
 
 
 ### bam_pop_size()
 
-The **bam_pop_size()** function estimates the total population size by summarizing predicted densities of males across a spatial extent. This function supports cropping to a defined area (e.g., a region of interest) and group-based summaries if the extent includes a grouping variable (e.g., subregions, jurisdictions).
+**bam_pop_size()** estimates the total population size by summarizing predicted densities of males across a spatial extent. This function supports cropping to a defined area (e.g., a region of interest) and group-based summaries if the extent includes a grouping variable (e.g., subregions, jurisdictions).
 
 Arguments
 
@@ -73,60 +80,122 @@ A tibble with the following columns:
 
 - species: Species code identifying the species.
 
-
-
 ## Example workflow
 
-### Set  the area of interest (AOI) as the Canadian extent of BCRs 61 and 62 
+### 1. Model access
 
-```{r select_aoi, fig.width=8, fig.height=6, echo = TRUE, results = 'markup', error = TRUE}
+The first step in working with the BAM density models is to get the model layers for the species and area of interest. See the 'Model Access' vignette for further details.
+
+We'll use the same example as the previous vignette: species of conservation concern within an area of interest (AOI) across two sugbregions in the boreal plains and shield. This time, instead of accessing the models for the whole subregions, we'll use the `crop_ext` argument to access just the AOI.
+
+```{r access, fig.width=8, fig.height=6, echo = TRUE, results = 'markup', error = TRUE}
 library(BAMexploreR)
-library(terra)
-library(dplyr)
 
-# Load and extract Canada BCRs 60 and 61
-bcr_v5 <- vect(system.file("extdata", "BAM_BCRNMv5_5072.shp", package = "BAMexploreR"))
-aoi_sf <- bcr_v5[bcr_v5$subunit_ui %in% c("can60", "can61"), ]
+# Generate a vector of COSEWIC species codes available in version 5. 
+cosewic_v5 <- bam_spp_list("v5", "speciesCode", "COSEWIC")
 
-plot(bcr_v5, main = "AOI defined by the Canadian extent of BCRs 60 and 61")
-plot(aoi_sf, col = "red", add = TRUE)
+# Use the example aoi SpatVector provided in the package
+aoi_sf <- vect(system.file("extdata", "vignette_poly_5072.shp", package = "BAMexploreR"))
+
+#Download the model products
+result <- bam_get_layer(cosewic_v5, "v5", destfile = tempdir(), year = "2020", crop_ext=aoi_sf)
  
+```
+
+Let's plot just the range-limited mean density to check our download.
+
+```{r plot_layer, echo = TRUE, results = 'markup', error = TRUE, fig.width=8, fig.height=6}
+library(terra)
+
+plot(result$CAWA$`range-limited mean`)
+```
+
+### 2. Estimate area of occurrence
+
+Once we have our models for our AOI, we can use the `bam_occurrence` function to threshold the continuous density surface into a binary occurrence surface. 
+
+There are two options for thresholding the continuous values into presence and absence.
+
+- **by_lorenz**: Using a Lorenz curve, which summarizes the spatial inequality in predicted occurrence probabilities. See the [`opticut` R package](https://github.com/psolymos/opticut) for details.
+- **numeric**: Using a custom threshold between 0 and 1. This value indicates a cumulative proportion of pixels, above which all raster pixel values are assigned as "presence".
+ 
+Let's try the default option, `by_lorenz` first on downloaded models for Canada Warbler.
+
+```{r map_occu_lorenz, fig.width=8, fig.height=6, message = FALSE, warning= FALSE, echo = TRUE, results = 'markup', error = TRUE}
+# Threshold the model with the lorenz curve threshold
+occ_lorenz_result <- bam_occurrence(result, plot = TRUE)
 
 ```
 
-### Mapping species occurence for CAWA and OVEN within the AOI
+And then let's compare to a custom threshold; let's try 50%.
 
-
-```{r map_occurence, fig.width=8, fig.height=6, message = FALSE, warning= FALSE, echo = TRUE, results = 'markup', error = TRUE}
-# Download TEWA and BBWO distribution maps and map presence/absence through the aoi 
-buildresults <- bam_get_layer(c("CAWA", "OVEN"), "v5", destfile = tempdir(), crop_ext = aoi_sf, year = "2010")
-occ_results <- bam_occurrence(results, plot = TRUE)
+```{r map_occu_50, fig.width=8, fig.height=6, message = FALSE, warning= FALSE, echo = TRUE, results = 'markup', error = TRUE}
+# Threshold the model with the lorenz curve threshold
+occ_quantile_result <- bam_occurrence(result, quantile = 0.5, plot = TRUE)
 
 ```
 
+We can see that the area of occurrence is smaller when we use a more conservative threshold! Let's examine the area of occurrence within our AOI for the two approaches to compare.
 
-### Estimating species specific population size within the AOI per BCR
+```{r area_occu, message = FALSE, warning= FALSE, echo = TRUE, results = 'markup', error = TRUE}
 
+# Area of occurrence for lorenz approach
+occ_lorenz_result$occurrence_summary
 
-```{r map_density, fig.width=8, fig.height=6, message = FALSE, warning= FALSE, echo = TRUE, error = TRUE}
+# Area of occurence for quantile approach
+occ_quantile_result$occurrence_summary
+
+```
+
+Within our AOI of ~100,000 km^2^, we estimate approximately half of that is occupied by Canada Warblers if we use the Lorenz curve approach and we estimate just under a third of that is occupied by Canada Warblers if we use a custom 50% threshold
+
+### 3. Estimate population size
+
+Alternatively, we can use the the `bam_pop_size` function on the continuous density predictions to calculate population size! This function simply sums the value of the pixels across the AOI and corrects for raster cell size.
+
+Let's use our same Canada Warbler example as before. 
+
+```{r density_aoi, message = FALSE, warning= FALSE, echo = TRUE, error = TRUE}
 library(knitr)
 
 # Calculate population size based on BAM National Model density raster
-occ_results <- bam_pop_size(results, crop_ext = aoi_sf, group = "subunit_ui")
+pop_aoi_result <- bam_pop_size(result)
 
 # Show results
-kable(occ_results, caption = "Estimated population size grouped by BCR")
+kable(pop_aoi_result, caption = "Estimated population size")
 ```
 
-## Citation
+The `bam_pop_size` function can also accommodate an AOI SpatVector for AOI with a column that can be used to group the population size summary.
 
-Please cite the _BAMexploreR_ package when using it in publications. To cite the latest official version, please use:
+Let's try grouping by bird conservation region (BCR; i.e.,our model subregions). First we'll need to create a new SpatVector with separate polygons for the two BCRs in our AOI.
 
+```{r aoi_bcr_map, echo = TRUE, results = 'markup', error = TRUE, fig.width=8, fig.height=4}
+# Get the BCRs that our AOI intersects
+bcraoi_v5 <- bam_get_bcr("v5", ext=aoi_sf) 
 
-```{r, echo = FALSE, results = "asis"}
-dev_version <- packageDescription("BAMexploreR")$Version
-cat(paste0("\\> Houle M, Boehm M, Wu SC, Knight E, ... (", format(Sys.time(), "%Y"),"). BAMexploreR: Evaluating boreal birds density in Canada using R. R package version ", dev_version, ". Available at https://github.com/borealbirds/BAMexploreR\n"))
+# Get the BCRs of interest from model subregion layer provided in the package
+bcr_v5 <- vect(system.file("extdata", "BAM_BCRNMv5_5072.shp", package = "BAMexploreR"))
+aoi_bcr <- bcr_v5[bcr_v5$subunit_ui %in% bcraoi_v5, ]
+
+# Crop the BCR SpatVector to our AOI
+aoi_sf_bcr <- crop(aoi_bcr, aoi_sf)
+
+# Plot to check the result
+plot(bcr_v5, border = "grey80", main = "Model subregions within the AOI")
+plot(aoi_sf_bcr, col = "red", border = "black", add = TRUE)
 ```
 
+Looks good! Now we can use that new SpatVector with the BCRs to group our population estimates by BCR.
 
+```{r density_bcr, message = FALSE, warning= FALSE, echo = TRUE, error = TRUE}
+# Check what the BCR column name is called
+head(aoi_sf_bcr)
 
+# Calculate population size based on BAM National Model density raster
+pop_bcr_result <- bam_pop_size(result, crop_ext=aoi_sf_bcr, group="subunit_ui")
+
+# Show results
+kable(pop_bcr_result, caption = "Estimated population size")
+```
+
+We can see that now our total population is split approximately 40% in BCR 80 and 60% in BCR 61, primarily due to differences in mean density between the BCRs, and not by differences in total area.
