@@ -124,8 +124,13 @@ bam_map_bcr("v5")
 This reference table can be used to understand the different variables that went into the BAM landbird density models, including a description and source for each, as well as the categories they are grouped into for some of the habitat relationship functions.
 
 ```{r var_meta, eval = TRUE, echo=TRUE}
-str(var_meta)
+#Look at the column names
+colnames(var_meta)
 
+#Look at the first three rows for a few variables
+var_meta |> 
+  dplyr::select(version, variable, definition, category) |> 
+  head(3)
 ```
 
 ## Citation
