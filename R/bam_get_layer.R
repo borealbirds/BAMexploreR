@@ -34,7 +34,7 @@
 #' @importFrom httr GET content
 #' @importFrom tools file_ext file_path_sans_ext
 #' @importFrom stringr str_sub
-#' @importFrom terra vect rast project crop values crs writeRaster same.crs
+#' @importFrom terra vect rast project crop values crs writeRaster same.crs expanse
 #' @importFrom stats setNames
 #'
 bam_get_layer <- function(spList, version, destfile, crop_ext = NULL,  year = NULL, bcrNM= "mosaic") {
@@ -93,6 +93,14 @@ bam_get_layer <- function(spList, version, destfile, crop_ext = NULL,  year = NU
   #cwd <- getwd()
   if (!file.exists(destfile)) {
     dir.create(destfile, showWarnings = FALSE)
+  }
+
+  # Check crop_ext area
+  if(!is.null(crop_ext)){
+    crop_area <- expanse(crop_ext, unit="km")
+    if(crop_area < 100){
+      warning(sprintf("The BAM density models are predicted to a resolution of 1 km2 grid cells. Your area of interest is only %.2f km2 and may be unsuitable for use ", crop_area))
+    }
   }
 
   spv <- bam_spp_list(version, "speciesCode")
