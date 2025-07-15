@@ -162,7 +162,7 @@ library(knitr)
 pop_aoi_result <- bam_pop_size(result)
 
 # Show results
-kable(pop_aoi_result, caption = "Estimated population size")
+kable(pop_aoi_result, caption = "Estimated population size (male birds)")
 ```
 
 The `bam_pop_size` function can also accommodate an AOI SpatVector for AOI with a column that can be used to group the population size summary.

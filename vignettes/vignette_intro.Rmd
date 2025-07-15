@@ -36,7 +36,7 @@ In addition to this Introduction vignette, there is a vignette available for eac
 
 Reliable information on species’ population sizes, trends, habitat associations, and distributions is important for conservation and land-use planning, as well as status assessment and recovery planning for species at risk. However, the development of such estimates at a national scale is challenged by a variety of factors, including sparse data coverage in remote regions, differential habitat selection across large geographies, and variation in survey protocols.
 
-With these factors in mind, BAM developed a generalized analytical approach to model landbird species density in relation to environmental covariates, using in-person or ARU point-count surveys and widely available spatial predictors. We developed separate models for each geographic region (bird conservation regions) based on covariates such as tree species biomass (local and landscape scale), forest age, topography, land use, and climate. We used machine learning to allow for variable interactions and non-linear responses while avoiding time-consuming species-by-species parameterization. We applied cross-validation to avoid overfitting and bootstrap resampling to estimate uncertainty associated with our density estimates.
+With these factors in mind, BAM developed a generalized analytical approach to model landbird species density in relation to environmental covariates, using in-person or ARU point-count surveys and widely available spatial predictors. We developed separate models for each geographic region (bird conservation regions) based on covariates such as tree species biomass (local and landscape scale), forest age, topography, land use, and climate. We used machine learning to allow for predictor interactions and non-linear responses while avoiding time-consuming species-by-species parameterization. We applied cross-validation to avoid overfitting and bootstrap resampling to estimate uncertainty associated with our density estimates.
 
 **The model products are species-specific predictions of the density of breeding male birds per hectare at a 1km resolution across the boreal forest.**
 
@@ -69,7 +69,7 @@ Two versions of the BAM landbird density models are available in `BAMExploreR`.
 | **Geographic extent**                                              | Canada only                                          | Canada plus boreal and hemiboreal of US |
 | **Temporal resolution**                                            | Predictions for 2017                                 | Predictions at five-year intervals from 1990 to 2020 |
 | **Model subregions**                                           | Bird conservation region (BCR)          | Updated BCRs and country |
-| **Environmental predictors**                                       | Landcover, biomass, climate                          | Time-matched variables for vegetation biomass, human disturbance, and annual climate |
+| **Environmental predictors**                                       | Landcover, biomass, climate                          | Time-matched predictors for vegetation biomass, human disturbance, and annual climate |
 | **Model reliability information**                                  | Cross-validated model performance                    | Cross-validated model performance, map of coefficient of variation across bootstraps, map of model extrapolation, map of detection distribution |
 
 ## Installation
@@ -119,17 +119,17 @@ library(tmap)
 bam_map_bcr("v5")
 ```
 
-### Model variable metadata
+### Model predictor metadata
 
-This reference table can be used to understand the different variables that went into the BAM landbird density models, including a description and source for each, as well as the categories they are grouped into for some of the habitat relationship functions.
+This reference table can be used to understand the different predictors that went into the BAM landbird density models, including a description and source for each, as well as the categories they are grouped into for some of the habitat relationship functions.
 
 ```{r var_meta, eval = TRUE, echo=TRUE}
 #Look at the column names
 colnames(var_meta)
 
-#Look at the first three rows for a few variables
+#Look at the first three rows for a few predictors
 var_meta |> 
-  dplyr::select(version, variable, definition, category) |> 
+  dplyr::select(version, predictor, definition, category) |> 
   head(3)
 ```
 
