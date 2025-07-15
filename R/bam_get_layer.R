@@ -99,7 +99,7 @@ bam_get_layer <- function(spList, version, destfile, crop_ext = NULL,  year = NU
   if(!is.null(crop_ext)){
     crop_area <- expanse(crop_ext, unit="km")
     if(crop_area < 100){
-      warning(sprintf("The BAM density models are predicted to a resolution of 1 km2 grid cells. Your area of interest is only %.2f km2 and may be unsuitable for use ", crop_area))
+      warning(sprintf("The BAM density models are predicted to a resolution of 1 km2. Your area of interest is only %.2f km2. Please consider whether these models are appropriate for your application.", crop_area))
     }
   }
 
