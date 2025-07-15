@@ -8,12 +8,12 @@
 #'
 #' @param species A \code{character} specifying the species to filter by. The default is \code{"all"}, which includes all species in the dataset.
 #'
-#' @param bcr A \code{character} specifying the Bird Conservation Regions (BCRs) to filter by. The default is \code{"all"}, which includes all BCRs in the dataset.
+#' @param bcr A \code{character} specifying the model subregions, or Bird Conservation Regions (BCRs) to filter by. The default is \code{"all"}, which includes all BCRs in the dataset.
 #'
 #' @param groups A \code{character} of two grouping variables for summarising covariate importance.
 #' The first group element is plotted on the x-axis as bins each containing a stacked bar,
 #' while the second group element is shown by fill colours in the stacked bars.
-#' Valid strings are any two of: \code{"spp"} (species), \code{"bcr"} (BCR), \code{var}, or \code{var_class}.
+#' Valid strings are any two of: \code{"spp"} (species), \code{"bcr"} (BCR; model subregion), \code{"var"} (model variable), or \code{"var_class"} (model variable category).
 #' Please see the examples below for a visualization.
 #'
 #' @param version A \code{character}. Defaults to \code{"v5"}. Loads BAM's covariate importance data,
