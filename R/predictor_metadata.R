@@ -21,4 +21,4 @@
 #' @keywords internal
 #'
 #' @docType data
-"var_meta"
+"predictor_metadata"
