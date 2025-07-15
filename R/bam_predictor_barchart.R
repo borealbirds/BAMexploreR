@@ -43,24 +43,24 @@
 #' @examples
 
 #' # Compare predictor importance (binned by predictor class) for all species in all BCRs
-#' bam_covars_barchart(species = "all", bcr = "all",  groups = c("spp", "predictor_class"))
+#' bam_predictor_barchart(species = "all", bcr = "all",  groups = c("spp", "predictor_class"))
 #'
 #' # Compare predictor importance (binned by predictor class) in the Prairies (BCRs 11, 6-1, 6-0)
 #' # to the Pacific Coast across (BCR 5) all species
 #' prairies_to_coast <- c("can11", "can60", "can61", "can5")
-#' bam_covars_barchart(species = "all", bcr = prairies_to_coast, groups=c("bcr", "predictor_class"))
+#' bam_predictor_barchart(species = "all", bcr = prairies_to_coast, groups=c("bcr", "predictor_class"))
 #'
 #' # Compare predictor importance (binned by predictor class) for four
 #' # warbler species in BCR14
 #' warblers <- c("CAWA", "BAWW", "BTNW", "BLBW")
-#' bam_covars_barchart(species = warblers, bcr = "can14", groups = c("spp", "predictor_class"))
+#' bam_predictor_barchart(species = warblers, bcr = "can14", groups = c("spp", "predictor_class"))
 #'
 #' # Compare predictor importance for a single warbler species
 #' # relative to the total influence that predictor had across all warblers.
-#' bam_covars_barchart(species = warblers, bcr = "can14", groups = c("predictor", "spp"))
+#' bam_predictor_barchart(species = warblers, bcr = "can14", groups = c("predictor", "spp"))
 
 
-bam_covars_barchart <- function(species = "all", bcr = "all",  groups = c("spp", "predictor_class"), version ="v5", plot = TRUE, colours = NULL){
+bam_predictor_barchart <- function(species = "all", bcr = "all",  groups = c("spp", "predictor_class"), version ="v5", plot = TRUE, colours = NULL){
 
   if (!version %in% c("v4", "v5")) {
     stop("Invalid version argument. Must be either 'v4' or 'v5'.")

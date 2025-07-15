@@ -1,5 +1,5 @@
 ##################################################################################
-#' Plot Side-by-Side Variation in Covariate Importance by Predictor Class
+#' Plot Side-by-Side Variation in Predictor Importance by Predictor Class
 #'
 #' @description Plot mean relative predictor importance (with bootstrap variation)
 #' by predictor class, with options to group by BCR (Bird Conservation Region) or species.
@@ -40,18 +40,18 @@
 #'
 #' # Example of plotting predictor importance for Townsend's Solitaire across all BCRs.
 #' # This is a species with relatively high bootstrap variance.
-#' bam_covars_importance(species = "TOSO")
+#' bam_predictor_importance(species = "TOSO")
 #'
 #' # Example of plotting predictor importance for two warbler species from three BCRs,
 #' # using custom colours:
-#' bam_covars_importance(species = c("BAWW", "CAWA"), group = "spp",
+#' bam_predictor_importance(species = c("BAWW", "CAWA"), group = "spp",
 #' bcr = c("can12", "can13", "can14"),  colours = c("#1f78b4", "#33a02c"))
 #'
 #'
 #'
 ##################################################################################
 
-bam_covars_importance <- function(species = "all", bcr = "all", group = "spp", version = "v5", plot = TRUE, colours = NULL) {
+bam_predictor_importance <- function(species = "all", bcr = "all", group = "spp", version = "v5", plot = TRUE, colours = NULL) {
 
   # validate data version
   if (!version %in% c("v4", "v5")) {

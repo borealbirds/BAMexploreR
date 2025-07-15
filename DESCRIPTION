@@ -43,12 +43,12 @@ Collate:
     'bam_get_bcr.R'
     'bam_map_bcr.R'
     'bam_occurrence.R'
-    'bam_covars_importance.R'
+    'bam_predictor_importance.R'
     'bam_pop_size.R'
-    'bam_covars_barchart.R'
+    'bam_predictor_barchart.R'
     'data-doc.R'
     'spp_tbl-doc.R'
     'utils.R'
-    'var_meta.R'
+    'predictor_metadata.R'
 RoxygenNote: 7.3.2
 VignetteBuilder: knitr

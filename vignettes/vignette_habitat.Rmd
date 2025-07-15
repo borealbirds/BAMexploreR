@@ -27,9 +27,9 @@ The machine learning framework that BAM uses to produce the landbird density mod
 
 ## Functions available
 
-### bam_covars_importance()
+### bam_predictor_importance()
 
-**bam_covars_importance()** plots mean relative predictor importance (with bootstrap variation) by predictor class, with options to group by BCR (Bird Conservation Region) or species.
+**bam_predictor_importance()** plots mean relative predictor importance (with bootstrap variation) by predictor class, with options to group by BCR (Bird Conservation Region) or species.
 
 Arguments
 
@@ -49,9 +49,9 @@ Arguments
 
 A ggplot displaying percent predictor importance by predictor class, grouped by the group argument. Percent importance is used to allow comparisions across groups that have differing total predictor importance. If plot = FALSE the processed data is returned as a data.frame.
 
-### bam_covars_barchart()
+### bam_predictor_barchart()
 
-**bam_covars_barchart()** creates stacked bar plots showing the proportion of model predictors importance in predicting bird abundance.
+**bam_predictor_barchart()** creates stacked bar plots showing the proportion of model predictors importance in predicting bird abundance.
 
 Arguments
 
@@ -94,16 +94,16 @@ bcraoi_v5 <- bam_get_bcr("v5", ext=aoi_sf)
 
 ### 2. Plot the predictors by predictor class
 
-The `bam_covars_importance` function is a good way to start exploring predictor importance because it summarizes the predictor importance into nine general categories:
+The `bam_predictor_importance` function is a good way to start exploring predictor importance because it summarizes the predictor importance into nine general categories:
 
 - **Annual climate**: the climate of the preceeding year (e.g., mean temperature)
-- **Biomass**: structure of the vegetation (e.g., forest canopy height)
-- **Climate Normals**: climate averages from 1991 to 2020 (e.g., precipitation as snow)
-- **Disturbance**: anthropogenic disturbance (e.g., human footprint)
+- **Climate Normal**: climate averages from 1991 to 2020 (e.g., precipitation as snow)
+- **Disturbance**: anthropogenic disturbance (e.g., road density)
 - **Landcover**: general landcover class
 - **Method**: the general survey method (e.g., human point count)
-- **Road**: road density
 - **Topography**: description of the Earth's surface shape (e.g., topographic position index)
+- **Veg Species**: percent cover or biomass of a particular tree species or group of tree species (e.g., deciduous)
+- **Veg Structure**: structure of the vegetation (e.g., forest canopy height)
 - **Wetland**: availability of wetland areas (e.g., open water seasonality)
 - **Year**: the year the survey was conducted
 
@@ -111,7 +111,7 @@ Let's look at the predictor importance plot for our species and AOI.
 
 ```{r cov_imp_plot, echo = TRUE, results = 'markup', error = TRUE, fig.width=7, fig.height=4, fig.align='center'}
 # Create plot of predictor importance grouped by BCR
-bam_covars_importance(species = cosewic_v5, bcr = bcraoi_v5, group = "bcr", version = "v5", plot=TRUE)
+bam_predictor_importance(species = cosewic_v5, bcr = bcraoi_v5, group = "bcr", version = "v5", plot=TRUE)
 
 ```
 
@@ -119,7 +119,7 @@ We can see that the plot has error bars, indicating standard deviation across bo
 
 ```{r cov_imp_raw, echo = TRUE, results = 'markup', error = TRUE}
 # Create dataframe of predictor importance grouped by BCR
-aoi_importance <- bam_covars_importance(species = cosewic_v5, bcr = bcraoi_v5, group = "bcr", version = "v5", plot=FALSE)
+aoi_importance <- bam_predictor_importance(species = cosewic_v5, bcr = bcraoi_v5, group = "bcr", version = "v5", plot=FALSE)
 
 aoi_importance
 
@@ -132,18 +132,18 @@ Now we're just looking at one species, Canada Warbler, but if we add another spe
 spp_v5 <- bam_spp_list("v5", "speciesCode")
 
 # Create plot of predictor importance grouped by BCR
-bam_covars_importance(species = spp_v5, bcr = bcraoi_v5, group = "bcr", version = "v5", plot=TRUE)
+bam_predictor_importance(species = spp_v5, bcr = bcraoi_v5, group = "bcr", version = "v5", plot=TRUE)
 
 ```
 
 It looks like biomass is pretty important! There is a metadata table for the model predictors stored in the package. Let's check out what goes into the biomass class.
 
-```{r var_meta, eval = TRUE, echo=TRUE}
+```{r predictor_metadata, eval = TRUE, echo=TRUE}
 library(dplyr)
 library(knitr)
 
 #Look at the first three rows for a few predictors
-var_meta |> 
+predictor_metadata |> 
   dplyr::filter(version=="v5", class=="Biomass") |> 
   dplyr::select(predictor, definition) |> 
   kable(caption = "Model predictorles in the 'Biomass' class")
@@ -151,13 +151,13 @@ var_meta |>
 
 ### 3. Stacked bar chart of predictors
 
-If we want to visualize the predictor importance by individual predictors or with by grouping with multiple categories, we can use the `bam_covars_barchart` function. This function picks two groups for summary, with the group plotted on the x-axis as bins each containing a stacked bar and the second group is shown by fill colours in the stacked bars. The options for grouping are "spp" (species), "bcr" (model subregion), "var" (predictor), or "var_class" (predictor class).
+If we want to visualize the predictor importance by individual predictors or with by grouping with multiple categories, we can use the `bam_predictor_barchart` function. This function picks two groups for summary, with the group plotted on the x-axis as bins each containing a stacked bar and the second group is shown by fill colours in the stacked bars. The options for grouping are "spp" (species), "bcr" (model subregion), "var" (predictor), or "var_class" (predictor class).
 
 Let's start by looking at the proportion of influence across predictor categories for each species.
 
 ```{r cov_bar_plot1, echo = TRUE, results = 'markup', error = TRUE, fig.width=7, fig.height=4, fig.align='center'}
 # Create plot of predictor importance for each species grouped by predictor class
-bam_covars_barchart(species = spp_v5, bcr = bcraoi_v5, groups=c("spp", "var_class"), version = "v5", plot=TRUE)
+bam_predictor_barchart(species = spp_v5, bcr = bcraoi_v5, groups=c("spp", "var_class"), version = "v5", plot=TRUE)
 ```
 
 Again, we see that the biomass predictors have the greatest proportion of influence, but that it varies across species.
@@ -166,7 +166,7 @@ Let's look at the difference between model subregions, or BCRs.
 
 ```{r cov_bar_plot2, echo = TRUE, results = 'markup', error = TRUE, fig.width=7, fig.height=4, fig.align='center'}
 # Create plot of predictor importance for each BCR grouped by predictor class
-bam_covars_barchart(species = spp_v5, bcr = bcraoi_v5, groups=c("bcr", "var_class"), version = "v5", plot=TRUE)
+bam_predictor_barchart(species = spp_v5, bcr = bcraoi_v5, groups=c("bcr", "var_class"), version = "v5", plot=TRUE)
 ```
 Looks like climate normals are slightly more important in BCR 61 while annual climate is slightly more important in BCR 80.
 
@@ -175,7 +175,7 @@ And now let's try looking at the proportion of influence of individual predictor
 
 ```{r cov_bar_plot3, echo = TRUE, results = 'markup', error = TRUE, fig.width=7, fig.height=4, fig.align='center'}
 # Create plot of predictor importance for each predictor grouped by species
-bam_covars_barchart(species = spp_v5, bcr = bcraoi_v5, groups=c("var", "spp"), version = "v5", plot=TRUE)
+bam_predictor_barchart(species = spp_v5, bcr = bcraoi_v5, groups=c("var", "spp"), version = "v5", plot=TRUE)
 
 ```
 
@@ -183,7 +183,7 @@ We can see there's a lot of variation here. Not every predictor is included in e
 
 ```{r cov_bar_text, echo = TRUE, results = 'markup', error = TRUE, fig.width=7, fig.height=4, fig.align='center'}
 # Create plot of predictor importance for each species grouped by predictor class
-bam_covars_barchart(species = spp_v5, bcr = bcraoi_v5, groups=c("var", "spp"), version = "v5", plot=FALSE)
+bam_predictor_barchart(species = spp_v5, bcr = bcraoi_v5, groups=c("var", "spp"), version = "v5", plot=FALSE)
 
 ```
 
