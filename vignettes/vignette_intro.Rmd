@@ -121,7 +121,7 @@ bam_map_bcr("v5")
 
 ### Model predictor metadata
 
-This reference table can be used to understand the different predictors that went into the BAM landbird density models, including a description and source for each, as well as the categories they are grouped into for some of the habitat relationship functions.
+This reference table can be used to understand the different predictors that went into the BAM landbird density models, including a description and source for each, as well as the classes they are grouped into for some of the habitat relationship functions.
 
 ```{r var_meta, eval = TRUE, echo=TRUE}
 #Look at the column names
@@ -129,7 +129,7 @@ colnames(var_meta)
 
 #Look at the first three rows for a few predictors
 var_meta |> 
-  dplyr::select(version, predictor, definition, category) |> 
+  dplyr::select(version, predictor, definition, class) |> 
   head(3)
 ```
 
