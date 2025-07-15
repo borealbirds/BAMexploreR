@@ -40,7 +40,7 @@ With these factors in mind, BAM developed a generalized analytical approach to m
 
 **The model products are species-specific predictions of the density of breeding male birds per hectare at a 1km resolution across the boreal forest.**
 
-```{r plot_cawa, message=FALSE, warning=FALSE, echo=FALSE, fig.width=8, fig.height=6}
+```{r plot_cawa, message=FALSE, warning=FALSE, echo=FALSE, out.width='100%', fig.align='center'}
 
 # Construct direct download link from Google Drive file ID
 file_id <- "1t9nNCmLoJV4CQoSR3Q_DCZ_CFrb-m3Pr"
@@ -114,7 +114,7 @@ str(spp_tbl)
 
 These two objects are SpatVectors containing the boundaries of the modelling subunits for versions 4 and 5. The package also provides helper functions to retrieve the names of subunits corresponding to a specified version and easily visualize (map) those subunits within your analysis workflow (see 'Model Access' vignette).
 
-```{r bam_map_bcr, fig.width=8, message=FALSE, warning=FALSE, echo=FALSE, fig.width=8, fig.height=6}
+```{r bam_map_bcr, message=FALSE, warning=FALSE, echo=FALSE, fig.width=8, fig.height=4}
 library(tmap)
 bam_map_bcr("v5")
 ```
