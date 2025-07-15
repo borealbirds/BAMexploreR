@@ -13,7 +13,7 @@
 #'
 #' @param version A \code{character}. Defaults to \code{"v5"}. Loads BAM's predictor importance data,
 #' a \code{data.frame} containing predictor importance values, with mean predictor importance as
-#' rows and columns \code{bcr}, \code{species}, \code{var_class}, \code{n_boot}, \code{mean_rel_inf}, and \code{sd_rel_inf}.
+#' rows and columns \code{bcr}, \code{species}, \code{predictor_class}, \code{n_boot}, \code{mean_rel_inf}, and \code{sd_rel_inf}.
 #' \code{"v4"} is also possible but not fully supported for all functions in the first release of this package.
 #'
 #' @param plot A \code{logical} indicating whether to plot the results (\code{TRUE}) or return the processed data (\code{FALSE}).
@@ -106,7 +106,7 @@ bam_predictor_importance <- function(species = "all", bcr = "all", group = "spp"
 
 
   # convert characters to symbols for dplyr::group_by
-  group_sym <- rlang::syms(unique(c(group, "var_class")))
+  group_sym <- rlang::syms(unique(c(group, "predictor_class")))
 
 
   # group by user-specified group
@@ -115,20 +115,20 @@ bam_predictor_importance <- function(species = "all", bcr = "all", group = "spp"
   cov_importance_grouped <-
     data |>
     group_by(!!!group_sym) |> # !!! evaluates a list of expressions
-    filter(!is.na(var_class)) |>
+    filter(!is.na(predictor_class)) |>
     summarise(sum_inf = sum(mean_rel_inf), sd_inf = sd(mean_rel_inf),
               pooled_sd = sqrt(sum(sd_rel_inf^2)),
               .groups = "keep")
 
   # group by user-specified group,
-  # then, sum rel.inf from all var_classes
+  # then, sum rel.inf from all predictor_classes
   group1_sum <-
     cov_importance_grouped |>
     group_by(!!group_sym[[1]]) |>
     summarise(sum_all_groups = sum(sum_inf), .groups = "keep")
 
   # calculate the percent of predictor importance
-  # sd_percent_inf is the uncertainty of the percent influence of a given var_class
+  # sd_percent_inf is the uncertainty of the percent influence of a given predictor_class
   percent_importance <-
     cov_importance_grouped |>
     left_join(group1_sum, by = group) |>
@@ -137,7 +137,7 @@ bam_predictor_importance <- function(species = "all", bcr = "all", group = "spp"
 
 
   if (plot) {
-    p <- ggplot(percent_importance, aes(x = var_class, y = percent_inf,
+    p <- ggplot(percent_importance, aes(x = predictor_class, y = percent_inf,
                                         fill = !!sym(group), colour = !!sym(group))) +
       geom_point(position = position_dodge(width = 0.75), alpha = 0.7, size = 2.5) +
       geom_errorbar(aes(ymax = percent_inf + sd_percent_inf, ymin = percent_inf - sd_percent_inf),
