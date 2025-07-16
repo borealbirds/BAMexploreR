@@ -146,7 +146,6 @@ bam_predictor_barchart <- function(species = "all", bcr = "all",  groups = c("sp
       p <- p + ggplot2::scale_fill_manual(values = colours)
     }
 
-    print(p)
     return(p)
   } else {
     return(proportion_inf)
