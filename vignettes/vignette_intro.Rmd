@@ -92,6 +92,7 @@ There are several types of data embedded in the package to run the functions. Un
 ### Species table (spp_tbl)
 
 This reference table serves as a lookup of the species available for each version of the BAM landbird models using four-letter AOU code, common name, or scientific name.  The table also provides several ways of grouping species if you are interested in a particular suite of species including species of conservation concern, guild, and classifications from The State of Canada’s Birds report, which organizes species by broad biomes and groups that exhibit distinct and notable population trends.
+
 - **COSEWIC**: The conservation status of species according to the Committee on the Status of Endangered Wildlife in Canada (COSEWIC)
 - **Cavity_Birds**: Species that nest in cavities  
 - **Waterfowl**: Bird species that primarily live on or near water  
@@ -129,7 +130,7 @@ colnames(predictor_metadata)
 
 #Look at the first three rows for a few predictors
 predictor_metadata |> 
-  dplyr::select(version, predictor, definition, class) |> 
+  dplyr::select(version, predictor, definition, predictor_class) |> 
   head(3)
 ```
 
