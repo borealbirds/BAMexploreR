@@ -3,7 +3,7 @@
 \docType{data}
 \name{predictor_metadata}
 \alias{predictor_metadata}
-\title{Title: Table of variable metadata for BAM density models}
+\title{Table of variable metadata for BAM density models}
 \format{
 A data frame with 326 rows and 12 columns:
 \describe{
