@@ -58,12 +58,14 @@ bam_spp_list <- function(version, type = "speciesCode", guild = NULL) {
       spList <- tiff_files %>%
         stringr::str_sub(start = 6, end = 9) %>%
         .[.%in%spcode]
+      return(spList)
     } else if(version == "v5"){
       # Use regular expressions to parse
       subdirs <- regmatches(content_text, gregexpr('href="([^"]+/)"', content_text))
       subdirs <- unlist(subdirs)
       spList <- gsub('href="|/"', '', subdirs) %>%
         .[!(. %in% "/data")]
+      return(spList)
     } else {
       print("You must specify either v4 or v5")
     }
