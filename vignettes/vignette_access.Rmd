@@ -111,7 +111,7 @@ Let's check the species group categories by accessing the `guild_opt` object.
 # Get the options for species grouping
 guild_opt
 ```
-In our example, we'll get four-letter AOU codes for 'COSEWIC' species available in version 5 of the models. You can also check the . 
+In our example, we'll get four-letter AOU codes for 'COSEWIC' species available in version 5 of the models.
 
 ```{r species_list_code, echo = TRUE, results = 'markup', error = TRUE}
 # Generate a vector of COSEWIC species codes available in version 5. 
@@ -131,9 +131,9 @@ cosewic_v5_cn
 
 Next, we'll need to determine the AOI for accessing the model products. 
 
-You can choose to access the predictions for the entire modelled area, just a single model subregion (version 5 only), or a custom AOI. Since model subregion names vary by version and country, the `bam_map_bcr` function ensures the correct naming is used. You can specify an extent and identify BCRs intersection the AOI.
+You can choose to access the predictions for the entire modelled area, just a single model subregion (version 5 only), or a custom AOI. Since model subregion names vary by version and country, the `bam_get_bcr` and `bam_map_bcr` functions ensure the correct naming is used. You can specify an extent and identify BCRs intersection the AOI.
 
-For our example, we'll use an example AOI that intersects multiple model subregions in the boreal plains and shield for our model download. Let's get the list of model subregions that interest with our AOI.
+For our example, we'll use an example AOI that intersects two model subregions in the boreal plains and shield. Let's get the list of model subregions that interest with our AOI.
 
 ```{r aoi_bcr_list, echo = TRUE, results = 'markup', error = TRUE}
 library(terra)
@@ -146,7 +146,7 @@ bcraoi_v5 <- bam_get_bcr("v5", ext=aoi_sf)
 bcraoi_v5
 ```
 
-And we can also visualize where our AOI fall on the map of all the model subregions for version 5.
+And we can also visualize where our AOI fall on the map of all the model subregions for version 5 using the `bam_map_bcr` function.
 
 ```{r aoi_bcr_map, echo = TRUE, results = 'markup', error = TRUE, fig.width=8, fig.height=4}
 # Map aoi on the map of model subregions
@@ -157,14 +157,13 @@ suppressWarnings(print(map))
 
 ### 3. Download species specific density maps
 
-Now that we have our species and AOI, we can download the model predictions!
+Now that we have our species and AOI, we can download the model products!
 
-We will download density maps for species using the `bam_get_layer` function. In version 5, we also have the option of downloading multiple years of predictions, as the density models are available for five-year intervals from 1990 to 2020 (default is 2020). 
+We will download the model products using the `bam_get_layer` function. In version 5, we also have the option of downloading multiple years of predictions, as the density models are available for five-year intervals from 1990 to 2020 (default is 2020). 
 
-Let's down the model products for our list of COSEWIC species for the model subregions in our AOI.
+Let's down the model products for our list of COSEWIC species for the model subregions in our AOI for 2020 of the version 5 models.
 
 ```{r get_layer, echo = TRUE, message=FALSE, results='hide'}
-
 #Download the model products
 result <- bam_get_layer(cosewic_v5, "v5", destfile = tempdir(), year = "2020", bcrNM=bcraoi_v5)
 ```
@@ -176,10 +175,11 @@ The output of the function is a list of SpatRaster objects. Each object has four
 - **cv**: the coefficient of variation of predicted density across 32 bootstraps
 - **detections**: the mean density of detections of the species across 32 bootstraps
 
-We can plot these bands for one of our species of interest! Let's try Canada Warbler.
+Finally, we can plot these bands for one of our species of interest! Let's try Canada Warbler.
 
-```{r plot_layer, echo = TRUE, results = 'markup', error = TRUE, fig.width=8, fig.height=6}
+```{r plot_layer, echo = TRUE, results = 'markup', error = TRUE, fig.width=7, fig.height=4}
 library(terra)
 
+#basic plotting of all bands
 plot(result$CAWA)
 ```

@@ -25,7 +25,7 @@ This vignette will show you how to work with the BAM landbird density models to 
 
 ### Density estimates
 
-The BAM landbird density models use the QPAD analytical approach for data integration, which uses statistical offsets to account for imperfect detection and produce estimates of population density. The model products are therefore species-specific predictions of the density of breeding male birds per hectare at a 1km resolution across the boreal forest! We can use those density surfaces for a variety of conservation and land-use planning applications. The `BAMexploreR` package provides functions for two core analytical tasks. For more information on the BAM landbird density models, please see the 'Introduction' vignette.
+The BAM landbird density models use the [QPAD analytical approach for data integration](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210x.12106), which uses statistical offsets to account for imperfect detection and produce estimates of population density. The model products are therefore species-specific predictions of the density of breeding male birds per hectare at a 1km resolution across the boreal forest! We can use those density surfaces for a variety of conservation and land-use planning applications. The `BAMexploreR` package provides functions for two core analytical tasks. For more information on the BAM landbird density models, please see the 'Introduction' vignette.
 
 ## Functions available
 
@@ -86,7 +86,7 @@ A tibble with the following columns:
 
 The first step in working with the BAM density models is to get the model layers for the species and area of interest. See the 'Model Access' vignette for further details.
 
-We'll use the same example as the previous vignette: species of conservation concern within an area of interest (AOI) across two sugbregions in the boreal plains and shield. This time, instead of accessing the models for the whole subregions, we'll use the `crop_ext` argument to access just the AOI.
+We'll use the same example as the previous vignette: species listed by the Committee on the Status of Endangered Wildlife in Canada (COSEWIC) within an area of interest (AOI) across two sugbregions in the boreal plains and shield. This time, instead of downloading the model products for the whole subregions, we'll use the `crop_ext` argument to download just the AOI.
 
 ```{r access, fig.width=8, fig.height=6, echo = TRUE, results = 'markup', error = TRUE}
 library(BAMexploreR)
@@ -99,20 +99,20 @@ aoi_sf <- vect(system.file("extdata", "vignette_poly_5072.shp", package = "BAMex
 
 #Download the model products
 result <- bam_get_layer(cosewic_v5, "v5", destfile = tempdir(), year = "2020", crop_ext=aoi_sf)
- 
 ```
 
 Let's plot just the range-limited mean density to check our download.
 
-```{r plot_layer, echo = TRUE, results = 'markup', error = TRUE, fig.width=8, fig.height=6}
+```{r plot_layer, echo = TRUE, results = 'markup', error = TRUE, fig.width=7, fig.height=5}
 library(terra)
-
 plot(result$CAWA$`range-limited mean`)
 ```
 
+Great! We can see this time our raster is limited to just the extent of our AOI.
+
 ### 2. Estimate area of occurrence
 
-Once we have our models for our AOI, we can use the `bam_occurrence` function to threshold the continuous density surface into a binary occurrence surface. 
+Once we have our models for our AOI, we can use the `bam_occurrence` function to threshold the continuous density surface into a binary occurrence surface, for example to identify areas of 'high-quality' habitat.
 
 There are two options for thresholding the continuous values into presence and absence.
 
@@ -121,30 +121,27 @@ There are two options for thresholding the continuous values into presence and a
  
 Let's try the default option, `by_lorenz` first on downloaded models for Canada Warbler.
 
-```{r map_occu_lorenz, fig.width=8, fig.height=6, message = FALSE, warning= FALSE, echo = TRUE, results = 'markup', error = TRUE}
+```{r map_occu_lorenz, fig.width=7, fig.height=5.5, message = FALSE, warning= FALSE, echo = TRUE, results = 'markup', error = TRUE}
 # Threshold the model with the lorenz curve threshold
 occ_lorenz_result <- bam_occurrence(result, plot = TRUE)
-
 ```
 
 And then let's compare to a custom threshold; let's try 50%.
 
-```{r map_occu_50, fig.width=8, fig.height=6, message = FALSE, warning= FALSE, echo = TRUE, results = 'markup', error = TRUE}
-# Threshold the model with the lorenz curve threshold
+```{r map_occu_50, fig.width=7, fig.height=5.5, message = FALSE, warning= FALSE, echo = TRUE, results = 'markup', error = TRUE}
+# Threshold the model with 50% threshold
 occ_quantile_result <- bam_occurrence(result, quantile = 0.5, plot = TRUE)
-
 ```
 
 We can see that the area of occurrence is smaller when we use a more conservative threshold! Let's examine the area of occurrence within our AOI for the two approaches to compare.
 
 ```{r area_occu, message = FALSE, warning= FALSE, echo = TRUE, results = 'markup', error = TRUE}
+library(knitr)
 
 # Area of occurrence for lorenz approach
-occ_lorenz_result$occurrence_summary
-
+kable(occ_lorenz_result$occurrence_summary, caption="Area of occurence with Lorenz threshold")
 # Area of occurence for quantile approach
-occ_quantile_result$occurrence_summary
-
+kable(occ_quantile_result$occurrence_summary, caption="Area of occurence with 50% threshold")
 ```
 
 Within our AOI of ~100,000 km^2^, we estimate approximately half of that is occupied by Canada Warblers if we use the Lorenz curve approach and we estimate just under a third of that is occupied by Canada Warblers if we use a custom 50% threshold
@@ -156,8 +153,6 @@ Alternatively, we can use the the `bam_pop_size` function on the continuous dens
 Let's use our same Canada Warbler example as before. 
 
 ```{r density_aoi, message = FALSE, warning= FALSE, echo = TRUE, error = TRUE}
-library(knitr)
-
 # Calculate population size based on BAM landbird density raster
 pop_aoi_result <- bam_pop_size(result)
 
@@ -167,9 +162,9 @@ kable(pop_aoi_result, caption = "Estimated population size (male birds)")
 
 The `bam_pop_size` function can also accommodate an AOI SpatVector for AOI with a column that can be used to group the population size summary.
 
-Let's try grouping by bird conservation region (BCR; i.e.,our model subregions). First we'll need to create a new SpatVector with separate polygons for the two BCRs in our AOI.
+Let's say we're doign regional planning and we're interested in which region has a larger Canada Warbler population. Let's try grouping by bird conservation region (BCR; i.e.,our model subregions). First we'll need to create a new SpatVector with separate polygons for the two BCRs in our AOI.
 
-```{r aoi_bcr_map, echo = TRUE, results = 'markup', error = TRUE, fig.width=8, fig.height=4}
+```{r aoi_bcr_map, echo = TRUE, results = 'markup', error = TRUE, fig.width=7, fig.height=4}
 # Get the BCRs that our AOI intersects
 bcraoi_v5 <- bam_get_bcr("v5", ext=aoi_sf) 
 
@@ -198,4 +193,4 @@ pop_bcr_result <- bam_pop_size(result, crop_ext=aoi_sf_bcr, group="subunit_ui")
 kable(pop_bcr_result, caption = "Estimated population size")
 ```
 
-We can see that now our total population is split approximately 40% in BCR 80 and 60% in BCR 61, primarily due to differences in mean density between the BCRs, and not by differences in total area.
+We can see that our total Canada Warbler population is split approximately 40% in BCR 80 and 60% in BCR 61. We can see based on the mean_density and n_cells columns that this larger population size is primarily due to differences in mean density between the BCRs, and not by differences in total aream suggesting BCR 61, at least within our AOI provides higher quality habitat for Canada Warblers.
