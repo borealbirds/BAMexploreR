@@ -1,9 +1,9 @@
 ---
-title: "<span style='font-size: 14px;'>BAMexploreR: model-based distribution, abundance, and habitat associations of boreal birds</span><br><strong>Introduction</strong>"
+title: "BAMexploreR: model-based distribution and habitat associations of boreal birds - Introduction"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{model_intro}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Introduction}
+  %\VignetteEngine{rmarkdown::html_vignette}
   %\VignetteEncoding{UTF-8}
 ---
 
@@ -17,6 +17,9 @@ knitr::opts_chunk$set(
   warning = FALSE
 )
 ```
+
+<span style='font-size: 14px;'>BAMexploreR: model-based distribution, abundance, and habitat associations of boreal birds</span>  
+**Introduction**
 
 Welcome! `BAMexploreR` is a package for downloading and analyzing landbird density models produced by the [Boreal Avian Modelling Centre (BAM)](https://borealbirds.ca/).
 

@@ -3,7 +3,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.secrets$
-^doc$
 ^Meta$
 ^ReadMe\.Rmd$
 ^data-raw$
