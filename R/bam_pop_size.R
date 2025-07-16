@@ -57,7 +57,7 @@ bam_pop_size <- function(raster_list, crop_ext= NULL, group = NULL){
   # Check crop_ext area
   if(!is.null(crop_ext)){
     crop_area <- expanse(crop_ext, unit="km")
-    if(crop_area < 100){
+    if(sum(crop_area) < 100){
       warning(sprintf("The BAM density models are predicted to a resolution of 1 km2. Your area of interest is only %.2f km2. Please consider whether these models are appropriate for your application.", crop_area))
     }
   }
