@@ -143,7 +143,7 @@ bam_predictor_importance <- function(species = "all", bcr = "all", group = "spp"
       geom_errorbar(aes(ymax = percent_inf + sd_percent_inf, ymin = percent_inf - sd_percent_inf),
                     position = position_dodge(width = 0.75), width = 0, linewidth = 0.75) +
       labs(x = "Predictor Class", y = "Relative Importance (%)",
-           title = paste("Covariate importance by", group)) +
+           title = paste("Predictor importance by", group)) +
       theme_classic() +
       theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
