@@ -31,7 +31,7 @@ The BAM landbird density models are produced by modelling multiple ecologically-
 You can choose to access the predictions for the entire modelled area or a custom set of model subregions using an area of interest. For more information on the BAM landbird density models, please see the 'Introduction' vignette.
 
 ### Subregion naming convention
-Due to the intersection of country and BCR as the modelling subregions in version 5 of the BAM landbird models, we use a country prefix and BCR number to name the model subregion. Note that BCR labels differ betwen version 4 and version 5 due to changes made to several of the BCRs.
+Due to the intersection of country and BCR as the modelling subregions in version 5 of the BAM landbird models, we use a country prefix and BCR number to name the model subregion. Note that BCR labels differ between version 4 and version 5 due to changes made to several of the BCRs.
 
 ```{r list_names, message=FALSE, warning=FALSE, echo=FALSE}
 library(BAMexploreR)

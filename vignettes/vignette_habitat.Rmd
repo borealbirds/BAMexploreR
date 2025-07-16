@@ -90,6 +90,7 @@ aoi_sf <- vect(system.file("extdata", "vignette_poly_5072.shp", package = "BAMex
 
 # Extract subregions from version 5 that intersect the aoi
 bcraoi_v5 <- bam_get_bcr("v5", ext=aoi_sf) 
+bcraoi_v5
 ```
 
 ### 2. Plot the predictors by predictor class
@@ -115,7 +116,7 @@ bam_predictor_importance(species = cosewic_v5, bcr = bcraoi_v5, group = "bcr", v
 
 ```
 
-We can see that the plot has error bars, indicating standard deviation across bootstraps. Alternatively, we can just return the raw data to look at the actual values. Let's try that
+We can see that the plot has error bars, indicating standard deviation across bootstraps. Alternatively, we can just return the raw data to look at the actual values. Let's try that.
 
 ```{r cov_imp_raw, echo = TRUE, results = 'markup', error = TRUE}
 # Create dataframe of predictor importance grouped by BCR
@@ -125,7 +126,7 @@ aoi_importance
 
 ```
 
-Now we're just looking at one species, Canada Warbler, but if we add another species and group by BCR, we get summarized statistics across species. Let's add some more species and see what we get.
+Now we're just looking at one species, Canada Warbler, but if we include multiple species in our `species` argument, we get summarized statistics. Let's add some more species and see what we get.
 
 ```{r cov_imp_plot2, echo = TRUE, results = 'markup', error = TRUE, fig.width=7, fig.height=4, fig.align='center'}
 # Get all available species
@@ -136,7 +137,7 @@ bam_predictor_importance(species = spp_v5, bcr = bcraoi_v5, group = "bcr", versi
 
 ```
 
-It looks like biomass is pretty important! There is a metadata table for the model predictors stored in the package. Let's check out what goes into the biomass class.
+It looks like vegetation structure is pretty important! There is a metadata table for the model predictors stored in the package. Let's check out what goes into the biomass class.
 
 ```{r predictor_metadata, eval = TRUE, echo=TRUE}
 library(dplyr)
@@ -144,9 +145,9 @@ library(knitr)
 
 #Look at the first three rows for a few predictors
 predictor_metadata |> 
-  dplyr::filter(version=="v5", class=="Veg Structure") |> 
+  dplyr::filter(version=="v5", predictor_class=="Veg Structure") |> 
   dplyr::select(predictor, definition) |> 
-  kable(caption = "Model predictorles in the 'Veg Structure' class")
+  kable(caption = "Model predictors in the 'Veg Structure' class")
 ```
 
 ### 3. Stacked bar chart of predictors
@@ -171,7 +172,6 @@ bam_predictor_barchart(species = spp_v5, bcr = bcraoi_v5, groups=c("bcr", "predi
 Looks like climate normals are slightly more important in BCR 61 while annual climate is slightly more important in BCR 80.
 
 And now let's try looking at the proportion of influence of individual predictors by species.
-
 
 ```{r cov_bar_plot3, echo = TRUE, results = 'markup', error = TRUE, fig.width=7, fig.height=4, fig.align='center'}
 # Create plot of predictor importance for each predictor grouped by species
