@@ -144,9 +144,9 @@ library(knitr)
 
 #Look at the first three rows for a few predictors
 predictor_metadata |> 
-  dplyr::filter(version=="v5", class=="Biomass") |> 
+  dplyr::filter(version=="v5", class=="Veg Structure") |> 
   dplyr::select(predictor, definition) |> 
-  kable(caption = "Model predictorles in the 'Biomass' class")
+  kable(caption = "Model predictorles in the 'Veg Structure' class")
 ```
 
 ### 3. Stacked bar chart of predictors
@@ -157,7 +157,7 @@ Let's start by looking at the proportion of influence across predictor categorie
 
 ```{r cov_bar_plot1, echo = TRUE, results = 'markup', error = TRUE, fig.width=7, fig.height=4, fig.align='center'}
 # Create plot of predictor importance for each species grouped by predictor class
-bam_predictor_barchart(species = spp_v5, bcr = bcraoi_v5, groups=c("spp", "var_class"), version = "v5", plot=TRUE)
+bam_predictor_barchart(species = spp_v5, bcr = bcraoi_v5, groups=c("spp", "predictor_class"), version = "v5", plot=TRUE)
 ```
 
 Again, we see that the biomass predictors have the greatest proportion of influence, but that it varies across species.
@@ -166,7 +166,7 @@ Let's look at the difference between model subregions, or BCRs.
 
 ```{r cov_bar_plot2, echo = TRUE, results = 'markup', error = TRUE, fig.width=7, fig.height=4, fig.align='center'}
 # Create plot of predictor importance for each BCR grouped by predictor class
-bam_predictor_barchart(species = spp_v5, bcr = bcraoi_v5, groups=c("bcr", "var_class"), version = "v5", plot=TRUE)
+bam_predictor_barchart(species = spp_v5, bcr = bcraoi_v5, groups=c("bcr", "predictor_class"), version = "v5", plot=TRUE)
 ```
 Looks like climate normals are slightly more important in BCR 61 while annual climate is slightly more important in BCR 80.
 
@@ -175,7 +175,7 @@ And now let's try looking at the proportion of influence of individual predictor
 
 ```{r cov_bar_plot3, echo = TRUE, results = 'markup', error = TRUE, fig.width=7, fig.height=4, fig.align='center'}
 # Create plot of predictor importance for each predictor grouped by species
-bam_predictor_barchart(species = spp_v5, bcr = bcraoi_v5, groups=c("var", "spp"), version = "v5", plot=TRUE)
+bam_predictor_barchart(species = spp_v5, bcr = bcraoi_v5, groups=c("predictor", "spp"), version = "v5", plot=TRUE)
 
 ```
 
@@ -183,7 +183,7 @@ We can see there's a lot of variation here. Not every predictor is included in e
 
 ```{r cov_bar_text, echo = TRUE, results = 'markup', error = TRUE, fig.width=7, fig.height=4, fig.align='center'}
 # Create plot of predictor importance for each species grouped by predictor class
-bam_predictor_barchart(species = spp_v5, bcr = bcraoi_v5, groups=c("var", "spp"), version = "v5", plot=FALSE)
+bam_predictor_barchart(species = spp_v5, bcr = bcraoi_v5, groups=c("predictor", "spp"), version = "v5", plot=FALSE)
 
 ```
 
