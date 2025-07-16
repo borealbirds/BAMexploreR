@@ -21,16 +21,16 @@ use_data(spp_tbl, internal = FALSE, overwrite = TRUE)
 
 
 ###############################################################
-### create 3st internal data: version 4 model covariate importance
+### create 3rd internal data: version 4 model covariate importance
 ###############################################################
-load("./data-raw/bam_covariate_importance_v4.rda")
-load("./data-raw/bam_covariate_importance_v5.rda")
+load("./data/bam_predictor_importance_v4.rda")
+load("./data/bam_predictor_importance_v5.rda")
 
 
 ###############################################################
 ### Generate internal data
 ###############################################################
-use_data(version.url, spp_tbl, bam_covariate_importance_v4, bam_covariate_importance_v5, internal = TRUE, overwrite = TRUE)
+use_data(version.url, spp_tbl, bam_predictor_importance_v4, bam_predictor_importance_v5, internal = TRUE, overwrite = TRUE)
 
 ###############################################################
 ### Generate external data
