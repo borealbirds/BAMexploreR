@@ -12,7 +12,9 @@ The BAM landbird density models are species-specific predictions of the density 
 
 <img src="man/figures/CAWA_v4.png" width="100%" align="right"/>
 
-Two versions of the BAM landbird density models are available in `BAMExploreR`. 
+<p>&nbsp;</p>
+Two versions of the BAM landbird density models are available in `BAMexploreR`. 
+<p>&nbsp;</p>
 
 | Feature                                                             | BAM V4                                                | BAM V5                                                                 |
 |---------------------------------------------------------------------|--------------------------------------------------------|------------------------------------------------------------------------|
