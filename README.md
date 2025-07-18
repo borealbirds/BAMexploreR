@@ -1,4 +1,4 @@
-# BAMexploreR <img src="man/figures/logo.png" width="50%" align="right"/>
+# BAMexploreR <img src="man/figures/BAM-Logo.png" width="50%" align="right"/>
 
 ## Overview
 
@@ -6,22 +6,7 @@
 
 The BAM landbird density models are species-specific predictions of the density of breeding male birds per hectare at a 1km resolution across the boreal forest. They are produced with a generalized analytical approach to model landbird species density in relation to environmental predictors, using in-person or ARU point-count surveys and widely available spatial predictors. We developed separate models for each geographic region (bird conservation regions) based on predictors such as tree species biomass (local and landscape scale), forest age, topography, land use, and climate. We used machine learning to allow for predictor interactions and non-linear responses while avoiding time-consuming species-by-species parameterization. We applied cross-validation to avoid overfitting and bootstrap resampling to estimate uncertainty associated with our density estimates.
 
-``` r
-
-# Construct direct download link from Google Drive file ID
-file_id <- "1t9nNCmLoJV4CQoSR3Q_DCZ_CFrb-m3Pr"
-img_file <- tempfile(fileext = ".png")  # Create a temporary file with .png extension
-
-# Use the Google Drive direct download URL
-download.file(
-  url = paste0("https://drive.google.com/uc?export=download&id=", file_id),
-  destfile = img_file,
-  mode = "wb"
-)
-
-# Display the image
-knitr::include_graphics(img_file)
-```
+<img src="man/figures/CAWA_v4.png" width="100%" align="right"/>
 
 Two versions of the BAM landbird density models are available in `BAMExploreR`. 
 
@@ -73,45 +58,6 @@ This R package is licensed under [MIT license](https://github.com/ABbiodiversity
 
 To cite `BAMexploreR` package and the BAM density models in publications, please cite the package and the publication:
 
-``` r
-bibentry(
-  bibtype = "Manual",
-  title = "BAMexploreR: model-based density, distribution, and habitat associations of boreal birds",
-  author = c(
-    person("Mélina", "Houle"),
-    person("Mannfred", "Boehm"),
-    person("Siu Chung", "Wu"),
-    person("Elly C.", "Knight")
-    ),
-  year = format(Sys.Date(), "%Y"),
-  note = paste0("R package version ", packageDescription("BAMexploreR")$Version),
-  url = "https://github.com/borealbirds/BAMexploreR"
-)
-```
+Houle M, Boehm M, Wu S, Knight E (2025). BAMexploreR: model-based density, distribution, and habitat associations of boreal birds. R package version 0.1.0, https://github.com/borealbirds/BAMexploreR.
 
-``` r 
-bibentry(
-  bibtype = "Article",
-  title = "A generalized modeling framework for spatially extensive species abundance prediction and population estimation",
-  author = c(
-    person("Diana", "Stralberg"),
-    person("Péter", "Sólymos"),
-    person("Teegan D.S.", "Docherty"),
-    person("Andrew D.", "Crosby"),
-    person("Steven L.", "Van Wilgenburg"),
-    person("Elly C.", "Knight"),
-    person("Anna", "Drake"),
-    person("Mannfred M.A.", "Boehm"),
-    person("Samuel", "Haché"),
-    person("Lionel", "Leston"),
-    person("Judith D.", "Toms"),
-    person("Jeffrey R.", "Ball"),
-    person("Samantha J.", "Song"),
-    person("Fiona K.A.", "Schmiegelow"),
-    person("Steven G.", "Cumming"),
-    person("Erin M.", "Bayne")
-  ),
-  journal = "Ecosphere",
-  year = "In press"
-)
-```
+Stralberg D, Sólymos P, Docherty T, Crosby A, Van Wilgenburg S, Knight E, Drake A, Boehm M, Haché S, Leston L, Toms J, Ball J, Song S, Schmiegelow F, Cumming S, Bayne E (In press). “A generalized modeling framework for spatially extensive species abundance prediction and population estimation.” Ecosphere.
