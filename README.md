@@ -1,4 +1,8 @@
-# BAMexploreR <img src="man/figures/BAM-Logo.png" width="50%" align="right"/>
+<img src="man/figures/BAM-Logo.png" width="50%" align="right"/>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+# BAMexploreR
 
 ## Overview
 
