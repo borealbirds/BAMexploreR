@@ -55,10 +55,6 @@ To report bugs, request additional features, or get help using the package, plea
 
 We encourage ongoing contributions and collaborations to improve the package into the future! Please issue a pull request if you'd like to contribute to the package.
 
-## License
-
-This R package is licensed under [MIT license](https://github.com/ABbiodiversity/wildrtrax/blob/master/LICENSE)©2024 [Alberta Biodiversity Monitoring Institute](https://abmi.ca).
-
 ## Citation
 
 To cite `BAMexploreR` package and the BAM density models in publications, please cite the package and the publication:
