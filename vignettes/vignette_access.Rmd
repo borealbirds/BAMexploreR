@@ -2,7 +2,7 @@
 title: "<span style='font-size: 14px;'>BAMexploreR: model-based distribution, abundance, and habitat associations of boreal birds</span><br><strong>Model Access</strong>"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Model Access}
+  %\VignetteIndexEntry{vignette_access}
   %\VignetteEngine{rmarkdown::html_vignette}
   %\VignetteEncoding{UTF-8}
 ---
