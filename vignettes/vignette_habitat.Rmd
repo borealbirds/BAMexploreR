@@ -3,7 +3,7 @@ title: "<span style='font-size: 14px;'>BAMexploreR: model-based distribution, ab
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{vignette_habitat}
-  %\VignetteEngine{rmarkdown::html_vignette}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
