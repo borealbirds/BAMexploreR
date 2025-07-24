@@ -1,6 +1,6 @@
 Package: BAMexploreR
 Type: Package
-Title: Manipulate NM data output
+Title: Explore the BAM landbird density models
 Version: 0.1.0
 Authors@R: c(
     person("Melina", "Houle", email = "houle.melina@gmail.com",
@@ -8,10 +8,9 @@ Authors@R: c(
     person("Her Majesty the Queen in Right of Canada, as represented by the Minister of Natural Resources Canada",
     role = "cph")
     )
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-Depends: R (>= 3.5.0), dplyr, terra
+Maintainer: Melina Houle <houle.melina@gmail.com>
+Description: BAMexploreR allows users to download and work with the BAM landbird density models. The package contains functions to access models, estimate and interpret distribution and abundance, and explore the importance of habitat predictors in the models.
+Depends: R (>= 4.2.0), dplyr, terra
 Imports:
   tmap,
   sf,
