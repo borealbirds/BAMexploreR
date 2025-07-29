@@ -75,7 +75,7 @@ Two versions of the BAM landbird density models are available in `BAMExploreR`.
 
 You can install and load `BAMexploreR` from [GitHub](https://github.com/borealbirds/BAMexploreR) with:
 
-```{r setup, include = TRUE, message=FALSE, warning=FALSE}
+```{r setup, include = TRUE, message=FALSE, warning=FALSE, echo=FALSE}
 remotes::install_github('borealbirds/BAMExploreR')
 library(BAMexploreR)
 ```
