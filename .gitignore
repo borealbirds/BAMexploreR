@@ -11,5 +11,4 @@ inst/doc
 /doc/*
 !/doc/*.html
 NationalModels_V5_VariableList.xlsx
-/doc/
 /Meta/
