@@ -41,6 +41,11 @@ You can install the most recent stable version and explore the vignettes in R wi
 remotes::install_github("borealbirds/BAMexploreR", build_vignettes=TRUE)
 vignette(package="BAMexploreR")
 ```
+To view a vignette, e.g. "BAMexploreR_1_intro" in the Help pane of RStudio run: 
+
+```r
+vignette("BAMexploreR_1_intro")
+```
 
 ## Usage
 
