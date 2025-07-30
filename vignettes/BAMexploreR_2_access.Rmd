@@ -173,7 +173,6 @@ The output of the function is a list of SpatRaster objects. Each object of the v
 - **range-limited mean**: the mean predicted density in males/ha across 32 bootstraps, truncated to the probable range of the species
 - **mean**: the mean predicted density in males/ha across 32 bootstraps
 - **cv**: the coefficient of variation of predicted density across 32 bootstraps
-- **detections**: the mean distance to the nearest detection of the species across 32 bootstraps
 
 The version 4 model productions contain only the mean band.
 
