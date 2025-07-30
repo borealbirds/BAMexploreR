@@ -28,11 +28,18 @@ Two versions of the BAM landbird density models are available in `BAMexploreR`.
 
 ## Installation
 
-You can install the most recent version of `BAMexploreR` directly from this repository with:
+You can install the most recent stable version of `BAMexploreR` directly from this repository with:
 
 ``` r
 # install.packages("remotes")
 remotes::install_github("borealbirds/BAMexploreR")
+```
+You can install the most recent stable version and explore the vignettes in R with:
+
+``` r
+# install.packages("remotes")
+remotes::install_github("borealbirds/BAMexploreR", build_vignettes=TRUE)
+vignette(package="BAMexploreR")
 ```
 
 ## Usage
