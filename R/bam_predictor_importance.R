@@ -68,6 +68,11 @@ bam_predictor_importance <- function(species = "all", bcr = "all", group = "spp"
     data <- bam_predictor_importance_v4
   }
 
+  # convert user specified species to FLBCs
+  if (species != "all"){
+    species <- standardize_species_names(species_input = species, spp_tbl = BAMexploreR:::spp_tbl)
+  }
+
   # check if user specified species are in `data`
   if (!all(species %in% unique(data$spp)) && !any(species == "all")) {
     stop(paste("The following species are not in `data`:",

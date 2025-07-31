@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 
 Welcome! `BAMexploreR` is a package for downloading and analyzing landbird density models produced by the [Boreal Avian Modelling Centre (BAM)](https://borealbirds.ca/).
 
-This vignette provides a general introduction to the `BAMexploreR` package, including background on the BAM landbird density models and versions, an overview of the package purpose, core functionality, and the data included with the package. It highlights the types of data embedded in the package (e.g., shapefiles, species lists) and explains how they support the functions used to explore species occurrence and density across the BCRs extent. This is intended as a starting point to familiarize users with the structure and content of the package before diving into specific workflows or analyses.
+This vignette provides a general introduction to the `BAMexploreR` package, including background on the BAM landbird density models and versions, an overview of the package purpose, core functionality, and the data included with the package. It highlights the types of data embedded in the package (e.g., shapefiles, species lists) and explains how they support the functions used to explore species occurrence and density across the BCRs' extent. This is intended as a starting point to familiarize users with the structure and content of the package before diving into specific workflows or analyses.
 
 There are three general categories of tasks that `BAMexploreR` provides:
 
