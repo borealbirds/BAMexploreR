@@ -3,8 +3,10 @@ Type: Package
 Title: Explore the BAM landbird density models
 Version: 0.1.0
 Authors@R: c(
-    person("Melina", "Houle", email = "houle.melina@gmail.com",
-    role = c("aut", "cre")),
+    person("Melina", "Houle", email = "houle.melina@gmail.com", role = c("aut", "cre")),
+    person("Mannfred", "Boehm", role = "aut"),
+    person("Siu Chung", "Wu", role = "ctb"),
+    person("Elly", "Knight", role = "aut"),
     person("Her Majesty the Queen in Right of Canada, as represented by the Minister of Natural Resources Canada",
     role = "cph")
     )
@@ -46,6 +48,7 @@ Collate:
     'bam_pop_size.R'
     'bam_predictor_barchart.R'
     'data-doc.R'
+    'standardize_species_names.R'
     'spp_tbl-doc.R'
     'utils.R'
     'predictor_metadata.R'
