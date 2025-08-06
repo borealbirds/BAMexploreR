@@ -7,8 +7,10 @@
 #'
 #'
 #' @param species A \code{character} specifying the species to filter by. The default is \code{"all"}, which includes all species in the dataset.
+#' See \code{data(spp_tbl)} for available species and their spelling.
 #'
-#' @param bcr A \code{character} specifying the model subregions, or Bird Conservation Regions (BCRs) to filter by. The default is \code{"all"}, which includes all BCRs in the dataset.
+#' @param bcr A \code{character} specifying the model subregions, or Bird Conservation Regions (BCRs) to filter by.
+#' The default is \code{"all"}, which includes all BCRs in the dataset.
 #'
 #' @param groups A \code{character} of two grouping variables for summarising predictor importance.
 #' The first group element is plotted on the x-axis as bins each containing a stacked bar,
