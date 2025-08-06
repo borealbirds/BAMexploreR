@@ -44,7 +44,6 @@ Collate:
     'bam_get_bcr.R'
     'bam_map_bcr.R'
     'bam_occurrence.R'
-    'bam_partial_dependence.R'
     'bam_predictor_importance.R'
     'bam_pop_size.R'
     'bam_predictor_barchart.R'
