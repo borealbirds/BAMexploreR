@@ -163,27 +163,9 @@ We will download the model products using the `bam_get_layer` function. In versi
 
 Let's down the model products for our list of COSEWIC species for the model subregions in our AOI for 2020 of the version 5 models.
 
-#{r get_layer, echo = TRUE, message=FALSE, results='hide'}
+```{r get_layer, echo = TRUE, message=FALSE, results='hide'}
 #Download the model products
-#result <- bam_get_layer(cosewic_v5, "v5", destfile = tempdir(), year = "2020", #bcrNM=bcraoi_v5)
-
-
-```{r plot_cawa, message=FALSE, warning=FALSE, echo=FALSE, out.width='100%', fig.align='center'}
-
-# Construct direct download link from Google Drive file ID
-file_id <- "1t9nNCmLoJV4CQoSR3Q_DCZ_CFrb-m3Pr"
-img_file <- tempfile(fileext = ".png")  # Create a temporary file with .png extension
-
-# Use the Google Drive direct download URL
-download.file(
-  url = paste0("https://drive.google.com/uc?export=download&id=", file_id),
-  destfile = img_file,
-  mode = "wb"
-)
-
-# Display the image
-knitr::include_graphics(img_file)
-
+result <- bam_get_layer(cosewic_v5, "v5", destfile = tempdir(), year = "2020", bcrNM=bcraoi_v5)
 ```
 
 
