@@ -88,7 +88,7 @@ Arguments
 
 - crop_ext: A SpatVector or SpatRaster used to define the extent for the cropping.
 
-- year: A character specifying the year for which the density map were generated. Only in v5. Valid options are "1985", "1990", "1995", "2000", "2005", "2010", "2015" and "2020". Default value is "2020".
+- year: A character specifying the year for which the density map were generated. Only in v5. Valid options are "1990", "1995", "2000", "2005", "2010", "2015" and "2020". Default value is "2020".
 
 - bcrNM: A vector representing the BCR subunit name according to model version. Default is "mosaic".
 
@@ -103,7 +103,7 @@ A list of multiband SpatRaster objects. In addition to returning these objects, 
 
 The first step in accessing the BAM landbird density model products is determining the species of interest.
 
-There are 143 species available in version 4 of the BAM landbird density models and 70 species available in version 5 (remaining 73 in progress). You can access the species available for the version of the model specified using the `bam_spp_list` function. The function has a `guild` parameter to filter the available species based on a specific species group, following the classifications used by The State of Canada's Birds, which categorizes species based on broad biomes and groups with distinct and noteworthy trends. Species listed as 'Special Concern', 'Threatened', or 'Endangered' by the Committee on the Status of Endangered Species in Canada (COSEWIC) is also available. If guild is not provided, the function will return all species available for the specified version of the model.
+There are 143 species available in version 4 of the BAM landbird density models and 66 species available in version 5 (remaining species in progress). You can access the species available for the version of the model specified using the `bam_spp_list` function. The function has a `guild` parameter to filter the available species based on a specific species group, following the classifications used by The State of Canada's Birds, which categorizes species based on broad biomes and groups with distinct and noteworthy trends. Species listed as 'Special Concern', 'Threatened', or 'Endangered' by the Committee on the Status of Endangered Species in Canada (COSEWIC) is also available. If guild is not provided, the function will return all species available for the specified version of the model.
 
 Let's check the species group categories by accessing the `guild_opt` object.
 
