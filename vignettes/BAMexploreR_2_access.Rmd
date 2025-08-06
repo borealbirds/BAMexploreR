@@ -168,7 +168,6 @@ Let's down the model products for our list of COSEWIC species for the model subr
 result <- bam_get_layer(cosewic_v5, "v5", destfile = tempdir(), year = "2020", bcrNM=bcraoi_v5)
 ```
 
-
 The output of the function is a list of SpatRaster objects. Each object of the version 5 models has four bands:
 
 - **range-limited mean**: the mean predicted density in males/ha across 32 bootstraps, truncated to the probable range of the species
