@@ -69,18 +69,18 @@ bam_predictor_importance <- function(species = "all", bcr = "all", group = "spp"
   }
 
   # convert user specified species to FLBCs
-  if (species != "all"){
+  if (!identical(species, "all")){
     species <- standardize_species_names(species_input = species, spp_tbl = BAMexploreR:::spp_tbl)
   }
 
   # check if user specified species are in `data`
-  if (!all(species %in% unique(data$spp)) && !any(species == "all")) {
+  if (!all(species %in% unique(data$spp)) && !identical(species, "all")) {
     stop(paste("The following species are not in `data`:",
                paste(setdiff(species, unique(data$spp)), collapse = ", ")))
   }
 
   # check if user specified BCRs are in `data`
-  if (!all(bcr %in% unique(data$bcr)) && !any(bcr == "all")) {
+  if (!all(bcr %in% unique(data$bcr)) && !identical(bcr, "all")) {
     stop(paste("The following BCR(s) are not in `data`:",
                paste(setdiff(bcr, unique(data$bcr)), collapse = ", ")))
   }
@@ -92,12 +92,12 @@ bam_predictor_importance <- function(species = "all", bcr = "all", group = "spp"
 
 
   # filter for user-specified species
-  if (!any(species == "all")) {
+  if (!identical(species, "all")) {
     data <- filter(data, spp %in% species)
   }
 
   # filter for user-specified BCRs
-  if (!any(bcr == "all")) {
+  if (!identical(bcr, "all")) {
     data <- dplyr::filter(data, bcr %in% !!bcr)
   }
 
