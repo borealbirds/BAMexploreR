@@ -23,7 +23,7 @@ This vignette will show you how to explore the important predictors of interest 
 
 ### Predictor importance
 
-The machine learning framework that BAM uses to produce the landbird density models provides an estimate of the percent importance of each predictor in the model. We can explore those importances to understand the habitat relationships for species of interest in each model subregion. Note that these functions will only provide the *importance* of each predictor, not the shape or direction of the relationship, which can be nonlinear and include complex interactions with other predictors given the machine learning framework used. For more information on the BAM landbird density models, please see the 'Introduction' vignette.
+The machine learning framework that BAM uses to produce the landbird density models provides an estimate of the relative importance of each predictor in the model. We can explore those importance metrics to understand the habitat relationships for species of interest in each model subregion. Note that these functions will only provide the *importance* of each predictor, not the shape or direction of the relationship, which can be nonlinear and include complex interactions with other predictors given the machine learning framework used. For more information on the BAM landbird density models, please see the 'Introduction' vignette.
 
 ## Functions available
 
@@ -33,21 +33,21 @@ The machine learning framework that BAM uses to produce the landbird density mod
 
 Arguments
 
-- species: A character specifying the species to filter by.
+- `species`: A `character` specifying the species to filter by.
 
-- bcr: A character specifying the Bird Conservation Regions (BCRs; model subregions) to filter by.
+- `bcr`: A `character` specifying the Bird Conservation Regions (BCRs; model subregions) to filter by.
 
-- group: A character of two grouping predictors for summarising predictor importance. Valid strings are "spp" (species) or "bcr".
+- `group`: A `character` of two grouping predictors for summarising predictor importance. Valid strings are `"spp"` (species) or `"bcr"`.
 
-- version: Specifies which version of the landbird density model to use. Valid options are "v4" or "v5".
+- `version`: Specifies which version of the landbird density model to use. Valid options are `"v4"` or `"v5"`.
 
-- plot: Logical indicating whether to plot the results (TRUE) or return the processed data (FALSE).
+- `plot`: Logical indicating whether to plot the results (`TRUE`) or return the processed data (`FALSE`).
 
-- colours: Character vector of hex codes for the colours to use in the ggplot (optional).
+- `colours`: Character vector of hex codes for the colours to use in the `ggplot` (optional).
 
-📤 Output
+Output
 
-A ggplot displaying percent predictor importance by predictor class, grouped by the group argument. Percent importance is used to allow comparisions across groups that have differing total predictor importance. If plot = FALSE the processed data is returned as a data.frame.
+A `ggplot` displaying relative predictor importance by predictor class, grouped by the `group=` argument. Relative importance allows comparisions across groups that have differing total predictor importance. If `plot = FALSE` the processed data is returned as a data.frame.
 
 ### bam_predictor_barchart()
 
@@ -55,21 +55,21 @@ A ggplot displaying percent predictor importance by predictor class, grouped by 
 
 Arguments
 
-- species: A character specifying the species to filter by.
+- `species`: A character specifying the species to filter by.
 
-- bcr: A character specifying the Bird Conservation Regions (BCRs; model subregions) to filter by.
+- `bcr`: A character specifying the Bird Conservation Regions (BCRs; model subregions) to filter by.
 
-- groups: A character of two grouping predictors for summarising predictor importance. The first group element is plotted on the x-axis as bins each containing a stacked bar, while the second group element is shown by fill colours in the stacked bars. Valid strings are any two of: "spp" (species), "bcr" (BCR), var, or var_class.
+- `groups`: A character of two grouping predictors for summarising predictor importance. The first group element is plotted on the x-axis as bins each containing a stacked bar, while the second group element is shown by fill colours in the stacked bars. Valid strings are any two of: `"spp"` (species), `"bcr"` (BCR), var, or var_class.
 
-- version: Specifies which version of the landbird density model to use. Valid options are "v4" or "v5".
+- `version`: Specifies which version of the landbird density model to use. Valid options are `"v4"` or `"v5"`.
 
-- plot: Logical indicating whether to plot the results (TRUE) or return the processed data (FALSE).
+- `plot`: Logical indicating whether to plot the results (`TRUE`) or return the processed data (`FALSE`).
 
-- colours: Character vector of hex codes for the colours to use in the ggplot (optional).
+- colours: Character vector of hex codes for the colours to use in the `ggplot` (optional).
 
-📤 Output
+Output
 
-A stacked bar chart with the first group element plotted on the x-axis as bins each containing a stacked bar, and the second group element is shown by fill colours in the stacked bars.  If plot = FALSE the processed data is returned as a data.frame.
+A stacked bar chart with the first group element plotted on the x-axis as bins each containing a stacked bar, and the second group element is shown by fill colours in the stacked bars.  If `plot = FALSE` the processed data is returned as a data.frame.
 
 ## Example workflow
 
