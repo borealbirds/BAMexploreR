@@ -186,6 +186,8 @@ bam_get_layer <- function(spList, version, destfile, crop_ext = NULL,  year = NU
       }else{
         out_name <- paste0(species_code, "-mosaic-", year, "-BCRclip.tif")
       }
+    } else {
+      tiff_data <- download_raster(file_url, to_temp = TRUE)
     }
 
     if (!terra::same.crs(tiff_data, "EPSG:5072"))
