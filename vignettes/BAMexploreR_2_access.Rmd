@@ -53,7 +53,7 @@ Arguments
 - ext: SpatVector or SpatRaster used to define an area of interest.
 
 
-📤 Output
+Output
 
 Map illustrating the BCR and overlap extent if provided.
 
@@ -69,7 +69,7 @@ Arguments
 - ext: (Optional) SpatVector or SpatRaster whose extent will be used to filter and return only intersecting BCR subunits.
 
 
-📤 Output
+Output
 
 A vector representing the name of the BCR subunits. 
 
@@ -93,7 +93,7 @@ Arguments
 - bcrNM: A vector representing the BCR subunit name according to model version. Default is "mosaic".
 
 
-📤 Output
+Output
 
 A list of multiband SpatRaster objects. In addition to returning these objects, the function also downloads raster files to the directory specified by destfile as a side-effect.
 
@@ -146,7 +146,7 @@ bcraoi_v5 <- bam_get_bcr("v5", ext=aoi_sf)
 bcraoi_v5
 ```
 
-And we can also visualize where our AOI fall on the map of all the model subregions for version 5 using the `bam_map_bcr` function.
+And we can also visualize where our AOI falls on the map of all the model subregions for version 5 using the `bam_map_bcr` function.
 
 ```{r aoi_bcr_map, echo = TRUE, results = 'markup', error = TRUE, fig.width=8, fig.height=4}
 # Map aoi on the map of model subregions
@@ -169,7 +169,7 @@ result <- bam_get_layer(cosewic_v5, "v5", destfile = tempdir(), year = "2020", b
 ```
 
 
-The output of the function is a list of SpatRaster objects. Each object of the version 5 models has four bands:
+The output of the function is a list of SpatRaster objects. Each object of the version 5 models has three bands:
 
 - **range-limited mean**: the mean predicted density in males/ha across 32 bootstraps, truncated to the probable range of the species
 - **mean**: the mean predicted density in males/ha across 32 bootstraps
