@@ -61,8 +61,7 @@ bam_get_layer <- function(spList, version, destfile, crop_ext = NULL,  year = NU
     if(version == "v5"){
       valid_bcrs <- c("mosaic", "can3", "can5", "can9", "can10", "can11", "can12", "can13", "can14",
                       "can40", "can41", "can42", "can60", "can61", "can70", "can71", "can72", "can80",
-                      "can81", "can82", "usa2", "usa5", "usa9", "usa10", "usa11", "usa12", "usa13",
-                      "usa14", "usa23", "usa28", "usa30", "usa40", "usa43", "usa41423")
+                      "can81", "can82")
       if (!all(bcrNM %in% valid_bcrs)) {
         stop("Invalid bcr value(s) provided: ", paste(setdiff(bcrNM, valid_bcrs), collapse = ", "))
       }
