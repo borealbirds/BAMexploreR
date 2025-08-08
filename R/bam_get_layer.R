@@ -127,7 +127,7 @@ bam_get_layer <- function(spList, version, destfile, crop_ext = NULL,  year = NU
         file_url <- file.path(url, file_name)
       } else if (version == "v5") {
         region <- ifelse(length(bcrNM) == 1, bcrNM, "mosaic")
-        file_name <- paste0(species_code, "_", region, "_", year, ".tiff")
+        file_name <- paste0(species_code, "_", region, "_", year, ".tif")
         file_url <- file.path(url, species_code, region, file_name)
       }
       list(name = file_name, url = file_url)
@@ -165,7 +165,7 @@ bam_get_layer <- function(spList, version, destfile, crop_ext = NULL,  year = NU
         crop_raster(tiff_data, project(crop_ext, tiff_data, align_only = TRUE))
       }
 
-      out_name <- sub("\\.tiff?$", "_clip.tif", file_name)
+      out_name <- sub("\\.tif?$", "_clip.tif", file_name)
 
     } else if ("mosaic" %in% bcrNM) {
       tiff_data <- download_raster(file_url, to_temp = (version == "v4"))
