@@ -86,26 +86,23 @@ A tibble with the following columns:
 
 The first step in working with the BAM density models is to get the model layers for the species and area of interest. See the 'Model Access' vignette for further details.
 
-We'll use the same example as the previous vignette: species listed by the Committee on the Status of Endangered Wildlife in Canada (COSEWIC) within an area of interest (AOI) across two sugbregions in the boreal plains and shield. This time, instead of downloading the model products for the whole subregions, we'll use the `crop_ext` argument to download just the AOI.
+We'll use the same example as the previous vignette: Olive-sided Flycatcher within an area of interest (AOI) across two sugbregions in the boreal plains and shield. This time, instead of downloading the model products for the whole subregions, we'll use the `crop_ext` argument to download just the AOI.
 
 ```{r access, fig.width=8, fig.height=6, echo = TRUE, results = 'markup', error = TRUE}
 library(BAMexploreR)
-
-# Generate a vector of COSEWIC species codes available in version 5. 
-cosewic_v5 <- bam_spp_list("v5", "speciesCode", "COSEWIC")
 
 # Use the example aoi SpatVector provided in the package
 aoi_sf <- vect(system.file("extdata", "vignette_poly_5072.shp", package = "BAMexploreR"))
 
 #Download the model products
-result <- bam_get_layer(cosewic_v5, "v5", destfile = tempdir(), year = "2020", crop_ext=aoi_sf)
+result <- bam_get_layer("OSFL", "v5", destfile = tempdir(), year = "2020", crop_ext=aoi_sf)
 ```
 
-Let's plot just the range-limited mean density to check our download.
+Let's plot just the mean density to check our download.
 
 ```{r plot_layer, echo = TRUE, results = 'markup', error = TRUE, fig.width=7, fig.height=5}
 library(terra)
-plot(result$CAWA$`range-limited mean`)
+plot(result$OSFL$mean)
 ```
 
 Great! We can see this time our raster is limited to just the extent of our AOI.
@@ -119,7 +116,7 @@ There are two options for thresholding the continuous values into presence and a
 - **by_lorenz**: Using a Lorenz curve, which summarizes the spatial inequality in predicted occurrence probabilities. See the [`opticut` R package](https://github.com/psolymos/opticut) for details.
 - **numeric**: Using a custom threshold between 0 and 1. This value indicates a cumulative proportion of pixels, above which all raster pixel values are assigned as "presence".
  
-Let's try the default option, `by_lorenz` first on downloaded models for Canada Warbler.
+Let's try the default option, `by_lorenz` first on downloaded models for Olive-sided Flycatcher.
 
 ```{r map_occu_lorenz, fig.width=7, fig.height=5.5, message = FALSE, warning= FALSE, echo = TRUE, results = 'markup', error = TRUE}
 # Threshold the model with the lorenz curve threshold
@@ -144,13 +141,13 @@ kable(occ_lorenz_result$occurrence_summary, caption="Area of occurence with Lore
 kable(occ_quantile_result$occurrence_summary, caption="Area of occurence with 50% threshold")
 ```
 
-Within our AOI of ~100,000 km^2^, we estimate approximately half of that is occupied by Canada Warblers if we use the Lorenz curve approach and we estimate just under a third of that is occupied by Canada Warblers if we use a custom 50% threshold
+Within our AOI of ~100,000 km^2^, we estimate approximately half of that is occupied by Olive-sided Flycatchers if we use the Lorenz curve approach and we estimate just under a third of that is occupied by Olive-sided Flycatchers if we use a custom 50% threshold
 
 ### 3. Estimate population size
 
 Alternatively, we can use the the `bam_pop_size` function on the continuous density predictions to calculate population size! This function simply sums the value of the pixels across the AOI and corrects for raster cell size.
 
-Let's use our same Canada Warbler example as before. 
+Let's use our same Olive-sided Flycatcher example as before. 
 
 ```{r density_aoi, message = FALSE, warning= FALSE, echo = TRUE, error = TRUE}
 # Calculate population size based on BAM landbird density raster
@@ -162,7 +159,7 @@ kable(pop_aoi_result, caption = "Estimated population size (male birds)")
 
 The `bam_pop_size` function can also accommodate an AOI SpatVector for AOI with a column that can be used to group the population size summary.
 
-Let's say we're doign regional planning and we're interested in which region has a larger Canada Warbler population. Let's try grouping by bird conservation region (BCR; i.e.,our model subregions). First we'll need to create a new SpatVector with separate polygons for the two BCRs in our AOI.
+Let's say we're doign regional planning and we're interested in which region has a larger Olive-sided Flycatcher population. Let's try grouping by bird conservation region (BCR; i.e.,our model subregions). First we'll need to create a new SpatVector with separate polygons for the two BCRs in our AOI.
 
 ```{r aoi_bcr_map, echo = TRUE, results = 'markup', error = TRUE, fig.width=7, fig.height=4}
 # Get the BCRs that our AOI intersects
@@ -193,4 +190,4 @@ pop_bcr_result <- bam_pop_size(result, crop_ext=aoi_sf_bcr, group="subunit_ui")
 kable(pop_bcr_result, caption = "Estimated population size")
 ```
 
-We can see that our total Canada Warbler population is split approximately 40% in BCR 80 and 60% in BCR 61. We can see based on the mean_density and n_cells columns that this larger population size is primarily due to differences in mean density between the BCRs, and not by differences in total aream suggesting BCR 61, at least within our AOI provides higher quality habitat for Canada Warblers.
+We can see that our total Olive-sided Flycatcher population is primarily in BCR 80. We can see based on the mean_density and n_cells columns that this larger population size is primarily due to differences in mean density between the BCRs, and not by differences in total area suggesting BCR 61, at least within our AOI provides higher quality habitat for Olive-sided Flycatchers.
