@@ -59,7 +59,7 @@ Arguments
 
 - `bcr`: A character specifying the Bird Conservation Regions (BCRs; model subregions) to filter by.
 
-- `groups`: A character of two grouping predictors for summarising predictor importance. The first group element is plotted on the x-axis as bins each containing a stacked bar, while the second group element is shown by fill colours in the stacked bars. Valid strings are any two of: `"spp"` (species), `"bcr"` (BCR), var, or var_class.
+- `groups`: A character of two grouping predictors for summarising predictor importance. The first group element is plotted on the x-axis as bins each containing a stacked bar, while the second group element is shown by fill colours in the stacked bars. Valid strings are any two of: `"spp"` (species), `"bcr"` (BCR), `var` (predictor), or `var_class` (predictor class).
 
 - `version`: Specifies which version of the landbird density model to use. Valid options are `"v4"` or `"v5"`.
 
@@ -83,7 +83,7 @@ We'll use the same example as the previous vignette: species listed by the Commi
 library(BAMexploreR)
 
 # Generate a vector of COSEWIC species codes available in version 5. 
-cosewic_v5 <- bam_spp_list("v5", "speciesCode", "COSEWIC")
+cosewic_v5 <- bam_spp_list(version = "v5", type = "speciesCode", guild = "COSEWIC")
 
 # Let's take out Wood Thrush and Bobolink; those are eastern species
 species_v5 <- cosewic_v5[!cosewic_v5 %in% c("BOBO", "WOTH")]
@@ -100,7 +100,7 @@ bcraoi_v5
 
 ### 2. Plot the predictors by predictor class
 
-The `bam_predictor_importance` function is a good way to start exploring predictor importance because it summarizes the predictor importance into nine general categories:
+The `bam_predictor_importance` function is a good way to start exploring predictor importance because it summarizes the predictor importance into nine general categories (`var_class`es):
 
 - **Annual climate**: the climate of the preceeding year (e.g., mean temperature)
 - **Climate Normal**: climate averages from 1991 to 2020 (e.g., precipitation as snow)
@@ -144,7 +144,7 @@ bam_predictor_importance(species = species_v5, bcr = bcraoi_v5, group = "bcr", v
 
 ```
 
-It looks like biomass is pretty important for Olive-sided Flycatcher across species! [MacArthur](https://www.jstor.org/stable/1932254) would be pleased.
+It looks like biomass is pretty important for across species! [MacArthur](https://www.jstor.org/stable/1932254) would be pleased.
 
 There is a metadata table for the model predictors stored in the package. Let's check out what goes into the biomass class.
 
@@ -162,7 +162,7 @@ Note that not all predictors go into every model! You'll see there are multiple 
 
 ### 3. Stacked bar chart of predictors
 
-If we want to visualize the predictor importance by individual predictors or with grouping of multiple categories, we can use the `bam_predictor_barchart` function. This function picks two groups for summary, with the group plotted on the x-axis as bins each containing a stacked bar and the second group is shown by fill colours in the stacked bars. The options for grouping are "spp" (species), "bcr" (model subregion), "var" (predictor), or "var_class" (predictor class).
+If we want to visualize the predictor importance by individual predictors or with grouping of multiple categories, we can use the `bam_predictor_barchart` function. This function picks two groups for summary, with the group plotted on the x-axis as bins each containing a stacked bar and the second group is shown by fill colours in the stacked bars. The options for grouping are `spp` (species), `bcr` (model subregion), `var` (predictor), or `var_class` (predictor class).
 
 Let's start by looking at the proportion of influence across predictor categories for each species.
 
@@ -172,7 +172,7 @@ bam_predictor_barchart(species = species_v5, bcr = bcraoi_v5,
                        groups=c("spp", "predictor_class"), version = "v5", plot=TRUE)
 ```
 
-Again, we see that the biomass predictors have the greatest proportion of influence, but that it varies across species. Year has a particularly strong effect for grey-cheeked thrush!
+Again, we see that the biomass predictors have the greatest proportion of influence, but that it varies across species. Year has a particularly strong effect for Grey-cheeked Thrush!
 
 Let's look at the difference between model subregions, or BCRs, in our AOI.
 
