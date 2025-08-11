@@ -15,6 +15,16 @@ knitr::opts_chunk$set(
   message = FALSE,
   warning = FALSE
 )
+
+capture.output(
+  suppressWarnings(
+    suppressMessages(
+      remotes::install_github('borealbirds/BAMExploreR')
+    )
+  )
+)
+library(BAMexploreR)
+
 ```
 
 Welcome! `BAMexploreR` is a package for downloading and analyzing landbird density models produced by the [Boreal Avian Modelling Centre (BAM)](https://borealbirds.ca/).
@@ -63,19 +73,19 @@ Two versions of the BAM landbird density models are available in `BAMExploreR`.
 | Feature                                                             | BAM V4                                                | BAM V5                                                                 |
 |---------------------------------------------------------------------|--------------------------------------------------------|------------------------------------------------------------------------|
 | **Release year**                                                   | 2020                                                 | 2025 |
-| **Species included**                                               | 143                                                  | 66 priority species (remaining in progress) |
+| **Species included**                                               | 143                                                  | 66 priority species; 77 in progress |
 | **Dataset size**                                                   | 0.3 million surveys                                  | 1.4 million surveys, including eBird |
-| **Geographic extent**                                              | Canada only                                          | Canada (boreal and hemiboreal of US in progress) |
+| **Geographic extent**                                              | Canada only                                          | Canada; US boreal & hemiboreal in progress |
 | **Temporal resolution**                                            | Predictions for 2017                                 | Predictions at five-year intervals from 1990 to 2020 |
 | **Model subregions**                                           | Bird conservation region (BCR)          | Updated BCRs and country |
 | **Environmental predictors**                                       | Landcover, biomass, climate                          | Time-matched predictors for vegetation biomass, human disturbance, and annual climate |
-| **Model reliability information**                                  | Cross-validated model performance                    | Cross-validated model performance, map of coefficient of variation across bootstraps, map of model extrapolation, map of detection distribution |
+| **Model reliability information**                                  | Cross-validated model performance                    | Map of coefficient of variation across bootstraps; cross-validated modelperformance, maps of model extrapolation & detection distribution in progress |
 
 ## Installation
 
 You can install and load `BAMexploreR` from [GitHub](https://github.com/borealbirds/BAMexploreR) with:
 
-```{r setup, include = TRUE, message=FALSE, warning=FALSE, echo=FALSE}
+```{r setup, eval=FALSE, include = TRUE, message=FALSE, warning=FALSE}
 remotes::install_github('borealbirds/BAMExploreR')
 library(BAMexploreR)
 ```

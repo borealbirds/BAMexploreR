@@ -26,7 +26,7 @@ This vignette will show you how to access the BAM landbird density models using 
 The BAM landbird density models are produced by modelling multiple ecologically-distinct regions and mosaicing the model predictions together into a seamless layer.
 
 - **Version 4 regions**: Bird Conservation Regions (BCRs).
-- **Version 5 regions**: The intersection of national boundaries and udpated Bird Conservation Regions (BCRs).
+- **Version 5 regions**: The intersection of national boundaries and udpated Bird Conservation Regions (BCRs). US boreal models coming soon!
 
 You can choose to access the predictions for the entire modelled area or a custom set of model subregions using an area of interest. For more information on the BAM landbird density models, please see the 'Introduction' vignette.
 
@@ -163,25 +163,27 @@ We will download the model products using the `bam_get_layer` function. In versi
 
 Let's down the model products for our list of COSEWIC species for the model subregions in our AOI for 2020 of the version 5 models.
 
-```{r get_layer, echo = TRUE, message=FALSE, results='hide'}
+```{r get_layer_code, echo = FALSE, message=FALSE, results='hide'}
 #Download the model products
 result <- bam_get_layer(cosewic_v5, "v5", destfile = tempdir(), year = "2020", bcrNM=bcraoi_v5)
 ```
+```{r get_layer, echo = TRUE, message=FALSE, results='hide'}
+#Download the model products
+result <- bam_get_layer("OSFL", "v5", destfile = tempdir(), year = "2020", bcrNM=bcraoi_v5)
+```
 
+The output of the function is a list of SpatRaster objects. Each object of the version 5 models has two bands:
 
-The output of the function is a list of SpatRaster objects. Each object of the version 5 models has three bands:
-
-- **range-limited mean**: the mean predicted density in males/ha across 32 bootstraps, truncated to the probable range of the species
 - **mean**: the mean predicted density in males/ha across 32 bootstraps
 - **cv**: the coefficient of variation of predicted density across 32 bootstraps
 
 The version 4 model productions contain only the mean band.
 
-Finally, we can plot these bands for one of our species of interest! Let's try Canada Warbler.
+Finally, we can plot these bands for one of our species of interest! Let's try Olive-sided Flycatcher.
 
-```{r plot_layer, echo = TRUE, results = 'markup', error = TRUE, fig.width=7, fig.height=4}
+```{r plot_layer, echo = TRUE, results = 'markup', error = TRUE, fig.width=8, fig.height=3}
 library(terra)
 
 #basic plotting of all bands
-plot(result$CAWA)
+plot(result$OSFL)
 ```
