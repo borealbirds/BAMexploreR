@@ -31,7 +31,7 @@ The BAM landbird density models use the [QPAD analytical approach for data integ
 
 ### bam_occurrence()
 
-**bam_occurrence()** estimates a species' presence/absence threshold based on a Lorenz curve, which summarizes the spatial inequality in predicted occurrence probabilities. This function helps distinguish between areas of high and low predicted use, by determining a threshold value that defines the most likely occupied areas.
+**bam_occurrence()** estimates a species' presence/absence threshold based on a Lorenz curve. This curve is fitted using the [opticut package](https://rdrr.io/cran/opticut/man/lorenz.html), which analyses the spatial inequality in predicted density across an area of interest. `opticut` distinguishes "presence" from "absence" by identifying pixels of a certain density value that have a negligible contribution to the area's total population. Therefore, this function helps distinguish between areas of high and low predicted use, by determining a threshold value that defines the most likely occupied areas.
 
 Arguments
 
@@ -41,7 +41,7 @@ Arguments
 
 - plot: Logical, if TRUE returns a map with binary presence (1) / absence (0) values.
 
-📤 Output
+Output
 
 A tibble with the following columns:
 
@@ -64,7 +64,7 @@ Arguments
 
 - group: (Optional) Name of the column in crop_ext to use for grouping population estimates.
 
-📤 Output
+Output
 
 A tibble with the following columns:
 
@@ -105,7 +105,9 @@ Let's plot just the range-limited mean density to check our download.
 
 ```{r plot_layer, echo = TRUE, results = 'markup', error = TRUE, fig.width=7, fig.height=5}
 library(terra)
-plot(result$CAWA$`range-limited mean`)
+result_sub <- list("CAWA" = result[["CAWA"]], "OSFL" = result[["OSFL"]])
+plot(result_sub$CAWA$mean)
+plot(result_sub$OSFL$mean)
 ```
 
 Great! We can see this time our raster is limited to just the extent of our AOI.
@@ -123,14 +125,15 @@ Let's try the default option, `by_lorenz` first on downloaded models for Canada 
 
 ```{r map_occu_lorenz, fig.width=7, fig.height=5.5, message = FALSE, warning= FALSE, echo = TRUE, results = 'markup', error = TRUE}
 # Threshold the model with the lorenz curve threshold
-occ_lorenz_result <- bam_occurrence(result, plot = TRUE)
+result_sub <- list("CAWA" = result[["CAWA"]], "OSFL" = result[["OSFL"]])
+occ_lorenz_result <- bam_occurrence(result_sub, plot = TRUE)
 ```
 
 And then let's compare to a custom threshold; let's try 50%.
 
 ```{r map_occu_50, fig.width=7, fig.height=5.5, message = FALSE, warning= FALSE, echo = TRUE, results = 'markup', error = TRUE}
 # Threshold the model with 50% threshold
-occ_quantile_result <- bam_occurrence(result, quantile = 0.5, plot = TRUE)
+occ_quantile_result <- bam_occurrence(result_sub, quantile = 0.5, plot = TRUE)
 ```
 
 We can see that the area of occurrence is smaller when we use a more conservative threshold! Let's examine the area of occurrence within our AOI for the two approaches to compare.
@@ -154,7 +157,8 @@ Let's use our same Canada Warbler example as before.
 
 ```{r density_aoi, message = FALSE, warning= FALSE, echo = TRUE, error = TRUE}
 # Calculate population size based on BAM landbird density raster
-pop_aoi_result <- bam_pop_size(result)
+result_sub <- list("CAWA" = result[["CAWA"]], "OSFL" = result[["OSFL"]])
+pop_aoi_result <- bam_pop_size(result_sub)
 
 # Show results
 kable(pop_aoi_result, caption = "Estimated population size (male birds)")
@@ -162,11 +166,11 @@ kable(pop_aoi_result, caption = "Estimated population size (male birds)")
 
 The `bam_pop_size` function can also accommodate an AOI SpatVector for AOI with a column that can be used to group the population size summary.
 
-Let's say we're doign regional planning and we're interested in which region has a larger Canada Warbler population. Let's try grouping by bird conservation region (BCR; i.e.,our model subregions). First we'll need to create a new SpatVector with separate polygons for the two BCRs in our AOI.
+Let's imagine a regional planning project where we need to know which BCR (in our AOI) has a larger Canada Warbler population. We might start by creating a new SpatVector with separate polygons for the two BCRs in our AOI.
 
 ```{r aoi_bcr_map, echo = TRUE, results = 'markup', error = TRUE, fig.width=7, fig.height=4}
 # Get the BCRs that our AOI intersects
-bcraoi_v5 <- bam_get_bcr("v5", ext=aoi_sf) 
+bcraoi_v5 <- bam_get_bcr(version="v5", ext=aoi_sf) 
 
 # Get the BCRs of interest from model subregion layer provided in the package
 bcr_v5 <- vect(system.file("extdata", "BAM_BCRNMv5_5072.shp", package = "BAMexploreR"))
