@@ -121,15 +121,14 @@ Let's try the default option, `by_lorenz` first on downloaded models for Olive-s
 
 ```{r map_occu_lorenz, fig.width=7, fig.height=5.5, message = FALSE, warning= FALSE, echo = TRUE, results = 'markup', error = TRUE}
 # Threshold the model with the lorenz curve threshold
-result_sub <- list("CAWA" = result[["CAWA"]], "OSFL" = result[["OSFL"]])
-occ_lorenz_result <- bam_occurrence(result_sub, plot = TRUE)
+occ_lorenz_result <- bam_occurrence(result, plot = TRUE)
 ```
 
 And then let's compare to a custom threshold; let's try 50%.
 
 ```{r map_occu_50, fig.width=7, fig.height=5.5, message = FALSE, warning= FALSE, echo = TRUE, results = 'markup', error = TRUE}
 # Threshold the model with 50% threshold
-occ_quantile_result <- bam_occurrence(result_sub, quantile = 0.5, plot = TRUE)
+occ_quantile_result <- bam_occurrence(result, quantile = 0.5, plot = TRUE)
 ```
 
 We can see that the area of occurrence is smaller when we use a more conservative threshold! Let's examine the area of occurrence within our AOI for the two approaches to compare.
@@ -153,8 +152,7 @@ Let's use our same Olive-sided Flycatcher example as before.
 
 ```{r density_aoi, message = FALSE, warning= FALSE, echo = TRUE, error = TRUE}
 # Calculate population size based on BAM landbird density raster
-result_sub <- list("CAWA" = result[["CAWA"]], "OSFL" = result[["OSFL"]])
-pop_aoi_result <- bam_pop_size(result_sub)
+pop_aoi_result <- bam_pop_size(result)
 
 # Show results
 kable(pop_aoi_result, caption = "Estimated population size (male birds)")
@@ -167,7 +165,7 @@ Let's imagine a regional planning project where we need to know which BCR (in ou
 
 
 ```{r aoi_bcr_map, echo = TRUE, results = 'markup', error = TRUE, fig.width=7, fig.height=4}
-# Get the BCRs that our AOI intersects
+# Get the BCR names that intersect our AOI
 bcraoi_v5 <- bam_get_bcr(version="v5", ext=aoi_sf) 
 
 # Get the BCRs of interest from model subregion layer provided in the package
@@ -175,7 +173,7 @@ bcr_v5 <- vect(system.file("extdata", "BAM_BCRNMv5_5072.shp", package = "BAMexpl
 aoi_bcr <- bcr_v5[bcr_v5$subunit_ui %in% bcraoi_v5, ]
 
 # Crop the BCR SpatVector to our AOI
-aoi_sf_bcr <- crop(aoi_bcr, aoi_sf)
+aoi_sf_bcr <- terra::crop(aoi_bcr, aoi_sf)
 
 # Plot to check the result
 plot(bcr_v5, border = "grey80", main = "Model subregions within the AOI")
@@ -195,4 +193,4 @@ pop_bcr_result <- bam_pop_size(result, crop_ext=aoi_sf_bcr, group="subunit_ui")
 kable(pop_bcr_result, caption = "Estimated population size")
 ```
 
-We can see that our total Olive-sided Flycatcher population is primarily in BCR 80. We can see based on the mean_density and n_cells columns that this larger population size is primarily due to differences in mean density between the BCRs, and not by differences in total area suggesting BCR 61, at least within our AOI provides higher quality habitat for Olive-sided Flycatchers.
+We can see that our total Olive-sided Flycatcher population is primarily in BCR 80. Based on the mean_density and n_cells columns that this larger population size is primarily due to differences in mean density between the BCRs, and not by differences in total area suggesting BCR 61 provides higher quality habitat for Olive-sided Flycatchers (within our AOI).
