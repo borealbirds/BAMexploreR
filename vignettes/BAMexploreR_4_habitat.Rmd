@@ -144,7 +144,7 @@ bam_predictor_importance(species = species_v5, bcr = bcraoi_v5, group = "bcr", v
 
 ```
 
-It looks like biomass is pretty important for across species! [MacArthur](https://www.jstor.org/stable/1932254) would be pleased.
+It looks like biomass is pretty important across species! [MacArthur](https://www.jstor.org/stable/1932254) would be pleased.
 
 There is a metadata table for the model predictors stored in the package. Let's check out what goes into the biomass class.
 
