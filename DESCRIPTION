@@ -6,7 +6,7 @@ Authors@R: c(
     person("Melina", "Houle", email = "houle.melina@gmail.com", role = c("aut", "cre")),
     person("Mannfred", "Boehm", role = "aut"),
     person("Siu Chung", "Wu", role = "ctb"),
-    person("Elly", "Knight", role = "aut"))
+    person("Elly", "Knight", role = "aut")
     )
 Maintainer: Melina Houle <houle.melina@gmail.com>
 Description: BAMexploreR allows users to download and work with the Boreal Avian Modelling Centre's (BAM's) landbird density models. The package contains functions to access models, estimate and interpret distribution and abundance, and explore the importance of habitat predictors in the models.
