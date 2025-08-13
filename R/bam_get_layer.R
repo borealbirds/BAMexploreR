@@ -104,7 +104,7 @@ bam_get_layer <- function(spList, version, destfile, crop_ext = NULL,  year = NU
 
   allowed_years <- c("2000", "2005", "2010", "2015", "2020")
   if(version == "v5"){
-    if (!year %in% allowed_years) {
+    if (!all(year %in% allowed_years)) {
       stop("Invalid year: must be one of ", paste(allowed_years, collapse = ", "))
     }
   }
