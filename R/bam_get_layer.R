@@ -102,6 +102,18 @@ bam_get_layer <- function(spList, version, destfile, crop_ext = NULL,  year = NU
     }
   }
 
+  allowed_years <- c("2000", "2005", "2010", "2015", "2020")
+  if(version == "v5"){
+    if (!year %in% allowed_years) {
+      stop("Invalid year: must be one of ", paste(allowed_years, collapse = ", "))
+    }
+  }
+
+  valid_species <- bam_spp_list(version = version )
+  if (!all(spList %in% valid_species)) {
+    stop("Invalid species in spList: must be in bam_spp_list()")
+  }
+
   spv <- bam_spp_list(version, "speciesCode")
 
   # Check if provided species list is in the available species codes. Display erroneous
@@ -186,7 +198,7 @@ bam_get_layer <- function(spList, version, destfile, crop_ext = NULL,  year = NU
         out_name <- paste0(species_code, "-mosaic-", year, "-BCRclip.tif")
       }
     } else {
-      tiff_data <- download_raster(file_url, to_temp = TRUE)
+      tiff_data <- download_raster(file_url, to_temp = (version == "v5"))
     }
 
     if (!terra::same.crs(tiff_data, "EPSG:5072"))
