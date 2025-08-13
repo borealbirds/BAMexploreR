@@ -21,7 +21,7 @@ Two versions of the BAM landbird density models are available in `BAMexploreR`.
 | **Species included**                                               | 143                                                  | 67 priority species; 77 in progress |
 | **Dataset size**                                                   | 0.3 million surveys                                  | 1.4 million surveys, including eBird |
 | **Geographic extent**                                              | Canada only                                          | Canada; US boreal & hemiboreal in progress |
-| **Temporal resolution**                                            | Predictions for 2017                                 | Predictions at five-year intervals from 1990 to 2020 |
+| **Temporal resolution**                                            | Predictions for 2017                                 | Predictions at five-year intervals from 2000 to 2020; 1990 to 1995 in progress |
 | **Model subregions**                                           | Bird conservation region (BCR)          | Updated BCRs and country |
 | **Environmental predictors**                                       | Landcover, biomass, climate                          | Time-matched predictors for vegetation biomass, human disturbance, and annual climate |
 | **Model reliability information**                                  | Cross-validated model performance                    | Map of coefficient of variation across bootstraps; cross-validated modelperformance, maps of model extrapolation & detection distribution in progress |
