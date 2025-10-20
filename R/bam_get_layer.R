@@ -89,7 +89,6 @@ bam_get_layer <- function(spList, version, destfile, crop_ext = NULL,  year = NU
     }
   }
 
-  #cwd <- getwd()
   if (!file.exists(destfile)) {
     dir.create(destfile, showWarnings = FALSE)
   }
@@ -125,6 +124,34 @@ bam_get_layer <- function(spList, version, destfile, crop_ext = NULL,  year = NU
 
   # Create valid species vector
   spList <- spList[spList %in% spv]
+
+  filter_species_by_bcr  <- function(birdlist, spList, bcrNM) {
+    valid_sp <- intersect(spList, names(birdlist))
+
+    # subset birdlist for selected BCRs
+    subset <- birdlist[birdlist$bcr %in% bcrNM, c("bcr", valid_sp), drop = FALSE]
+
+    mat <- as.matrix(subset[valid_sp])
+    keep <- colSums(mat) > 0
+    valid_sp[keep]
+  }
+
+  if(!("mosaic" %in% bcrNM)){
+    sp_filter <- filter_species_by_bcr(birdlist, spList, bcrNM)
+
+    removed_species <- setdiff(spList, sp_filter)
+
+    if(length(removed_species) > 0){
+      message("Species out of range: ",
+              paste(removed_species, collapse = ", "),
+              ". No output is available for these species in the selected BCR.")
+    }
+    spList <- sp_filter
+
+    if (length(spList) == 0) {
+      message("\n\nNo species remain to download for the selected BCR.")
+    }
+  }
 
   outList <- list()
 
