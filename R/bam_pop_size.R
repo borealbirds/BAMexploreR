@@ -118,9 +118,9 @@ bam_pop_size <- function(raster_list, crop_ext= NULL, group = NULL){
         dplyr::rename(density = mean) |>
         dplyr::filter(!is.na(density)) |>
         dplyr::summarise(
-          total_pop   = sum(density) * 100,
-          mean_density = round(mean(density), 3),
-          sd_density   = round(sd(density), 3),
+          total_pop   = round(sum(density) * 100, -2),
+          mean_density = round(mean(density), 2),
+          sd_density   = round(sd(density), 2),
           n_cells      = n()
         ) |>
         dplyr::mutate(group   = NA,
