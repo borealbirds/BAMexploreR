@@ -6,7 +6,7 @@
 
 ## Overview
 
-`BAMexploreR` is an R package is a package for downloading and analyzing landbird density models produced by the Boreal Avian Modelling Centre (BAM). Visit our Shiny app at https://borealbirds.shinyapps.io/bam_landbird_viewer_dev95/ for model download and analysis with a graphical user interface.
+`BAMexploreR` is an R package for downloading and analyzing landbird density models produced by the Boreal Avian Modelling Centre (BAM). Visit our web-hosted [Shiny app](https://borealbirds.shinyapps.io/bam_landbird_viewer_dev95/) for model download and analysis with a graphical user interface.
 
 The BAM landbird density models are species-specific predictions of the density of breeding male birds per hectare at a 1km resolution across Canada. They are produced with a generalized analytical approach to model landbird species density in relation to environmental predictors, using in-person or ARU point-count surveys and widely available spatial predictors. We developed separate models for each geographic region (bird conservation regions) based on predictors such as tree species biomass (local and landscape scale), forest age, topography, land use, and climate. We used machine learning to allow for predictor interactions and non-linear responses while avoiding time-consuming species-by-species parameterization. We applied cross-validation to avoid overfitting and bootstrap resampling to estimate uncertainty associated with our density estimates.
 
