@@ -25,8 +25,10 @@
 #'
 #' @param plot A \code{logical} indicating whether to plot the results (\code{TRUE}) or return the processed data (\code{FALSE}).
 #'
-#' @param colours A \code{character} vector of hex codes for the colours to use in the ggplot (optional).
-#' If \code{NULL}, default colours are used.
+#' @param colours A \code{character} vector of hex codes or colour names (optional).
+#' If \code{NULL}, default colour-blind friendly palette from \code{viridis} is used.
+#'
+#' @param viridis_option A \code{character}. Default is \code{"viridis"}. See \code{?ggplot2::scale_colour_viridis_d} for more options.
 #'
 #' @return A stacked bar chart with the first group element plotted on the x-axis as bins each containing a stacked bar, and the second group element is shown by fill colours in the stacked bars.  If plot = FALSE the processed data is returned as a data.frame.
 #'
@@ -62,7 +64,7 @@
 #' bam_predictor_barchart(species = warblers, bcr = "can14", groups = c("predictor", "spp"))
 
 
-bam_predictor_barchart <- function(species = "all", bcr = "all",  groups = c("spp", "predictor_class"), version ="v5", plot = TRUE, colours = NULL){
+bam_predictor_barchart <- function(species = "all", bcr = "all",  groups = c("spp", "predictor_class"), version ="v5", plot = TRUE, colours = NULL, viridis_option = "viridis"){
 
   if (!version %in% c("v4", "v5")) {
     stop("Invalid version argument. Must be either 'v4' or 'v5'.")
@@ -141,6 +143,7 @@ bam_predictor_barchart <- function(species = "all", bcr = "all",  groups = c("sp
     left_join(x = _, group1_sum, by=groups[1]) |>
     mutate(prop = sum_influence/sum_group1)
 
+  proportion_inf[[groups[2]]] <- as.factor(proportion_inf[[groups[2]]])
 
   if (plot) {
     p <- ggplot2::ggplot(proportion_inf, ggplot2::aes(x = !!group_syms[[1]], y = prop, fill = !!group_syms[[2]])) +
@@ -149,14 +152,34 @@ bam_predictor_barchart <- function(species = "all", bcr = "all",  groups = c("sp
       ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1)) +
       ggplot2::labs(x = groups[1], y = "Proportion of Influence", fill = groups[2])
 
-    if (!is.null(colours)) {
-      p <- p + ggplot2::scale_fill_manual(values = colours)
+    if (is.null(colours)) {
+      p <- p + ggplot2::scale_fill_viridis_d(option = viridis_option)
+
+    } else {
+
+      # determine number of fill levels
+      n_levels <- length(unique(proportion_inf[[groups[2]]]))
+
+      if (length(colours) != n_levels) {
+        stop(paste0(
+             "Length of `colours` (", length(colours),
+             ") must match number of fill levels (", n_levels, ").")
+            )
+      }
+
+      p <- p +
+        ggplot2::scale_fill_manual(values = colours)
     }
 
     return(p)
+
   } else {
+
     return(proportion_inf)
   }
-}
+
+} # close function
+
+
 
 
