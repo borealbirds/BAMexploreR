@@ -61,8 +61,7 @@ bam_get_layer <- function(spList, version, destfile, crop_ext = NULL,  year = NU
     if(version == "v5"){
       valid_bcrs <- c("mosaic", "can3", "can5", "can9", "can10", "can11", "can12", "can13", "can14",
                       "can40", "can41", "can42", "can60", "can61", "can70", "can71", "can72", "can80",
-                      "can81", "can82", "usa2", "usa5", "usa9", "usa10", "usa11", "usa12", "usa13",
-                      "usa14", "usa23", "usa28", "usa30", "usa40", "usa43", "usa41423")
+                      "can81", "can82")
       if (!all(bcrNM %in% valid_bcrs)) {
         stop("Invalid bcr value(s) provided: ", paste(setdiff(bcrNM, valid_bcrs), collapse = ", "))
       }
@@ -90,7 +89,6 @@ bam_get_layer <- function(spList, version, destfile, crop_ext = NULL,  year = NU
     }
   }
 
-  #cwd <- getwd()
   if (!file.exists(destfile)) {
     dir.create(destfile, showWarnings = FALSE)
   }
@@ -101,6 +99,18 @@ bam_get_layer <- function(spList, version, destfile, crop_ext = NULL,  year = NU
     if(sum(crop_area) < 100){
       warning(sprintf("The BAM density models are predicted to a resolution of 1 km2. Your area of interest is only %.2f km2. Please consider whether these models are appropriate for your application.", crop_area))
     }
+  }
+
+  allowed_years <- c("2000", "2005", "2010", "2015", "2020")
+  if(version == "v5"){
+    if (!all(year %in% allowed_years)) {
+      stop("Invalid year: must be one of ", paste(allowed_years, collapse = ", "))
+    }
+  }
+
+  valid_species <- bam_spp_list(version = version )
+  if (!all(spList %in% valid_species)) {
+    stop("Invalid species in spList: must be in bam_spp_list()")
   }
 
   spv <- bam_spp_list(version, "speciesCode")
@@ -115,6 +125,34 @@ bam_get_layer <- function(spList, version, destfile, crop_ext = NULL,  year = NU
   # Create valid species vector
   spList <- spList[spList %in% spv]
 
+  filter_species_by_bcr  <- function(birdlist, spList, bcrNM) {
+    valid_sp <- intersect(spList, names(birdlist))
+
+    # subset birdlist for selected BCRs
+    subset <- birdlist[birdlist$bcr %in% bcrNM, c("bcr", valid_sp), drop = FALSE]
+
+    mat <- as.matrix(subset[valid_sp])
+    keep <- colSums(mat) > 0
+    valid_sp[keep]
+  }
+
+  if(!("mosaic" %in% bcrNM)){
+    sp_filter <- filter_species_by_bcr(birdlist, spList, bcrNM)
+
+    removed_species <- setdiff(spList, sp_filter)
+
+    if(length(removed_species) > 0){
+      message("Species out of range: ",
+              paste(removed_species, collapse = ", "),
+              ". No output is available for these species in the selected BCR.")
+    }
+    spList <- sp_filter
+
+    if (length(spList) == 0) {
+      message("\n\nNo species remain to download for the selected BCR.")
+    }
+  }
+
   outList <- list()
 
   batch_download <- function(species_code, version, year = NULL, crop_ext, bcrNM = "mosaic") {
@@ -127,7 +165,7 @@ bam_get_layer <- function(spList, version, destfile, crop_ext = NULL,  year = NU
         file_url <- file.path(url, file_name)
       } else if (version == "v5") {
         region <- ifelse(length(bcrNM) == 1, bcrNM, "mosaic")
-        file_name <- paste0(species_code, "_", region, "_", year, ".tiff")
+        file_name <- paste0(species_code, "_", region, "_", year, ".tif")
         file_url <- file.path(url, species_code, region, file_name)
       }
       list(name = file_name, url = file_url)
@@ -165,7 +203,7 @@ bam_get_layer <- function(spList, version, destfile, crop_ext = NULL,  year = NU
         crop_raster(tiff_data, project(crop_ext, tiff_data, align_only = TRUE))
       }
 
-      out_name <- sub("\\.tiff?$", "_clip.tif", file_name)
+      out_name <- sub("\\.tif?$", "_clip.tif", file_name)
 
     } else if ("mosaic" %in% bcrNM) {
       tiff_data <- download_raster(file_url, to_temp = (version == "v4"))
@@ -186,6 +224,8 @@ bam_get_layer <- function(spList, version, destfile, crop_ext = NULL,  year = NU
       }else{
         out_name <- paste0(species_code, "-mosaic-", year, "-BCRclip.tif")
       }
+    } else {
+      tiff_data <- download_raster(file_url, to_temp = (version == "v5"))
     }
 
     if (!terra::same.crs(tiff_data, "EPSG:5072"))

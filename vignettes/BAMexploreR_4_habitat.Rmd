@@ -23,7 +23,7 @@ This vignette will show you how to explore the important predictors of interest 
 
 ### Predictor importance
 
-The machine learning framework that BAM uses to produce the landbird density models provides an estimate of the percent importance of each predictor in the model. We can explore those importances to understand the habitat relationships for species of interest in each model subregion. Note that these functions will only provide the *importance* of each predictor, not the shape or direction of the relationship, which can be nonlinear and include complex interactions with other predictors given the machine learning framework used. For more information on the BAM landbird density models, please see the 'Introduction' vignette.
+The machine learning framework that BAM uses to produce the landbird density models provides an estimate of the relative importance of each predictor in the model. We can explore those importance metrics to understand the habitat relationships for species of interest in each model subregion. Note that these functions will only provide the *importance* of each predictor, not the shape or direction of the relationship, which can be nonlinear and include complex interactions with other predictors given the machine learning framework used. For more information on the BAM landbird density models, please see the 'Introduction' vignette.
 
 ## Functions available
 
@@ -33,21 +33,21 @@ The machine learning framework that BAM uses to produce the landbird density mod
 
 Arguments
 
-- species: A character specifying the species to filter by.
+- `species`: A `character` specifying the species to filter by.
 
-- bcr: A character specifying the Bird Conservation Regions (BCRs; model subregions) to filter by.
+- `bcr`: A `character` specifying the Bird Conservation Regions (BCRs; model subregions) to filter by.
 
-- group: A character of two grouping predictors for summarising predictor importance. Valid strings are "spp" (species) or "bcr".
+- `group`: A `character` of two grouping predictors for summarising predictor importance. Valid strings are `"spp"` (species) or `"bcr"`.
 
-- version: Specifies which version of the landbird density model to use. Valid options are "v4" or "v5".
+- `version`: Specifies which version of the landbird density model to use. Valid options are `"v4"` or `"v5"`.
 
-- plot: Logical indicating whether to plot the results (TRUE) or return the processed data (FALSE).
+- `plot`: Logical indicating whether to plot the results (`TRUE`) or return the processed data (`FALSE`).
 
-- colours: Character vector of hex codes for the colours to use in the ggplot (optional).
+- `colours`: Character vector of hex codes for the colours to use in the `ggplot` (optional).
 
-📤 Output
+Output
 
-A ggplot displaying percent predictor importance by predictor class, grouped by the group argument. Percent importance is used to allow comparisions across groups that have differing total predictor importance. If plot = FALSE the processed data is returned as a data.frame.
+A `ggplot` displaying relative predictor importance by predictor class, grouped by the `group=` argument. Relative importance allows comparisions across groups that have differing total predictor importance. If `plot = FALSE` the processed data is returned as a data.frame.
 
 ### bam_predictor_barchart()
 
@@ -55,21 +55,21 @@ A ggplot displaying percent predictor importance by predictor class, grouped by 
 
 Arguments
 
-- species: A character specifying the species to filter by.
+- `species`: A character specifying the species to filter by.
 
-- bcr: A character specifying the Bird Conservation Regions (BCRs; model subregions) to filter by.
+- `bcr`: A character specifying the Bird Conservation Regions (BCRs; model subregions) to filter by.
 
-- groups: A character of two grouping predictors for summarising predictor importance. The first group element is plotted on the x-axis as bins each containing a stacked bar, while the second group element is shown by fill colours in the stacked bars. Valid strings are any two of: "spp" (species), "bcr" (BCR), var, or var_class.
+- `groups`: A character of two grouping predictors for summarising predictor importance. The first group element is plotted on the x-axis as bins each containing a stacked bar, while the second group element is shown by fill colours in the stacked bars. Valid strings are any two of: `"spp"` (species), `"bcr"` (BCR), `var` (predictor), or `var_class` (predictor class).
 
-- version: Specifies which version of the landbird density model to use. Valid options are "v4" or "v5".
+- `version`: Specifies which version of the landbird density model to use. Valid options are `"v4"` or `"v5"`.
 
-- plot: Logical indicating whether to plot the results (TRUE) or return the processed data (FALSE).
+- `plot`: Logical indicating whether to plot the results (`TRUE`) or return the processed data (`FALSE`).
 
-- colours: Character vector of hex codes for the colours to use in the ggplot (optional).
+- colours: Character vector of hex codes for the colours to use in the `ggplot` (optional).
 
-📤 Output
+Output
 
-A stacked bar chart with the first group element plotted on the x-axis as bins each containing a stacked bar, and the second group element is shown by fill colours in the stacked bars.  If plot = FALSE the processed data is returned as a data.frame.
+A stacked bar chart with the first group element plotted on the x-axis as bins each containing a stacked bar, and the second group element is shown by fill colours in the stacked bars.  If `plot = FALSE` the processed data is returned as a data.frame.
 
 ## Example workflow
 
@@ -83,7 +83,10 @@ We'll use the same example as the previous vignette: species listed by the Commi
 library(BAMexploreR)
 
 # Generate a vector of COSEWIC species codes available in version 5. 
-cosewic_v5 <- bam_spp_list("v5", "speciesCode", "COSEWIC")
+cosewic_v5 <- bam_spp_list(version = "v5", type = "speciesCode", guild = "COSEWIC")
+
+# Let's take out Wood Thrush and Bobolink; those are eastern species
+species_v5 <- cosewic_v5[!cosewic_v5 %in% c("BOBO", "WOTH")]
 
 # Use the example aoi SpatVector provided in the package
 aoi_sf <- vect(system.file("extdata", "vignette_poly_5072.shp", package = "BAMexploreR"))
@@ -97,7 +100,7 @@ bcraoi_v5
 
 ### 2. Plot the predictors by predictor class
 
-The `bam_predictor_importance` function is a good way to start exploring predictor importance because it summarizes the predictor importance into nine general categories:
+The `bam_predictor_importance` function is a good way to start exploring predictor importance because it summarizes the predictor importance into nine general categories (`var_class`es):
 
 - **Annual climate**: the climate of the preceeding year (e.g., mean temperature)
 - **Climate Normal**: climate averages from 1991 to 2020 (e.g., precipitation as snow)
@@ -110,11 +113,11 @@ The `bam_predictor_importance` function is a good way to start exploring predict
 - **Wetland**: availability of wetland areas (e.g., open water seasonality)
 - **Time**: the year the survey was conducted
 
-Let's look at the predictor importance plot for our species and AOI.
+Let's start by looking at the predictor importance plot for Olive-sided Flycatcher in our AOI.
 
 ```{r cov_imp_plot, echo = TRUE, results = 'markup', error = TRUE, fig.width=7, fig.height=4, fig.align='center'}
 # Create plot of predictor importance grouped by BCR
-bam_predictor_importance(species = cosewic_v5, bcr = bcraoi_v5, group = "bcr", version = "v5", plot=TRUE)
+bam_predictor_importance(species = "OSFL", bcr = bcraoi_v5, group = "bcr", version = "v5", plot=TRUE)
 ```
 
 We can see that the plot has error bars, indicating standard deviation across bootstraps.
@@ -123,7 +126,7 @@ Alternatively, we can just return the raw data to look at the actual values. Let
 
 ```{r cov_imp_raw, echo = TRUE, results = 'markup', error = TRUE}
 # Create dataframe of predictor importance grouped by BCR
-aoi_importance <- bam_predictor_importance(species = cosewic_v5, bcr = bcraoi_v5,
+aoi_importance <- bam_predictor_importance(species = "OSFL", bcr = bcraoi_v5,
                                            group = "bcr", version = "v5", plot=FALSE)
 
 # Check results
@@ -131,22 +134,19 @@ library(knitr)
 kable(aoi_importance, caption="Percent importance of predictor classes, grouped by model subreigon")
 ```
 
-Right now we're just looking at one species, Canada Warbler. What happens if we include multiple species in our `species` argument? We get statistics summarized across species.
+Right now we're just looking at one species. What happens if we include multiple species in our `species` argument? We get statistics summarized across species.
 
-Let's add some more species and see what we get.
+Let's look at all the COSEWIC species.
 
 ```{r cov_imp_plot2, echo = TRUE, results = 'markup', error = TRUE, fig.width=7, fig.height=4, fig.align='center'}
-# Get all available species
-spp_v5 <- bam_spp_list("v5", "speciesCode")
-
 # Create plot of predictor importance grouped by BCR
-bam_predictor_importance(species = spp_v5, bcr = bcraoi_v5, group = "bcr", version = "v5", plot=TRUE)
+bam_predictor_importance(species = species_v5, bcr = bcraoi_v5, group = "bcr", version = "v5", plot=TRUE)
 
 ```
 
-It looks like vegetation structure is pretty important across species! [MacArthur](https://www.jstor.org/stable/1932254) would be pleased.
+It looks like biomass is pretty important across species! [MacArthur](https://www.jstor.org/stable/1932254) would be pleased.
 
-There is a metadata table for the model predictors stored in the package. Let's check out what goes into the vegetation structure class.
+There is a metadata table for the model predictors stored in the package. Let's check out what goes into the biomass class.
 
 ```{r predictor_metadata, eval = TRUE, echo=TRUE}
 library(dplyr)
@@ -162,34 +162,39 @@ Note that not all predictors go into every model! You'll see there are multiple 
 
 ### 3. Stacked bar chart of predictors
 
-If we want to visualize the predictor importance by individual predictors or with grouping of multiple categories, we can use the `bam_predictor_barchart` function. This function picks two groups for summary, with the group plotted on the x-axis as bins each containing a stacked bar and the second group is shown by fill colours in the stacked bars. The options for grouping are "spp" (species), "bcr" (model subregion), "var" (predictor), or "var_class" (predictor class).
+If we want to visualize the predictor importance by individual predictors or with grouping of multiple categories, we can use the `bam_predictor_barchart` function. This function picks two groups for summary, with the group plotted on the x-axis as bins each containing a stacked bar and the second group is shown by fill colours in the stacked bars. The options for grouping are `spp` (species), `bcr` (model subregion), `var` (predictor), or `var_class` (predictor class).
 
-Let's start by looking at the proportion of influence across predictor categories for each species.
+Let's start by looking at the proportion of influence across predictor categories for each species. `bam_predictor_barchart()` uses the `viridis` palettes by default, but we'll demonstrate the custom `colour=` argument by using a Okabe-Ito colour blind palette. 
 
 ```{r cov_bar_plot1, echo = TRUE, results = 'markup', error = TRUE, fig.width=7, fig.height=4, fig.align='center'}
 # Create plot of predictor importance for each species grouped by predictor class
-bam_predictor_barchart(species = spp_v5, bcr = bcraoi_v5,
-                       groups=c("spp", "predictor_class"), version = "v5", plot=TRUE)
+okabe_ito <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "#000000", "#999999")
+
+bam_predictor_barchart(species = species_v5, bcr = bcraoi_v5,
+                       groups=c("spp", "predictor_class"), version = "v5", 
+                       plot=TRUE, colour = okabe_ito)
 ```
 
-Again, we see that the vegetation structure predictors have the greatest proportion of influence, but that it varies across species.
+Again, we see that the biomass predictors have the greatest proportion of influence, but that it varies across species. Year has a particularly strong effect for Grey-cheeked Thrush!
 
 Let's look at the difference between model subregions, or BCRs, in our AOI.
 
 ```{r cov_bar_plot2, echo = TRUE, results = 'markup', error = TRUE, fig.width=7, fig.height=4, fig.align='center'}
 # Create plot of predictor importance for each BCR grouped by predictor class
-bam_predictor_barchart(species = spp_v5, bcr = bcraoi_v5,
-                       groups=c("bcr", "predictor_class"), version = "v5", plot=TRUE)
+bam_predictor_barchart(species = species_v5, bcr = bcraoi_v5,
+                       groups=c("bcr", "predictor_class"), version = "v5", 
+                       plot=TRUE, colour = okabe_ito)
 ```
 
-Looks like climate normals are slightly more important in BCR 61 while annual climate is slightly more important in BCR 80.
+Looks like time and landcover are slightly more important in BCR 80 than BCR 61.
 
 Finally, let's try looking at the proportion of influence of individual predictors by species.
 
 ```{r cov_bar_plot3, echo = TRUE, results = 'markup', error = TRUE, fig.width=7, fig.height=4, fig.align='center'}
 # Create plot of predictor importance for each predictor grouped by species
-bam_predictor_barchart(species = spp_v5, bcr = bcraoi_v5,
-                       groups=c("predictor", "spp"), version = "v5", plot=TRUE)
+bam_predictor_barchart(species = species_v5, bcr = bcraoi_v5,
+                       groups=c("predictor", "spp"), version = "v5", 
+                       plot=TRUE, colour = okabe_ito[1:8])
 ```
 
 There's a lot of information here! Note we can see that not every predictor is included in every species model.
@@ -198,11 +203,14 @@ Instead of a plot, let's try extracting the tabular summary for this level of de
 
 ```{r cov_bar_text, echo = TRUE, results = 'markup', error = TRUE, fig.width=7, fig.height=4, fig.align='center'}
 # Create table of predictor importance for each predictor grouped by species
-bam_predictors_v5 <- bam_predictor_barchart(species = spp_v5, bcr = bcraoi_v5,
+bam_predictors_v5 <- bam_predictor_barchart(species = species_v5, bcr = bcraoi_v5,
                                             groups=c("predictor", "spp"),
-                                            version = "v5", plot=FALSE)
+                                            version = "v5", plot=FALSE) 
 
-# Check the top 10 results
-head(bam_predictors_v5, 10) |> 
+# Check the top 2 per species
+bam_predictors_v5 |>
+  group_by(spp) |>
+  slice_max(order_by = sum_influence, n = 2) |> 
+  ungroup() |> 
   kable(caption = "Summary of model predictor importance by species for AOI")
 ```

@@ -26,7 +26,7 @@ This vignette will show you how to access the BAM landbird density models using 
 The BAM landbird density models are produced by modelling multiple ecologically-distinct regions and mosaicing the model predictions together into a seamless layer.
 
 - **Version 4 regions**: Bird Conservation Regions (BCRs).
-- **Version 5 regions**: The intersection of national boundaries and udpated Bird Conservation Regions (BCRs).
+- **Version 5 regions**: The intersection of national boundaries and udpated Bird Conservation Regions (BCRs). US boreal models coming soon!
 
 You can choose to access the predictions for the entire modelled area or a custom set of model subregions using an area of interest. For more information on the BAM landbird density models, please see the 'Introduction' vignette.
 
@@ -53,7 +53,7 @@ Arguments
 - ext: SpatVector or SpatRaster used to define an area of interest.
 
 
-📤 Output
+Output
 
 Map illustrating the BCR and overlap extent if provided.
 
@@ -69,7 +69,7 @@ Arguments
 - ext: (Optional) SpatVector or SpatRaster whose extent will be used to filter and return only intersecting BCR subunits.
 
 
-📤 Output
+Output
 
 A vector representing the name of the BCR subunits. 
 
@@ -93,7 +93,7 @@ Arguments
 - bcrNM: A vector representing the BCR subunit name according to model version. Default is "mosaic".
 
 
-📤 Output
+Output
 
 A list of multiband SpatRaster objects. In addition to returning these objects, the function also downloads raster files to the directory specified by destfile as a side-effect.
 
@@ -146,7 +146,7 @@ bcraoi_v5 <- bam_get_bcr("v5", ext=aoi_sf)
 bcraoi_v5
 ```
 
-And we can also visualize where our AOI fall on the map of all the model subregions for version 5 using the `bam_map_bcr` function.
+And we can also visualize where our AOI falls on the map of all the model subregions for version 5 using the `bam_map_bcr` function.
 
 ```{r aoi_bcr_map, echo = TRUE, results = 'markup', error = TRUE, fig.width=8, fig.height=4}
 # Map aoi on the map of model subregions
@@ -161,26 +161,26 @@ Now that we have our species and AOI, we can download the model products!
 
 We will download the model products using the `bam_get_layer` function. In version 5, we also have the option of downloading multiple years of predictions, as the density models are available for five-year intervals from 1990 to 2020 (default is 2020). 
 
-Let's down the model products for our list of COSEWIC species for the model subregions in our AOI for 2020 of the version 5 models.
+Let's download a version 5 `SpatRaster` for our one of our COSEWIC-designated species. We'll focus on the year 2020, and the two BCRs that our AOI intersects. 
+
 
 ```{r get_layer, echo = TRUE, message=FALSE, results='hide'}
-#Download the model products
-result <- bam_get_layer(cosewic_v5, "v5", destfile = tempdir(), year = "2020", bcrNM=bcraoi_v5)
+#Download the model product for Olive-sided Flycatcher
+result <- bam_get_layer(cosewic_v5[7], "v5", destfile = tempdir(), year = "2020", bcrNM=bcraoi_v5)
 ```
 
-The output of the function is a list of SpatRaster objects. Each object of the version 5 models has four bands:
+The output of the function is a list of SpatRaster objects. In this example we have a list of one (one species). Note that each of the version 5 model objects has two bands:
 
-- **range-limited mean**: the mean predicted density in males/ha across 32 bootstraps, truncated to the probable range of the species
 - **mean**: the mean predicted density in males/ha across 32 bootstraps
 - **cv**: the coefficient of variation of predicted density across 32 bootstraps
 
-The version 4 model productions contain only the mean band.
+The version 4 model products contain only the **mean** band.
 
-Finally, we can plot these bands for one of our species of interest! Let's try Canada Warbler.
+Finally, we can plot these bands for our species of interest, Olive-sided Flycatcher.
 
-```{r plot_layer, echo = TRUE, results = 'markup', error = TRUE, fig.width=7, fig.height=4}
+```{r plot_layer, echo = TRUE, results = 'markup', error = TRUE, fig.width=8, fig.height=3}
 library(terra)
 
 #basic plotting of all bands
-plot(result$CAWA)
+plot(result$OSFL)
 ```

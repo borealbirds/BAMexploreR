@@ -9,7 +9,7 @@ bam_pop_size(raster_list, crop_ext = NULL, group = NULL)
 \arguments{
 \item{raster_list}{A list of \code{SpatRaster}s. See \code{bam_get_layer()} for accessing BAM's raster data.}
 
-\item{crop_ext}{SpatVector used to define the extent for the cropping and grouping of population estimates.}
+\item{crop_ext}{SpatVector used to define the extent for the cropping, masking, and grouping of population estimates.}
 
 \item{group}{Optional character value of column in SpatVector used for grouping population estimates.}
 }

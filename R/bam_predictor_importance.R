@@ -18,8 +18,11 @@
 #'
 #' @param plot A \code{logical} indicating whether to plot the results (\code{TRUE}) or return the processed data (\code{FALSE}).
 #'
-#' @param colours A \code{character} vector of hex codes for the colours to use in the ggplot (optional).
-#' If \code{NULL}, default colours are used.
+#' @param colours A \code{character} vector of hex codes or colour names (optional).
+#' If \code{NULL}, default colour-blind friendly palette from \code{viridis} is used.
+#'
+#'
+#' @param viridis_option A \code{character}. Default is \code{"viridis"}. See \code{?ggplot2::scale_colour_viridis_d} for more options.
 #'
 #' @return A ggplot displaying percent predictor importance by predictor class, grouped by the \code{group} argument.
 #' Percent importance is used to allow comparisions across groups that have
@@ -51,7 +54,7 @@
 #'
 ##################################################################################
 
-bam_predictor_importance <- function(species = "all", bcr = "all", group = "spp", version = "v5", plot = TRUE, colours = NULL) {
+bam_predictor_importance <- function(species = "all", bcr = "all", group = "spp", version = "v5", plot = TRUE, colours = NULL, viridis_option = "viridis") {
 
   # validate data version
   if (!version %in% c("v4", "v5")) {
@@ -98,21 +101,11 @@ bam_predictor_importance <- function(species = "all", bcr = "all", group = "spp"
 
   # filter for user-specified BCRs
   if (!identical(bcr, "all")) {
-    data <- dplyr::filter(data, bcr %in% !!bcr)
+    data <- dplyr::filter(data, bcr %in% .env$bcr)
   }
-
-  # check if user specified `colours` match the number of levels in `group`.
-  if (!is.null(colours)) {
-    n_groups <- length(unique(data[[group]]))
-    if (length(colours) != n_groups) {
-      stop(paste("The length of `colours` does not match the number of levels in `group`", n_groups))
-    }
-  }
-
 
   # convert characters to symbols for dplyr::group_by
   group_sym <- rlang::syms(unique(c(group, "predictor_class")))
-
 
   # group by user-specified group
   # then, sum rel.inf by the grouped predictor per predictor class
@@ -140,24 +133,64 @@ bam_predictor_importance <- function(species = "all", bcr = "all", group = "spp"
     mutate(percent_inf = 100 * sum_inf / sum_all_groups,
            sd_percent_inf = 100 * pooled_sd / sum_all_groups)
 
+  percent_importance[[group]] <- as.factor(percent_importance[[group]])
 
   if (plot) {
-    p <- ggplot(percent_importance, aes(x = predictor_class, y = percent_inf,
-                                        fill = !!sym(group), colour = !!sym(group))) +
-      geom_point(position = position_dodge(width = 0.75), alpha = 0.7, size = 2.5) +
-      geom_errorbar(aes(ymax = percent_inf + sd_percent_inf, ymin = percent_inf - sd_percent_inf),
-                    position = position_dodge(width = 0.75), width = 0, linewidth = 0.75) +
-      labs(x = "Predictor Class", y = "Relative Importance (%)",
-           title = paste("Predictor importance by", group)) +
-      theme_classic() +
-      theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-    # Apply custom colours only if provided
-    if (!is.null(colours)) {
-      group_levels <- unique(data[[group]])
-      names(colours) <- group_levels
-      p <- p + scale_colour_manual(values = colours) +
-        scale_fill_manual(values = colours)
+    p <- ggplot2::ggplot(
+      percent_importance,
+      ggplot2::aes(
+        x = predictor_class,
+        y = percent_inf,
+        fill = !!rlang::sym(group),
+        colour = !!rlang::sym(group)
+      )
+    ) +
+      ggplot2::geom_point(
+        position = ggplot2::position_dodge(width = 0.75),
+        alpha = 0.7,
+        size = 2.5
+      ) +
+      ggplot2::geom_errorbar(
+        ggplot2::aes(
+          ymax = percent_inf + sd_percent_inf,
+          ymin = percent_inf - sd_percent_inf
+        ),
+        position = ggplot2::position_dodge(width = 0.75),
+        width = 0,
+        linewidth = 0.75
+      ) +
+      ggplot2::labs(
+        x = "Predictor Class",
+        y = "Relative Importance (%)",
+        title = paste("Predictor importance by", group)
+      ) +
+      ggplot2::theme_classic() +
+      ggplot2::theme(
+        axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)
+      )
+
+    if (is.null(colours)) {
+
+      # colour-blind friendly default
+      p <- p +
+        ggplot2::scale_colour_viridis_d(option = viridis_option) +
+        ggplot2::scale_fill_viridis_d(option = viridis_option)
+
+    } else {
+
+      n_levels <- length(unique(percent_importance[[group]]))
+
+      if (length(colours) != n_levels) {
+        stop(paste0(
+          "Length of `colours` (", length(colours),
+          ") must match number of group levels (", n_levels, ")."
+        ))
+      }
+
+      p <- p +
+        ggplot2::scale_colour_manual(values = colours) +
+        ggplot2::scale_fill_manual(values = colours)
     }
 
     return(p)
@@ -168,12 +201,3 @@ bam_predictor_importance <- function(species = "all", bcr = "all", group = "spp"
 
   }
 }
-
-
-
-
-
-
-
-
-

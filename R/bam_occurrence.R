@@ -153,8 +153,8 @@ bam_occurrence <- function(raster_list, quantile="by_lorenz", plot=TRUE){
     return(list(occurrence_raster = binary_raster,
                 threshold_raster = threshold_raster,
                 threshold = optimum_threshold,
-                og_area_km2 = og_area_km2,
-                core_area_km2 = core_area_km2))
+                og_area_km2 = round(og_area_km2, -2),
+                core_area_km2 = round(core_area_km2, -2)))
 
   } # close thresholding function
 

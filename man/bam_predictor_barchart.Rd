@@ -10,7 +10,8 @@ bam_predictor_barchart(
   groups = c("spp", "predictor_class"),
   version = "v5",
   plot = TRUE,
-  colours = NULL
+  colours = NULL,
+  viridis_option = "viridis"
 )
 }
 \arguments{
@@ -33,8 +34,10 @@ rows and columns \code{bcr}, \code{species}, \code{predictor_clas}, \code{n_boot
 
 \item{plot}{A \code{logical} indicating whether to plot the results (\code{TRUE}) or return the processed data (\code{FALSE}).}
 
-\item{colours}{A \code{character} vector of hex codes for the colours to use in the ggplot (optional).
-If \code{NULL}, default colours are used.}
+\item{colours}{A \code{character} vector of hex codes or colour names (optional).
+If \code{NULL}, default colour-blind friendly palette from \code{viridis} is used.}
+
+\item{viridis_option}{A \code{character}. Default is \code{"viridis"}. See \code{?ggplot2::scale_colour_viridis_d} for more options.}
 }
 \value{
 A stacked bar chart with the first group element plotted on the x-axis as bins each containing a stacked bar, and the second group element is shown by fill colours in the stacked bars.  If plot = FALSE the processed data is returned as a data.frame.

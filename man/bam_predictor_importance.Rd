@@ -10,7 +10,8 @@ bam_predictor_importance(
   group = "spp",
   version = "v5",
   plot = TRUE,
-  colours = NULL
+  colours = NULL,
+  viridis_option = "viridis"
 )
 }
 \arguments{
@@ -28,8 +29,10 @@ rows and columns \code{bcr}, \code{species}, \code{predictor_class}, \code{n_boo
 
 \item{plot}{A \code{logical} indicating whether to plot the results (\code{TRUE}) or return the processed data (\code{FALSE}).}
 
-\item{colours}{A \code{character} vector of hex codes for the colours to use in the ggplot (optional).
-If \code{NULL}, default colours are used.}
+\item{colours}{A \code{character} vector of hex codes or colour names (optional).
+If \code{NULL}, default colour-blind friendly palette from \code{viridis} is used.}
+
+\item{viridis_option}{A \code{character}. Default is \code{"viridis"}. See \code{?ggplot2::scale_colour_viridis_d} for more options.}
 }
 \value{
 A ggplot displaying percent predictor importance by predictor class, grouped by the \code{group} argument.

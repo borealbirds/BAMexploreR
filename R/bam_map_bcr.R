@@ -46,7 +46,7 @@ bam_map_bcr <- function(version, ext = NULL) {
     ncat <-16
   }else if(version == "v5"){
     base_bcr <- terra::vect(system.file("extdata", "BAM_BCRNMv5_5072.shp", package = "BAMexploreR"))
-    ncat <-33
+    ncat <-19
   }else{
     stop("Model version doesn't exist.")
   }

@@ -6,12 +6,10 @@ Authors@R: c(
     person("Melina", "Houle", email = "houle.melina@gmail.com", role = c("aut", "cre")),
     person("Mannfred", "Boehm", role = "aut"),
     person("Siu Chung", "Wu", role = "ctb"),
-    person("Elly", "Knight", role = "aut"),
-    person("Her Majesty the Queen in Right of Canada, as represented by the Minister of Natural Resources Canada",
-    role = "cph")
+    person("Elly", "Knight", role = "aut")
     )
 Maintainer: Melina Houle <houle.melina@gmail.com>
-Description: BAMexploreR allows users to download and work with the BAM landbird density models. The package contains functions to access models, estimate and interpret distribution and abundance, and explore the importance of habitat predictors in the models.
+Description: BAMexploreR allows users to download and work with the Boreal Avian Modelling Centre's (BAM's) landbird density models. The package contains functions to access models, estimate and interpret distribution and abundance, and explore the importance of habitat predictors in the models.
 Depends: R (>= 4.2.0), dplyr, terra
 Imports:
   tmap,
@@ -53,5 +51,7 @@ Collate:
     'spp_tbl-doc.R'
     'utils.R'
     'predictor_metadata.R'
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 VignetteBuilder: knitr
+URL: https://github.com/borealbirds/BAMexploreR
+BugReports: https://github.com/borealbirds/BAMexploreR/issues

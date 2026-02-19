@@ -15,6 +15,16 @@ knitr::opts_chunk$set(
   message = FALSE,
   warning = FALSE
 )
+
+capture.output(
+  suppressWarnings(
+    suppressMessages(
+      remotes::install_github('borealbirds/BAMExploreR')
+    )
+  )
+)
+library(BAMexploreR)
+
 ```
 
 Welcome! `BAMexploreR` is a package for downloading and analyzing landbird density models produced by the [Boreal Avian Modelling Centre (BAM)](https://borealbirds.ca/).
@@ -33,9 +43,9 @@ In addition to this Introduction vignette, there is a vignette available for eac
 
 ### BAM landbird density models
 
-Reliable information on species’ population sizes, trends, habitat associations, and distributions is important for conservation and land-use planning, as well as status assessment and recovery planning for species at risk. However, the development of such estimates at a national scale is challenged by a variety of factors, including sparse data coverage in remote regions, differential habitat selection across large geographies, and variation in survey protocols.
+Reliable information on species’ population sizes, trends, habitat associations, and distributions is crucial for conservation, land-use planning, status assessment, and recovery planning for species at risk. However, the development of such estimates at a national scale is challenged by sparse data coverage in remote regions, differential habitat selection across large geographies, and variation in survey protocols.
 
-With these factors in mind, BAM developed a generalized analytical approach to model landbird species density in relation to environmental predictors, using in-person or ARU point-count surveys and widely available spatial predictors. We developed separate models for each geographic region (bird conservation regions) based on predictors such as tree species biomass (local and landscape scale), forest age, topography, land use, and climate. We used machine learning to allow for predictor interactions and non-linear responses while avoiding time-consuming species-by-species parameterization. We applied cross-validation to avoid overfitting and bootstrap resampling to estimate uncertainty associated with our density estimates.
+With these factors in mind, BAM developed a generalized analytical approach to model landbird species density as a function of environmental features, using in-person or ARU point-count surveys and widely available spatial predictors. We developed separate models for each geographic region (bird conservation regions) based on predictors such as tree species biomass (local and landscape scale), forest age, topography, land use, and climate. We used machine learning to allow for predictor interactions and non-linear responses while avoiding time-consuming species-by-species parameterization. We applied cross-validation to avoid overfitting and bootstrap resampling to estimate uncertainty associated with our density estimates.
 
 **The model products are species-specific predictions of the density of breeding male birds per hectare at a 1km resolution across the boreal forest.**
 
@@ -63,19 +73,19 @@ Two versions of the BAM landbird density models are available in `BAMExploreR`.
 | Feature                                                             | BAM V4                                                | BAM V5                                                                 |
 |---------------------------------------------------------------------|--------------------------------------------------------|------------------------------------------------------------------------|
 | **Release year**                                                   | 2020                                                 | 2025 |
-| **Species included**                                               | 143                                                  | 66 priority species (remaining in progress) |
+| **Species included**                                               | 143                                                  | 67 priority species; 77 in progress |
 | **Dataset size**                                                   | 0.3 million surveys                                  | 1.4 million surveys, including eBird |
-| **Geographic extent**                                              | Canada only                                          | Canada (boreal and hemiboreal of US in progress) |
+| **Geographic extent**                                              | Canada only                                          | Canada; US boreal & hemiboreal in progress |
 | **Temporal resolution**                                            | Predictions for 2017                                 | Predictions at five-year intervals from 1990 to 2020 |
 | **Model subregions**                                           | Bird conservation region (BCR)          | Updated BCRs and country |
 | **Environmental predictors**                                       | Landcover, biomass, climate                          | Time-matched predictors for vegetation biomass, human disturbance, and annual climate |
-| **Model reliability information**                                  | Cross-validated model performance                    | Cross-validated model performance, map of coefficient of variation across bootstraps, map of model extrapolation, map of detection distribution |
+| **Model reliability information**                                  | Cross-validated model performance                    | Map of coefficient of variation across bootstraps; cross-validated modelperformance, maps of model extrapolation & detection distribution in progress |
 
 ## Installation
 
 You can install and load `BAMexploreR` from [GitHub](https://github.com/borealbirds/BAMexploreR) with:
 
-```{r setup, include = TRUE, message=FALSE, warning=FALSE, echo=FALSE}
+```{r setup, eval=FALSE, include = TRUE, message=FALSE, warning=FALSE}
 remotes::install_github('borealbirds/BAMExploreR')
 library(BAMexploreR)
 ```

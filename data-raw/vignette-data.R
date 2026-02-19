@@ -26,11 +26,15 @@ use_data(spp_tbl, internal = FALSE, overwrite = TRUE)
 load("./data/bam_predictor_importance_v4.rda")
 load("./data/bam_predictor_importance_v5.rda")
 
+###############################################################
+### create 4th internal data: birdlist matrix to indicatespecies avaiable per BCR
+###############################################################
+birdlist <- readRDS("./data-raw/birdlist.rds")
 
 ###############################################################
 ### Generate internal data
 ###############################################################
-use_data(version.url, spp_tbl, bam_predictor_importance_v4, bam_predictor_importance_v5, internal = TRUE, overwrite = TRUE)
+use_data(version.url, spp_tbl, bam_predictor_importance_v4, bam_predictor_importance_v5, birdlist, internal = TRUE, overwrite = TRUE)
 
 ###############################################################
 ### Generate external data

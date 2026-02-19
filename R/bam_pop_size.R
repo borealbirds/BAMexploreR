@@ -6,7 +6,7 @@
 #' It also provides a basic summary of the input raster.
 #'
 #' @param raster_list A list of \code{SpatRaster}s. See \code{bam_get_layer()} for accessing BAM's raster data.
-#' @param crop_ext SpatVector used to define the extent for the cropping and grouping of population estimates.
+#' @param crop_ext SpatVector used to define the extent for the cropping, masking, and grouping of population estimates.
 #' @param group Optional character value of column in SpatVector used for grouping population estimates.
 #'
 #' @return A \code{tibble} with six columns: \code{group}, \code{total_pop}, \code{mean_density} (per pixel), \code{sd_density}, \code{n_cells}, \code{species}
@@ -103,7 +103,7 @@ bam_pop_size <- function(raster_list, crop_ext= NULL, group = NULL){
         dplyr::rename(density = mean) |>
         dplyr::filter(!is.na(density)) |>
         dplyr::group_by(dplyr::across(dplyr::all_of(group))) |>
-        dplyr::summarize(total_pop = sum(density)*100,
+        dplyr::summarize(total_pop = round(sum(density)*100, -2),
                          mean_density = round(mean(density), 3),
                          sd_density = round(sd(density), 3),
                          n_cells = dplyr::n()) |>
@@ -118,7 +118,7 @@ bam_pop_size <- function(raster_list, crop_ext= NULL, group = NULL){
         dplyr::rename(density = mean) |>
         dplyr::filter(!is.na(density)) |>
         dplyr::summarise(
-          total_pop   = sum(density) * 100,
+          total_pop   = round(sum(density) * 100, -2),
           mean_density = round(mean(density), 3),
           sd_density   = round(sd(density), 3),
           n_cells      = n()
