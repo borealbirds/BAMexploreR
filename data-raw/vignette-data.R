@@ -25,6 +25,7 @@ use_data(spp_tbl, internal = FALSE, overwrite = TRUE)
 ###############################################################
 load("./data/bam_predictor_importance_v4.rda")
 load("./data/bam_predictor_importance_v5.rda")
+load("./data/bam_predictor_response_v5.rda")
 
 ###############################################################
 ### create 4th internal data: birdlist matrix to indicatespecies avaiable per BCR
