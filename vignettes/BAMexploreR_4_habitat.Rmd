@@ -248,7 +248,7 @@ Until now we've been examining the relative magnitude of the `bird abundance ~ e
 
 # BCR "can61"
 bam_partial_dependence(species = species_v5[1], bcr = bcraoi_v5[1], 
-                       predictor = "SCANFIprcD_1km", version = "v5", spar=0.8)
+                       predictor = "SCANFIprcD_5x5", version = "v5", spar=0.8)
 
 ```
 
@@ -256,7 +256,7 @@ It looks like `SCANFIprcD_1km` (% broadleaf tree cover) is positively correlated
 ```{r partial_dep2, echo = TRUE, results = 'markup', error = TRUE, fig.width=7, fig.height=4, fig.align='center'}
 
 # BCR "can80"
-bam_partial_dependence(species = species_v5[1], bcr = bcraoi_v5[1], 
+bam_partial_dependence(species = species_v5[1], bcr = bcraoi_v5[2], 
                        predictor = "SCANFIprcD_1km", version = "v5", spar=0.8)
 
 ```
