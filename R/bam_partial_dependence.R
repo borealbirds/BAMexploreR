@@ -9,6 +9,9 @@
 #' @param species A \code{character} specifying the species to generate a partial dependence plot for.
 #' See \code{data(spp_tbl)} for available species and their spelling.
 #'
+#' @param bcr A \code{character} specifying the Bird Conservation Regions (BCRs) to filter by. The default is \code{"all"}, which includes all BCRs in the dataset.
+#' See \code{bam_map_bcr()} for available BCRs and their spellings.
+#'
 #' @param predictor A \code{character} specifying the model predictor (e.g., temperature, precipitation)
 #' to be visualized in the partial dependence plot. See \code{data(predictor_meta)} for available predictors.
 #'
@@ -17,6 +20,12 @@
 #'
 #' @param colour A \code{character} specifying the colour of the fitted spline.
 #' Default is \code{"purple"}.
+#'
+#' @param spar Optional \code{numeric} smoothing parameter (between 0 and 1)
+#' controlling the trade-off between smoothness and fidelity to the data.
+#' Larger values increase smoothing, penalizing rapid changes in slope (second derivative of the fit).
+#' Smaller values allow more local variation. If NULL, the smoothing
+#' parameter is chosen automatically.
 #'
 #' @return A \code{ggplot} showing the partial dependence plot, including the
 #' mean response and an error ribbon representing the 95% confidence interval.
@@ -33,21 +42,23 @@
 #' to view predictors with meaningful correlation with occurrence for a given species x BCR.
 #'
 #'
-#' @importFrom dplyr bind_rows group_by summarise
+#' @importFrom dplyr bind_rows group_by summarise group_split as_tibble
 #' @importFrom tidyr pivot_longer
 #' @importFrom ggplot2 ggplot aes geom_boxplot geom_jitter geom_line geom_ribbon labs theme_minimal
 #' @importFrom stats smooth.spline predict quantile
+#' @importFrom tidyselect starts_with
+#' @importFrom rlang .data
 #'
 #' @export
 #'
 #' @examples
-#' bam_partial_dependence("ALFL", "can10", "ERAMAP_1km", "v5")
+#' bam_partial_dependence("OVEN", "can12", "SCANFIheight_1km", "v5")
 #'
 #'
 ##################################################################################
 
 
-bam_partial_dependence <- function(species, bcr, predictor, version="v5", colour="purple") {
+bam_partial_dependence <- function(species, bcr, predictor, version="v5", colour="purple", spar=NULL) {
 
   if (!version %in% c("v4", "v5")) {
     stop("Invalid version argument. Must be either 'v4' or 'v5'.")
@@ -61,26 +72,34 @@ bam_partial_dependence <- function(species, bcr, predictor, version="v5", colour
     data <- bam_predictor_response_v4
   }
 
+  # avoid using `var` as a column name
+  data <- rename(.data = data, predictor_var = var)
 
   # convert user specified species to FLBCs
   # checks for spellings and returns message if not found
-  species <- standardize_species_names(species_input = species, spp_tbl = BAMexploreR:::spp_tbl)
+  data("spp_tbl", package = "BAMexploreR")
+  species <- standardize_species_names(species_input = species, spp_tbl = spp_tbl)
 
 
   # check if the key exists in the data
-  if (!any(data$species == species & data$bcr == bcr & data$var == predictor)) {
-    stop("The specified combination of species, bcr, and predictor is below the 75% percentile
+  if (!any(data$species == species & data$bcr == bcr & data$predictor_var == predictor)) {
+    stop("The specified combination of species, bcr, and predictor is below the 75th percentile
     of relative predictor importance. No plot will be generated.
     Run `arrange(bam_predictor_importance_v5, desc(mean_rel_inf))`
     to view predictors with meaningful correlation with bird abundance. ")
   }
 
   # filter bootstraps for the relavent species X BCR x covariate
-  combined_df <- filter(data, species == !!species, bcr == !!bcr, var == !!predictor)
+  combined_df <- dplyr::filter(
+    data,
+    .data$species == species,
+    .data$bcr == bcr,
+    .data$predictor_var == predictor
+  )
 
   # for categorical predictors generate a boxplot
   if (any(combined_df$covariate_type == "categorical")) {
-    ggplot(combined_df, aes(x = covariate_value, y = y)) +
+    ggplot(combined_df, aes(x = .data$covariate_value, y = .data$y)) +
       geom_jitter(width = 0.2, alpha = 0.8, size = 1, color = colour) +
       geom_boxplot(fill=colour, alpha=0.4, outlier.shape = NA) +
       labs(title = paste("Partial Dependence (Categorical):", species, bcr, predictor),
@@ -98,7 +117,11 @@ bam_partial_dependence <- function(species, bcr, predictor, version="v5", colour
     combined_df |>
     group_split(replicate) |>
     map(~ {
-      fit <- smooth.spline(.x$covariate_value, .x$y)
+      fit <- if (is.null(spar)) {
+        smooth.spline(.x$covariate_value, .x$y)
+      } else {
+        smooth.spline(.x$covariate_value, .x$y, spar = spar)
+      }
       predict(fit, x_grid)$y
     })
 
@@ -114,17 +137,17 @@ bam_partial_dependence <- function(species, bcr, predictor, version="v5", colour
   summary_df <-
     prediction_df |>
     pivot_longer(cols = starts_with("replicate_"), names_to = "replicate", values_to = "predicted_response") |>
-    group_by(covariate_value) |>
+    group_by(.data$covariate_value) |>
     summarise(
-      mean_response = mean(predicted_response),
-      lower_bound = quantile(predicted_response, 0.025),
-      upper_bound = quantile(predicted_response, 0.975)
+      mean_response = mean(.data$predicted_response),
+      lower_bound = quantile(.data$predicted_response, 0.025),
+      upper_bound = quantile(.data$predicted_response, 0.975)
     )
 
   # plot partial dependence with error envelope
-  ggplot(summary_df, aes(x = covariate_value, y = mean_response)) +
+  ggplot(summary_df, aes(x = .data$covariate_value, y = .data$mean_response)) +
     geom_line(colour = colour) +
-    geom_ribbon(aes(ymin = lower_bound, ymax = upper_bound), alpha = 0.2, fill = colour) +
+    geom_ribbon(aes(ymin = .data$lower_bound, ymax = .data$upper_bound), alpha = 0.2, fill = colour) +
     labs(title = paste("Partial Dependence Plot for", species, "in BCR", bcr, "and Predictor", predictor),
          x = predictor, y = "singing males per Ha") +
     theme_minimal()

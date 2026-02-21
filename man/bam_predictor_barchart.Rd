@@ -19,7 +19,8 @@ bam_predictor_barchart(
 See \code{data(spp_tbl)} for available species and their spelling.}
 
 \item{bcr}{A \code{character} specifying the model subregions, or Bird Conservation Regions (BCRs) to filter by.
-The default is \code{"all"}, which includes all BCRs in the dataset.}
+The default is \code{"all"}, which includes all BCRs in the dataset.
+See \code{bam_map_bcr()} for available BCRs and their spellings.}
 
 \item{groups}{A \code{character} of two grouping variables for summarising predictor importance.
 The first group element is plotted on the x-axis as bins each containing a stacked bar,

@@ -65,11 +65,35 @@ Arguments
 
 - `plot`: Logical indicating whether to plot the results (`TRUE`) or return the processed data (`FALSE`).
 
-- colours: Character vector of hex codes for the colours to use in the `ggplot` (optional).
+- `colours`: Character vector of hex codes for the colours to use in the `ggplot` (optional).
 
 Output
 
 A stacked bar chart with the first group element plotted on the x-axis as bins each containing a stacked bar, and the second group element is shown by fill colours in the stacked bars.  If `plot = FALSE` the processed data is returned as a data.frame.
+
+### bam_partial_dependence()
+
+**bam_partial_dependence()** Generates a partial dependence plot displaying
+how bird density changes over the range of a model predictor for a given species and BCR.
+
+- `species`: A `character` specifying the species to generate a partial dependence plot for. See `data(spp_tbl)` for available species and their spelling.
+
+- `bcr` A `character` specifying the Bird Conservation Regions (BCRs) to filter by. The default is `"all"`, which includes all BCRs in the dataset.
+See `bam_map_bcr()` for available BCRs and their spellings.
+
+- `predictor`: A `character` specifying the model predictor (e.g., temperature, precipitation) to be visualized in the partial dependence plot. See `data(predictor_metadata)` for available predictors.
+
+- `version`: A `character`, either `"v4"` or `"v5"`. Defaults to `"v5"`. 
+Note: as of Februrary 21, 2026 only version 5 data is available. We're working to provide version 4 functionality as soon as we can!
+
+- `colour` A `character` specifying the colour of the fitted spline. Default is `"purple"`.
+
+Output
+
+A `ggplot` showing the partial dependence plot, including the
+mean response and an error ribbon representing the 95% confidence interval.
+
+
 
 ## Example workflow
 
@@ -214,3 +238,26 @@ bam_predictors_v5 |>
   ungroup() |> 
   kable(caption = "Summary of model predictor importance by species for AOI")
 ```
+
+
+### 4. Direction of effects 
+
+Until now we've been examining the relative magnitude of the `bird abundance ~ environment` relationship, but what about the direction? For example, in the previous exercise we saw that `SCANFIprcD_1km` was an important predictor of Canada Warbler abundance in BCRs `can60` and `can81`. We can go further by inferring the direction of this relationship from a partial dependence plot.
+
+```{r partial_dep1, echo = TRUE, results = 'markup', error = TRUE, fig.width=7, fig.height=4, fig.align='center'}
+
+# BCR "can61"
+bam_partial_dependence(species = species_v5[1], bcr = bcraoi_v5[1], 
+                       predictor = "SCANFIprcD_1km", version = "v5", spar=0.8)
+
+```
+
+It looks like `SCANFIprcD_1km` (% broadleaf tree cover) is positively correlated with Canada Warbler abundance. Notice that we used `spar=0.8` to improve smoothness of the fit (see `?bam_partial_dependence` or `?smooth.spline` for details of how smoothness can be tuned by `spar`). We can repeat the same procedure for our other BCR of interest:
+```{r partial_dep2, echo = TRUE, results = 'markup', error = TRUE, fig.width=7, fig.height=4, fig.align='center'}
+
+# BCR "can80"
+bam_partial_dependence(species = species_v5[1], bcr = bcraoi_v5[1], 
+                       predictor = "SCANFIprcD_1km", version = "v5", spar=0.8)
+
+```
+The warbler ~ deciduous cover relationship is very similar in both BCRs.

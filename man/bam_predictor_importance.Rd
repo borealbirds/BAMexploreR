@@ -17,7 +17,8 @@ bam_predictor_importance(
 \arguments{
 \item{species}{A \code{character} specifying the species to filter by. The default is \code{"all"}, which includes all species in the dataset.}
 
-\item{bcr}{A \code{character} specifying the Bird Conservation Regions (BCRs) to filter by. The default is \code{"all"}, which includes all BCRs in the dataset.}
+\item{bcr}{A \code{character} specifying the Bird Conservation Regions (BCRs) to filter by. The default is \code{"all"}, which includes all BCRs in the dataset.
+See \code{bam_map_bcr()} for available BCRs and their spellings.}
 
 \item{group}{A \code{character} specifying the grouping variable for summarizing predictor importance.
 Valid strings are \code{"spp"} (species), or \code{"bcr"} (BCR).}

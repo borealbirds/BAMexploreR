@@ -9,12 +9,16 @@ bam_partial_dependence(
   bcr,
   predictor,
   version = "v5",
-  colour = "purple"
+  colour = "purple",
+  spar = NULL
 )
 }
 \arguments{
 \item{species}{A \code{character} specifying the species to generate a partial dependence plot for.
 See \code{data(spp_tbl)} for available species and their spelling.}
+
+\item{bcr}{A \code{character} specifying the Bird Conservation Regions (BCRs) to filter by. The default is \code{"all"}, which includes all BCRs in the dataset.
+See \code{bam_map_bcr()} for available BCRs and their spellings.}
 
 \item{predictor}{A \code{character} specifying the model predictor (e.g., temperature, precipitation)
 to be visualized in the partial dependence plot. See \code{data(predictor_meta)} for available predictors.}
@@ -24,6 +28,12 @@ Defaults to \code{"v5"}.}
 
 \item{colour}{A \code{character} specifying the colour of the fitted spline.
 Default is \code{"purple"}.}
+
+\item{spar}{Optional \code{numeric} smoothing parameter (between 0 and 1)
+controlling the trade-off between smoothness and fidelity to the data.
+Larger values increase smoothing, penalizing rapid changes in slope (second derivative of the fit).
+Smaller values allow more local variation. If NULL, the smoothing
+parameter is chosen automatically.}
 }
 \value{
 A \code{ggplot} showing the partial dependence plot, including the
@@ -45,7 +55,7 @@ Run (e.g. for V5) \code{arrange(bam_predictor_importance_v5, desc(mean_rel_inf))
 to view predictors with meaningful correlation with occurrence for a given species x BCR.
 }
 \examples{
-bam_partial_dependence("ALFL", "can10", "ERAMAP_1km", "v5")
+bam_partial_dependence("OVEN", "can12", "SCANFIheight_1km", "v5")
 
 
 }
