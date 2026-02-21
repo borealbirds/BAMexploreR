@@ -73,7 +73,7 @@ bam_partial_dependence <- function(species, bcr, predictor, version="v5", colour
   }
 
   # avoid using `var` as a column name
-  data <- rename(.data = data, predictor_var = var)
+  data <- dplyr::rename(.data = data, predictor_var = var)
 
   # convert user specified species to FLBCs
   # checks for spellings and returns message if not found
