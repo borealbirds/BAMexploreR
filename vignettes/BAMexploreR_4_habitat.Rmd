@@ -248,16 +248,16 @@ Until now we've been examining the relative magnitude of the `bird abundance ~ e
 
 # BCR "can61"
 bam_partial_dependence(species = species_v5[1], bcr = bcraoi_v5[1], 
-                       predictor = "SCANFIprcD_1km", version = "v5", spar=0.8)
+                       predictor = "SCANFIprcD_1km", version = "v5", spar=0.4)
 
 ```
 
-It looks like `SCANFIprcD_1km` (% broadleaf tree cover) is positively correlated with Canada Warbler abundance. Notice that we used `spar=0.8` to improve smoothness of the fit (see `?bam_partial_dependence` or `?smooth.spline` for details of how smoothness can be tuned by `spar`). We can repeat the same procedure for our other BCR of interest:
+It looks like `SCANFIprcD_1km` (% broadleaf tree cover) is positively correlated with Canada Warbler abundance between ~60-85%. Notice that we used `spar=0.4` to improve smoothness of the fit (see `?bam_partial_dependence` or `?smooth.spline` for details of how smoothness can be tuned by `spar`). We can repeat the same procedure for our other BCR of interest:
 ```{r partial_dep2, echo = TRUE, results = 'markup', error = TRUE, fig.width=7, fig.height=4, fig.align='center'}
 
 # BCR "can80"
 bam_partial_dependence(species = species_v5[1], bcr = bcraoi_v5[2], 
-                       predictor = "SCANFIprcD_1km", version = "v5", spar=0.8)
+                       predictor = "SCANFIprcD_1km", version = "v5", spar=0.4)
 
 ```
-The warbler ~ deciduous cover relationship is very similar in both BCRs.
+The warbler ~ deciduous cover relationship is less certain in this BCR, though we again see a small upward trend around 65%. 

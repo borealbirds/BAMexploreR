@@ -66,14 +66,13 @@ bam_partial_dependence <- function(species, bcr, predictor, version="v5", colour
 
   # load boot_pts_sorted_v* from data folder
   if (version == "v5") {
-    #data("boot_pts_sorted_v5", package = "BAMexploreR")
     data <- bam_predictor_response_v5
   } else {
     data <- bam_predictor_response_v4
   }
 
   # avoid using `var` as a column name
-  data <- dplyr::rename(.data = data, predictor_var = var)
+  data <- dplyr::rename(data, predictor_var = var)
 
   # convert user specified species to FLBCs
   # checks for spellings and returns message if not found
@@ -92,9 +91,9 @@ bam_partial_dependence <- function(species, bcr, predictor, version="v5", colour
   # filter bootstraps for the relavent species X BCR x covariate
   combined_df <- dplyr::filter(
     data,
-    .data$species == species,
-    .data$bcr == bcr,
-    .data$predictor_var == predictor
+    .data$species == !!species,
+    .data$bcr == !!bcr,
+    .data$predictor_var == !!predictor
   )
 
   # for categorical predictors generate a boxplot
