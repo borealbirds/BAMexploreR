@@ -260,4 +260,4 @@ bam_partial_dependence(species = species_v5[1], bcr = bcraoi_v5[2],
                        predictor = "SCANFIprcD_1km", version = "v5", spar=0.4)
 
 ```
-The warbler ~ deciduous cover relationship is less certain in this BCR, though we again see a small upward trend around 65%. 
+The warbler ~ deciduous cover relationship is less certain in this BCR (boreal softwood shield), though we again see a small upward trend around 65%. Notice that the confidence interval goes as high as 0.075 males per hectare, compared to the maximum of 0.035 males per hectare in the Taiga Plains BCR. 
