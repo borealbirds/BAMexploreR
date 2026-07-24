@@ -72,14 +72,14 @@ Two versions of the BAM landbird density models are available in `BAMExploreR`.
 
 | Feature                                                             | BAM V4                                                | BAM V5                                                                 |
 |---------------------------------------------------------------------|--------------------------------------------------------|------------------------------------------------------------------------|
-| **Release year**                                                   | 2020                                                 | 2025 |
-| **Species included**                                               | 143                                                  | 67 priority species; 77 in progress |
+| **Release year**                                                   | 2020                                                 | 2026 |
+| **Species included**                                               | 143                                                  | 149 |
 | **Dataset size**                                                   | 0.3 million surveys                                  | 1.4 million surveys, including eBird |
-| **Geographic extent**                                              | Canada only                                          | Canada; US boreal & hemiboreal in progress |
-| **Temporal resolution**                                            | Predictions for 2017                                 | Predictions at five-year intervals from 1990 to 2020 |
+| **Geographic extent**                                              | Canada only                                          | Canada, Alaska, Lower48 United States |
+| **Temporal resolution**                                            | Predictions for 2017                                 | Predictions for 2020; five-year intervals from 1995 to 2015 available by request (bamp@ualberta.ca)  |
 | **Model subregions**                                           | Bird conservation region (BCR)          | Updated BCRs and country |
 | **Environmental predictors**                                       | Landcover, biomass, climate                          | Time-matched predictors for vegetation biomass, human disturbance, and annual climate |
-| **Model reliability information**                                  | Cross-validated model performance                    | Map of coefficient of variation across bootstraps; cross-validated modelperformance, maps of model extrapolation & detection distribution in progress |
+| **Model reliability information**                                  | Cross-validated model performance                    | Cross-validated model performance, Map of standard deviation and detection distance across bootstraps; maps of dataset distribution and extrapolation |
 
 ## Installation
 
@@ -186,7 +186,9 @@ bibentry(
     person("Erin M.", "Bayne")
   ),
   journal = "Ecosphere",
-  year = "In press"
+  year = "2025",
+  number = "16(10): e70405",
+  doi = "https://doi.org/10.1002/ecs2.70405"
 )
 ```
 

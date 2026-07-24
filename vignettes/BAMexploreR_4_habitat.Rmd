@@ -210,7 +210,7 @@ bam_predictor_barchart(species = species_v5, bcr = bcraoi_v5,
                        plot=TRUE, colour = okabe_ito)
 ```
 
-Looks like time and landcover are slightly more important in BCR 80 than BCR 61.
+Looks like time and landcover are slightly more important in one BCR than the other.
 
 Finally, let's try looking at the proportion of influence of individual predictors by species.
 
@@ -242,7 +242,7 @@ bam_predictors_v5 |>
 
 ### 4. Direction of effects 
 
-Until now we've been examining the relative magnitude of the `bird abundance ~ environment` relationship, but what about the direction? For example, in the previous exercise we saw that `SCANFIprcD_1km` was an important predictor of Canada Warbler abundance in BCRs `can60` and `can81`. We can go further by inferring the direction of this relationship from a partial dependence plot.
+Until now we've been examining the relative magnitude of the `bird abundance ~ environment` relationship, but what about the direction? For example, in the previous exercise we saw that `SCANFIprcD_1km` was an important predictor of Canada Warbler abundance. We can go further by inferring the direction of this relationship from a partial dependence plot.
 
 ```{r partial_dep1, echo = TRUE, results = 'markup', error = TRUE, fig.width=7, fig.height=4, fig.align='center'}
 

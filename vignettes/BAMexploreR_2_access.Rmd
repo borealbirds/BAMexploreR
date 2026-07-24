@@ -25,13 +25,13 @@ This vignette will show you how to access the BAM landbird density models using 
 ### Model subregions
 The BAM landbird density models are produced by modelling multiple ecologically-distinct regions and mosaicing the model predictions together into a seamless layer.
 
-- **Version 4 regions**: Bird Conservation Regions (BCRs).
-- **Version 5 regions**: The intersection of national boundaries and udpated Bird Conservation Regions (BCRs). US boreal models coming soon!
+- **Version 4 regions**: Bird Conservation Regions (BCRs) in Canada.
+- **Version 5 regions**: The intersection of national boundaries and updated Bird Conservation Regions (BCRs).
 
-You can choose to access the predictions for the entire modelled area or a custom set of model subregions using an area of interest. For more information on the BAM landbird density models, please see the 'Introduction' vignette.
+You can choose to access the predictions for the entire modelled area or a custom set of model subregions using an area of interest. The version 4 models have one available mosaic for Canada, while version 5 has three available mosaic regions; Canada, Alaska, and the Lower48 United States. These three regions are provided as separate mosaics because the models use the beast available country-specific remote sensing products as predictors. For more information on the BAM landbird density models, please see the 'Introduction' vignette.
 
 ### Subregion naming convention
-Due to the intersection of country and BCR as the modelling subregions in version 5 of the BAM landbird models, we use a country prefix and BCR number to name the model subregion. Note that BCR labels differ between version 4 and version 5 due to changes made to several of the BCRs.
+Due to the intersection of country and BCR as the modelling subregions in version 5 of the BAM landbird models, we use a country prefix and BCR number to name the model subregion. Note that BCR labels differ between version 4 and version 5 due to changes made to several of the BCRs. We also split several current BCRs in the version 5 models, which are indicated with a hyphenated numbering system.
 
 ```{r list_names, message=FALSE, warning=FALSE, echo=FALSE}
 library(BAMexploreR)
@@ -103,7 +103,7 @@ A list of multiband SpatRaster objects. In addition to returning these objects, 
 
 The first step in accessing the BAM landbird density model products is determining the species of interest.
 
-There are 143 species available in version 4 of the BAM landbird density models and 66 species available in version 5 (remaining species in progress). You can access the species available for the version of the model specified using the `bam_spp_list` function. The function has a `guild` parameter to filter the available species based on a specific species group, following the classifications used by The State of Canada's Birds, which categorizes species based on broad biomes and groups with distinct and noteworthy trends. Species listed as 'Special Concern', 'Threatened', or 'Endangered' by the Committee on the Status of Endangered Species in Canada (COSEWIC) is also available. If guild is not provided, the function will return all species available for the specified version of the model.
+There are 143 species available in version 4 of the BAM landbird density models and 149 species available in version 5 (remaining species in progress). You can access the species available for the version of the model specified using the `bam_spp_list` function. The function has a `guild` parameter to filter the available species based on a specific species group, following the classifications used by The State of Canada's Birds, which categorizes species based on broad biomes and groups with distinct and noteworthy trends. Species listed as 'Special Concern', 'Threatened', or 'Endangered' by the Committee on the Status of Endangered Species in Canada (COSEWIC) is also available. If guild is not provided, the function will return all species available for the specified version of the model.
 
 Let's check the species group categories by accessing the `guild_opt` object.
 
@@ -159,9 +159,9 @@ suppressWarnings(print(map))
 
 Now that we have our species and AOI, we can download the model products!
 
-We will download the model products using the `bam_get_layer` function. In version 5, we also have the option of downloading multiple years of predictions, as the density models are available for five-year intervals from 1990 to 2020 (default is 2020). 
+We will download the model products using the `bam_get_layer` function. 
 
-Let's download a version 5 `SpatRaster` for our one of our COSEWIC-designated species. We'll focus on the year 2020, and the two BCRs that our AOI intersects. 
+Let's download a version 5 `SpatRaster` for our one of our COSEWIC-designated species and the two BCRs that our AOI intersects. 
 
 
 ```{r get_layer, echo = TRUE, message=FALSE, results='hide'}
