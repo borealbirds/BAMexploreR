@@ -1,6 +1,7 @@
 # archived directory
 /archived/
 .Rproj.user
+*.Rproj
 .Rhistory
 .RData
 .Ruserdata
@@ -13,3 +14,6 @@ inst/doc
 NationalModels_V5_VariableList.xlsx
 /Meta/
 /doc/
+
+/.quarto/
+**/*.quarto_ipynb
