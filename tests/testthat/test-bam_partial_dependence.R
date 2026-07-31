@@ -58,6 +58,19 @@ test_that("bam_partial_dependence stops for invalid species, BCR, or predictor",
   )
 })
 
+test_that("bam_partial_dependence reports that archived models are unsupported", {
+  expect_error(
+    bam_partial_dependence(
+      species = "OVEN",
+      bcr = "BCR12",
+      predictor = "SCANFIheight_1km",
+      version = "v4"
+    ),
+    "available only for the current models",
+    fixed = TRUE
+  )
+})
+
 # -------------------------------------------------
 # Optional: Test color argument propagates
 # -------------------------------------------------

@@ -52,17 +52,22 @@ library(terra)
     # Invalid years should throw an error
     expect_error(
       bam_get_layer(spList = "BAOR", version = "v5", destfile = "tmp.tif", year = 1999),
-      "Invalid year"
+      "Only 2020 predictions are currently available"
     )
 
     expect_error(
       bam_get_layer(spList = "BAOR", version = "v5", destfile = "tmp.tif", year = 2021),
-      "Invalid year"
+      "Only 2020 predictions are currently available"
+    )
+
+    expect_error(
+      bam_get_layer(spList = "BAOR", version = "v5", destfile = "tmp.tif", year = 2015),
+      "Only 2020 predictions are currently available"
     )
   })
 
   test_that("bam_get_layer accepts valid years", {
-    allowed_years <- c("2000", "2005", "2010", "2015", "2020")
+    allowed_years <- "2020"
 
     for (yr in allowed_years) {
       expect_no_error(  # If using testthat < 3.1.0, use expect_silent()

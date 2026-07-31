@@ -5,14 +5,18 @@
 \alias{spp_tbl}
 \title{Table of BAM species}
 \format{
-A data frame with 143 rows and 16 columns:
+A data frame with 151 rows and 20 columns:
 \describe{
   \item{speciesCode}{AOU code used by WildTrax.}
   \item{commonName}{Common name of the bird.}
-  \item{order}{Taxonomic order of the species.}
+  \item{frenchName}{French common name of the bird, when available.}
   \item{scientificName}{Scientific name of the species.}
+  \item{family}{Taxonomic family from the Version 5 results workbook, when available.}
+  \item{order}{Taxonomic order of the species.}
+  \item{v4}{Binary value indicating whether the species is included in the archived models.}
+  \item{v5}{Binary value indicating whether the species is included in the current models.}
   \item{COSEWIC}{Binary value (0 or 1) indicating whether the species is listed under COSEWIC (1 = listed, 0 = not listed).}
-  \item{Cavity}{Binary value (0 or 1) indicating whether the species is classified as a cavity-nesting bird (1 = yes, 0 = no).}
+  \item{Cavity_Birds}{Binary value (0 or 1) indicating whether the species is classified as a cavity-nesting bird (1 = yes, 0 = no).}
   \item{Waterfowl}{Binary value (0 or 1) indicating whether the species is classified as waterfowl (1 = yes, 0 = no).}
   \item{Marine_Birds}{Binary value (0 or 1) indicating whether the species is classified as a marine bird (1 = yes, 0 = no).}
   \item{Shorebirds}{Binary value (0 or 1) indicating whether the species is classified as a shorebird (1 = yes, 0 = no).}
@@ -29,9 +33,14 @@ A data frame with 143 rows and 16 columns:
 spp_tbl
 }
 \description{
-This dataset lists all species from which BAM landbird density models were generated. We applied species groups categories used by
-The State of the Canada's birds who classify species according to broad biomes and groups of species that are known to have distinct and noteworthy trends.
-The same species can be included in more than one group, but only species that are truly representative of a given group are included in each
+This dataset lists the union of species available for the current and archived
+BAM Landbird Density & Habitat models. Current-model names and taxonomy come
+from the Version 5 results workbook. Species-group categories are retained from
+the State of Canada's Birds classifications used by the previous table.
+Classification fields are \code{NA} for current-model species that were not
+present in the previous table.
+The same species can be included in more than one group, but only species that
+are truly representative of a given group are included in each
 (Birds Canada and Environment and Climate Change Canada. 2024. The State of Canada’s Birds Report. Accessed from NatureCounts. DOI: 10.71842/8bab-ks08)
 }
 \keyword{internal}

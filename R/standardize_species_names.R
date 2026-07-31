@@ -5,11 +5,21 @@
 #' 
 #' @param species_input A character vector of species names or codes.
 #' @param spp_tbl A lookup table containing speciesCode, commonName, and scientificName.
+#' @param version Optional model release used to restrict matching to species
+#'   available for that release.
 #'
 #' @return A character vector of species codes (same length as input).
 #' @noRd
 
-standardize_species_names <- function(species_input, spp_tbl) {
+standardize_species_names <- function(species_input, spp_tbl, version = NULL) {
+
+  if (!is.null(version)) {
+    if (!version %in% names(spp_tbl)) {
+      stop("The requested model release is not represented in `spp_tbl`.")
+    }
+
+    spp_tbl <- spp_tbl[!is.na(spp_tbl[[version]]) & spp_tbl[[version]] == 1, ]
+  }
   
   # convert to lowercase for case-insensitive matching
   species_input_lower <- tolower(species_input)

@@ -8,7 +8,8 @@
 bam_get_bcr(version, ext = NULL)
 }
 \arguments{
-\item{version}{A \code{character} specifying which version of the BAM landbird model to use. Valid options are "v4" or "v5".}
+\item{version}{Specifies the model release: \code{"v5"} for the current
+models or \code{"v4"} for the archived models.}
 
 \item{ext}{A \code{SpatVector} or \code{SpatRaster} used to define the extent for the cropping. If \code{NULL}, the mosaic
 will be used as default.}

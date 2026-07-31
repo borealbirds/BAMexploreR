@@ -19,13 +19,13 @@ knitr::opts_chunk$set(
 ```
 
 
-This vignette will show you how to work with the BAM landbird density models to evaluate distribution and population size with the `BAMExploreR` package. 
+This vignette shows you how to use the BAM Landbird Density & Habitat models to evaluate distribution and population size with the `BAMexploreR` package.
 
 ## Background
 
 ### Density estimates
 
-The BAM landbird density models use the [QPAD analytical approach for data integration](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210x.12106), which uses statistical offsets to account for imperfect detection and produce estimates of population density. The model products are therefore species-specific predictions of the density of breeding male birds per hectare at a 1km resolution across the boreal forest! We can use those density surfaces for a variety of conservation and land-use planning applications. The `BAMexploreR` package provides functions for two core analytical tasks. For more information on the BAM landbird density models, please see the 'Introduction' vignette.
+The BAM Landbird Density & Habitat models use the [QPAD analytical approach for data integration](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210x.12106), which uses statistical offsets to account for imperfect detection and produce estimates of population density. The model products are species-specific predictions of the density of breeding male birds per hectare at 1 km resolution across their modelled extents. These density surfaces can support a variety of conservation and land-use planning applications. The `BAMexploreR` package provides functions for two core analytical tasks. For more information on the models, see the 'Introduction' vignette.
 
 ## Functions available
 

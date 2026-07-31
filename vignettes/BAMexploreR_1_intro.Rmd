@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 capture.output(
   suppressWarnings(
     suppressMessages(
-      remotes::install_github('borealbirds/BAMExploreR')
+      remotes::install_github('borealbirds/BAMexploreR')
     )
   )
 )
@@ -27,9 +27,9 @@ library(BAMexploreR)
 
 ```
 
-Welcome! `BAMexploreR` is a package for downloading and analyzing landbird density models produced by the [Boreal Avian Modelling Centre (BAM)](https://borealbirds.ca/).
+Welcome! `BAMexploreR` is a package for accessing and analyzing the current and archived Landbird Density & Habitat models produced by the [Boreal Avian Modelling Centre (BAM)](https://borealbirds.ca/).
 
-This vignette provides a general introduction to the `BAMexploreR` package, including background on the BAM landbird density models and versions, an overview of the package purpose, core functionality, and the data included with the package. It highlights the types of data embedded in the package (e.g., shapefiles, species lists) and explains how they support the functions used to explore species occurrence and density across the BCRs' extent. This is intended as a starting point to familiarize users with the structure and content of the package before diving into specific workflows or analyses.
+This vignette provides a general introduction to the `BAMexploreR` package, including background on the BAM Landbird Density & Habitat models and their versions, an overview of the package purpose, core functionality, and the data included with the package. It highlights the types of data embedded in the package (e.g., shapefiles, species lists) and explains how they support the functions used to explore species occurrence and density across the BCRs' extent. This is intended as a starting point to familiarize users with the structure and content of the package before diving into specific workflows or analyses.
 
 There are three general categories of tasks that `BAMexploreR` provides:
 
@@ -41,7 +41,7 @@ In addition to this Introduction vignette, there is a vignette available for eac
 
 ## Background
 
-### BAM landbird density models
+### BAM Landbird Density & Habitat models
 
 Reliable information on species’ population sizes, trends, habitat associations, and distributions is crucial for conservation, land-use planning, status assessment, and recovery planning for species at risk. However, the development of such estimates at a national scale is challenged by sparse data coverage in remote regions, differential habitat selection across large geographies, and variation in survey protocols.
 
@@ -68,15 +68,15 @@ knitr::include_graphics(img_file)
 ```
 
 ### Model versions
-Two versions of the BAM landbird density models are available in `BAMExploreR`. 
+Two versions of the BAM Landbird Density & Habitat models are accessible through `BAMexploreR`: the archived models (Version 4) and the current models (Version 5).
 
-| Feature                                                             | BAM V4                                                | BAM V5                                                                 |
+| Feature                                                             | Archived models (Version 4)                           | Current models (Version 5)                                              |
 |---------------------------------------------------------------------|--------------------------------------------------------|------------------------------------------------------------------------|
 | **Release year**                                                   | 2020                                                 | 2026 |
 | **Species included**                                               | 143                                                  | 149 |
 | **Dataset size**                                                   | 0.3 million surveys                                  | 1.4 million surveys, including eBird |
 | **Geographic extent**                                              | Canada only                                          | Canada, Alaska, Lower48 United States |
-| **Temporal resolution**                                            | Predictions for 2017                                 | Predictions for 2020; five-year intervals from 1995 to 2015 available by request (bamp@ualberta.ca)  |
+| **Temporal resolution**                                            | Predictions for 2017                                 | Public predictions for 2020; predictions at five-year intervals from 1995 to 2015 available by request (bamp@ualberta.ca)  |
 | **Model subregions**                                           | Bird conservation region (BCR)          | Updated BCRs and country |
 | **Environmental predictors**                                       | Landcover, biomass, climate                          | Time-matched predictors for vegetation biomass, human disturbance, and annual climate |
 | **Model reliability information**                                  | Cross-validated model performance                    | Cross-validated model performance, Map of standard deviation and detection distance across bootstraps; maps of dataset distribution and extrapolation |
@@ -86,13 +86,13 @@ Two versions of the BAM landbird density models are available in `BAMExploreR`.
 You can install and load `BAMexploreR` from [GitHub](https://github.com/borealbirds/BAMexploreR) with:
 
 ```{r setup, eval=FALSE, include = TRUE, message=FALSE, warning=FALSE}
-remotes::install_github('borealbirds/BAMExploreR')
+remotes::install_github('borealbirds/BAMexploreR')
 library(BAMexploreR)
 ```
 
 ## Syntax
 
-All functions begin with a `bam_*` prefix to facilitate easy autocompletion of the functions when using `BAMExploreR` in RStudio.
+All functions begin with a `bam_*` prefix to facilitate easy autocompletion of the functions when using `BAMexploreR` in RStudio.
 
 ## Core Data
 
@@ -100,7 +100,7 @@ There are several types of data embedded in the package to run the functions. Un
 
 ### Species table (spp_tbl)
 
-This reference table serves as a lookup of the species available for each version of the BAM landbird models using four-letter AOU code, common name, or scientific name.  The table also provides several ways of grouping species if you are interested in a particular suite of species including species of conservation concern, guild, and classifications from The State of Canada’s Birds report, which organizes species by broad biomes and groups that exhibit distinct and notable population trends.
+This reference table serves as a lookup of the species available for each version of the BAM Landbird Density & Habitat models using four-letter AOU code, common name, or scientific name.  The table also provides several ways of grouping species if you are interested in a particular suite of species including species of conservation concern, guild, and classifications from The State of Canada’s Birds report, which organizes species by broad biomes and groups that exhibit distinct and notable population trends.
 
 - **COSEWIC**: The conservation status of species according to the Committee on the Status of Endangered Wildlife in Canada (COSEWIC)
 - **Cavity_Birds**: Species that nest in cavities  
@@ -131,7 +131,7 @@ bam_map_bcr("v5")
 
 ### Model predictor metadata
 
-This reference table can be used to understand the different predictors that went into the BAM landbird density models, including a description and source for each, as well as the classes they are grouped into for some of the habitat relationship functions.
+This reference table can be used to understand the different predictors used in the BAM Landbird Density & Habitat models, including a description and source for each, as well as the classes they are grouped into for some of the habitat relationship functions.
 
 ```{r predictor_metadata, eval = TRUE, echo=TRUE}
 #Look at the column names
@@ -145,7 +145,7 @@ predictor_metadata |>
 
 ## Citation
 
-To cite `BAMexploreR` package and the BAM density models in publications, please cite the package and the publication:
+To cite the `BAMexploreR` software, cite the R package:
 
 ```{r cite1, echo = FALSE, results = "asis"}
 bibentry(
@@ -162,6 +162,8 @@ bibentry(
   url = "https://github.com/borealbirds/BAMexploreR"
 )
 ```
+
+When reporting results from the BAM Landbird Density & Habitat models, cite the modelling framework:
 
 ```{r cite2, echo = FALSE, results = "asis"}
 bibentry(
@@ -191,4 +193,9 @@ bibentry(
   doi = "https://doi.org/10.1002/ecs2.70405"
 )
 ```
+
+Also cite the dataset corresponding to the model release used:
+
+- **Current models (Version 5):** Knight EC, Drake A, Houle M, Thompson P, Stralberg D (2026). *BAM Landbird Density & Habitat Models (Version 5.0)* [Data set]. Zenodo. [https://doi.org/10.5281/zenodo/21632211](https://doi.org/10.5281/zenodo/21632211)
+- **Archived models (Version 4):** Sólymos P, Stralberg D, Knight EC (2025). *BAM Generalized National Models Documentation (Version 4.0)* [Data set]. Zenodo. [https://doi.org/10.5281/zenodo.4018335](https://doi.org/10.5281/zenodo.4018335)
 

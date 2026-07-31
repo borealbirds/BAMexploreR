@@ -4,8 +4,8 @@
 #' The function produce a character vector of species available to download. To
 #' retrieve available species, the function derive the list using the version, and type of output
 #'
-#' @param version character; Indicate the version of the National Model requested. Each version of the
-#'        National Model has its url access provided within the package.
+#' @param version Specifies the model release: \code{"v5"} for the current
+#'   models or \code{"v4"} for the archived models.
 #' @param type character; type of output provided in the list, either \code{"speciesCode"}, \code{"commonName"} or \code{"scientificName"}.Default is \code{"speciesCode"}.
 #' @param guild character; Specifies the guild to filter the species list, based on the classification used in The State of Canada’s Birds Report (Birds Canada, 2024).
 #'              By providing a guild (e.g., "Forest Birds"), the function will return only the species available within that specific category.

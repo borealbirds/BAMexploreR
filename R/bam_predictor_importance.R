@@ -12,10 +12,11 @@
 #' @param group A \code{character} specifying the grouping variable for summarizing predictor importance.
 #' Valid strings are \code{"spp"} (species), or \code{"bcr"} (BCR).
 #'
-#' @param version A \code{character}. Defaults to \code{"v5"}. Loads BAM's predictor importance data,
-#' a \code{data.frame} containing predictor importance values, with mean predictor importance as
-#' rows and columns \code{bcr}, \code{species}, \code{predictor_class}, \code{n_boot}, \code{mean_rel_inf}, and \code{sd_rel_inf}.
-#' \code{"v4"} is also possible but not fully supported for all functions in the first release of this package.
+#' @param version Specifies the model release: \code{"v5"} for the current
+#'   models or \code{"v4"} for the archived models. Defaults to \code{"v5"}.
+#'   Loads the corresponding predictor-importance \code{data.frame}, with columns
+#'   \code{bcr}, \code{species}, \code{predictor_class}, \code{n_boot},
+#'   \code{mean_rel_inf}, and \code{sd_rel_inf}.
 #'
 #' @param plot A \code{logical} indicating whether to plot the results (\code{TRUE}) or return the processed data (\code{FALSE}).
 #'
@@ -74,7 +75,11 @@ bam_predictor_importance <- function(species = "all", bcr = "all", group = "spp"
 
   # convert user specified species to FLBCs
   if (!identical(species, "all")){
-    species <- standardize_species_names(species_input = species, spp_tbl = BAMexploreR:::spp_tbl)
+    species <- standardize_species_names(
+      species_input = species,
+      spp_tbl = BAMexploreR:::spp_tbl,
+      version = version
+    )
   }
 
   # check if user specified species are in `data`

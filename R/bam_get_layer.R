@@ -1,17 +1,20 @@
 ##################################################################################
-#' Download BAM species specific Landbird Models density maps based on list of species
+#' Download BAM Landbird Density & Habitat model rasters
 #'
 #' @param spList A \code{vector} of species to be downloaded.
 
-#' @param version A \code{character} specifying which version of the BAM Landbird Models to use. Valid options are "v4" or "v5".
+#' @param version Specifies the model release: \code{"v5"} for the current
+#'   models or \code{"v4"} for the archived models.
 #'
 #' @param destfile A \code{character} indicating output path where the downloaded file is saved.
 #'
 #' @param crop_ext A \code{SpatVector} or A \code{SpatRaster} used to define the extent for the cropping.
 #' Or downloading valid BCR polygons from list, type: \code{bam_map_bcr("v4")} or \code{bam_map_bcr("v5")}
 #'
-#' @param year A \code{character} specifying the year for which the density map were generated. Only in v5.
-#' Valid options are "1985", "1990", "1995", "2000", "2005", "2010", "2015" and "2020". Default value is "2020".
+#' @param year A \code{character} specifying the prediction year for the current
+#'   models. Only \code{"2020"} is currently available for public download and
+#'   is the default. Predictions at five-year intervals from 1995 to 2015 are
+#'   available by request from \email{bamp@ualberta.ca}.
 #'
 #' @param bcrNM A \code{vector} representing the BCR subunit name according to model version. Default is "mosaic".
 #'
@@ -101,10 +104,10 @@ bam_get_layer <- function(spList, version, destfile, crop_ext = NULL,  year = NU
     }
   }
 
-  allowed_years <- c("2000", "2005", "2010", "2015", "2020")
+  allowed_years <- "2020"
   if(version == "v5"){
     if (!all(year %in% allowed_years)) {
-      stop("Invalid year: must be one of ", paste(allowed_years, collapse = ", "))
+      stop("Only 2020 predictions are currently available for public download. Predictions at five-year intervals from 1995 to 2015 are available by request from bamp@ualberta.ca.")
     }
   }
 

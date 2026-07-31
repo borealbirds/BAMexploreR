@@ -3,7 +3,7 @@
 \docType{methods}
 \name{bam_get_layer}
 \alias{bam_get_layer}
-\title{Download BAM species specific Landbird Models density maps based on list of species}
+\title{Download BAM Landbird Density & Habitat model rasters}
 \usage{
 bam_get_layer(
   spList,
@@ -17,15 +17,18 @@ bam_get_layer(
 \arguments{
 \item{spList}{A \code{vector} of species to be downloaded.}
 
-\item{version}{A \code{character} specifying which version of the BAM Landbird Models to use. Valid options are "v4" or "v5".}
+\item{version}{Specifies the model release: \code{"v5"} for the current
+models or \code{"v4"} for the archived models.}
 
 \item{destfile}{A \code{character} indicating output path where the downloaded file is saved.}
 
 \item{crop_ext}{A \code{SpatVector} or A \code{SpatRaster} used to define the extent for the cropping.
 Or downloading valid BCR polygons from list, type: \code{bam_map_bcr("v4")} or \code{bam_map_bcr("v5")}}
 
-\item{year}{A \code{character} specifying the year for which the density map were generated. Only in v5.
-Valid options are "1985", "1990", "1995", "2000", "2005", "2010", "2015" and "2020". Default value is "2020".}
+\item{year}{A \code{character} specifying the prediction year for the current
+models. Only \code{"2020"} is currently available for public download and
+is the default. Predictions at five-year intervals from 1995 to 2015 are
+available by request from \email{bamp@ualberta.ca}.}
 
 \item{bcrNM}{A \code{vector} representing the BCR subunit name according to model version. Default is "mosaic".}
 }
@@ -35,7 +38,7 @@ the function also downloads raster files to the directory specified by \code{des
 as a side-effect.
 }
 \description{
-Download BAM species specific Landbird Models density maps based on list of species
+Download BAM Landbird Density & Habitat model rasters
 }
 \examples{
 bird <- bam_get_layer("TEWA", "v4", tempfile())

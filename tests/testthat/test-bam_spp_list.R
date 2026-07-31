@@ -1,5 +1,34 @@
 library(testthat)
 
+test_that("spp_tbl contains species from both available model releases", {
+  data("spp_tbl", package = "BAMexploreR")
+
+  expect_equal(nrow(spp_tbl), 151)
+  expect_equal(sum(spp_tbl$v4), 143)
+  expect_equal(sum(spp_tbl$v5), 149)
+  expect_true(all(c("frenchName", "family", "Cavity_Birds") %in% names(spp_tbl)))
+  expect_true(all(c("GRAJ", "NESP") %in% spp_tbl$speciesCode[spp_tbl$v4 == 1]))
+  expect_true(all(c("BWWA", "CAJA", "DUNL", "RBWO", "RHWO", "ROSA", "WITU", "YBCU") %in%
+                    spp_tbl$speciesCode[spp_tbl$v5 == 1]))
+})
+
+test_that("species names resolve to release-specific codes", {
+  data("spp_tbl", package = "BAMexploreR")
+
+  expect_equal(
+    BAMexploreR:::standardize_species_names(
+      "Perisoreus canadensis", spp_tbl, version = "v4"
+    ),
+    "GRAJ"
+  )
+  expect_equal(
+    BAMexploreR:::standardize_species_names(
+      "Perisoreus canadensis", spp_tbl, version = "v5"
+    ),
+    "CAJA"
+  )
+})
+
 # Test that invalid versions produce an error
 test_that("Invalid version argument produces an error", {
   expect_error(bam_spp_list("v6", "species_code"),

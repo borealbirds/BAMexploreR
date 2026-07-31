@@ -28,10 +28,11 @@ while the second group element is shown by fill colours in the stacked bars.
 Valid strings are any two of: \code{"spp"} (species), \code{"bcr"} (BCR; model subregion), \code{"predictor"} (model predictor), or \code{"predictor_class"} (model predictor class).
 Please see the examples below for a visualization.}
 
-\item{version}{A \code{character}. Defaults to \code{"v5"}. Loads BAM's predictor importance data,
-a \code{data.frame} containing predictor importance values, with mean predictor importance as
-rows and columns \code{bcr}, \code{species}, \code{predictor_clas}, \code{n_boot}, \code{mean_rel_inf}, and \code{sd_rel_inf}.
-\code{"v4"} is also possible but not fully supported for all functions in the first release of this package.}
+\item{version}{Specifies the model release: \code{"v5"} for the current
+models or \code{"v4"} for the archived models. Defaults to \code{"v5"}.
+Loads the corresponding predictor-importance \code{data.frame}, with columns
+\code{bcr}, \code{species}, \code{predictor_class}, \code{n_boot},
+\code{mean_rel_inf}, and \code{sd_rel_inf}.}
 
 \item{plot}{A \code{logical} indicating whether to plot the results (\code{TRUE}) or return the processed data (\code{FALSE}).}
 

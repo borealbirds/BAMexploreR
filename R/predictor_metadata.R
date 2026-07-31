@@ -1,12 +1,15 @@
-#' Table of variable metadata for BAM density models
+#' Predictor metadata for BAM Landbird Density & Habitat models
 #'
-#' This dataset lists all variables used in the BAM landbird density models for version 4 and version 5
+#' This dataset lists the variables used in the archived (Version 4) and current
+#' (Version 5) BAM Landbird Density & Habitat models.
 #' The table contains information on the definitions of each variable and the source
-#' For version 5, the table also contains further details on the source, as well as some of the methods used to extract each variable and build the raster layers for model prediction
+#' For the current models, the table also contains further details on the source,
+#' as well as some of the methods used to extract each variable and build the raster
+#' layers for model prediction.
 #'
 #' @format A data frame with 326 rows and 12 columns:
 #' \describe{
-#'   \item{version}{BAM landbird density model version}
+#'   \item{version}{BAM Landbird Density & Habitat model release}
 #'   \item{variable}{Variable name used in the model objects and output}
 #'   \item{definition}{A description of the variable}
 #'   \item{category}{Grouping variable used in some of the package functions}

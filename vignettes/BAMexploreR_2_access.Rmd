@@ -18,20 +18,22 @@ knitr::opts_chunk$set(
 ```
 
 
-This vignette will show you how to access the BAM landbird density models using the `BAMExploreR` package. 
+This vignette shows you how to access the BAM Landbird Density & Habitat models using the `BAMexploreR` package.
+
+Throughout this vignette, `version = "v5"` selects the current models (Version 5), while `version = "v4"` selects the archived models (Version 4).
 
 ## Background
 
 ### Model subregions
-The BAM landbird density models are produced by modelling multiple ecologically-distinct regions and mosaicing the model predictions together into a seamless layer.
+The BAM Landbird Density & Habitat models are produced by modelling multiple ecologically distinct regions and mosaicking the model predictions into a seamless layer.
 
-- **Version 4 regions**: Bird Conservation Regions (BCRs) in Canada.
-- **Version 5 regions**: The intersection of national boundaries and updated Bird Conservation Regions (BCRs).
+- **Archived-model regions (Version 4)**: Bird Conservation Regions (BCRs) in Canada.
+- **Current-model regions (Version 5)**: The intersection of national boundaries and updated Bird Conservation Regions (BCRs).
 
-You can choose to access the predictions for the entire modelled area or a custom set of model subregions using an area of interest. The version 4 models have one available mosaic for Canada, while version 5 has three available mosaic regions; Canada, Alaska, and the Lower48 United States. These three regions are provided as separate mosaics because the models use the beast available country-specific remote sensing products as predictors. For more information on the BAM landbird density models, please see the 'Introduction' vignette.
+You can choose to access predictions for the entire modelled area or a custom set of model subregions using an area of interest. The archived models have one available mosaic for Canada, while the current models have three available mosaics: Canada, Alaska, and the Lower 48 United States. These regions are provided as separate mosaics because the models use the best available country-specific remote-sensing products as predictors. For more information on the BAM Landbird Density & Habitat models, see the 'Introduction' vignette.
 
 ### Subregion naming convention
-Due to the intersection of country and BCR as the modelling subregions in version 5 of the BAM landbird models, we use a country prefix and BCR number to name the model subregion. Note that BCR labels differ between version 4 and version 5 due to changes made to several of the BCRs. We also split several current BCRs in the version 5 models, which are indicated with a hyphenated numbering system.
+Because the current models use the intersections of countries and BCRs as modelling subregions, each subregion is named using a country prefix and BCR number. BCR labels differ between the archived and current models because several BCR boundaries were updated. Several BCRs were also divided further in Version 5, as indicated by the hyphenated numbering system.
 
 ```{r list_names, message=FALSE, warning=FALSE, echo=FALSE}
 library(BAMexploreR)
@@ -48,7 +50,7 @@ cat("Version 5 subregion names: ", bam_get_bcr("v5"), "\n")
 
 Arguments
 
-- version: Specifies which version of the landbird density models to use. Valid options are "v4" or "v5".
+- version: Specifies the model release: `"v5"` for the current models or `"v4"` for the archived models.
 
 - ext: SpatVector or SpatRaster used to define an area of interest.
 
@@ -64,7 +66,7 @@ Map illustrating the BCR and overlap extent if provided.
 
 Arguments
 
-- version: Specifies which version of the landbird density model to use. Valid options are "v4" or "v5".
+- version: Specifies the model release: `"v5"` for the current models or `"v4"` for the archived models.
 
 - ext: (Optional) SpatVector or SpatRaster whose extent will be used to filter and return only intersecting BCR subunits.
 
@@ -76,19 +78,19 @@ A vector representing the name of the BCR subunits.
 
 ### bam_get_layer()
 
-The **bam_get_layer()** function downloads the rasters for the BAM landbird density models for specified the species and area of interest.
+The **bam_get_layer()** function downloads BAM Landbird Density & Habitat model rasters for specified species and areas of interest.
 
 Arguments
 
 - spList: A named list of SpatRaster objects, each representing predicted density for a species.
 
-- version: A character specifying which version of the BAM Landbird Density map to use. Valid options are "v4" or "v5".
+- version: Specifies the model release: `"v5"` for the current models or `"v4"` for the archived models.
 
 - destfile: A character indicating output path where the downloaded file is saved.
 
 - crop_ext: A SpatVector or SpatRaster used to define the extent for the cropping.
 
-- year: A character specifying the year for which the density map were generated. Only in v5. Valid options are "1990", "1995", "2000", "2005", "2010", "2015" and "2020". Default value is "2020".
+- year: A character specifying the prediction year for the current models (`version = "v5"`). Only `"2020"` is currently available for public download and is the default. Predictions at five-year intervals from 1995 to 2015 are available by request from [bamp@ualberta.ca](mailto:bamp@ualberta.ca).
 
 - bcrNM: A vector representing the BCR subunit name according to model version. Default is "mosaic".
 
@@ -101,9 +103,9 @@ A list of multiband SpatRaster objects. In addition to returning these objects, 
 
 ### 1. Identify species available
 
-The first step in accessing the BAM landbird density model products is determining the species of interest.
+The first step in accessing the BAM Landbird Density & Habitat model products is determining the species of interest.
 
-There are 143 species available in version 4 of the BAM landbird density models and 149 species available in version 5 (remaining species in progress). You can access the species available for the version of the model specified using the `bam_spp_list` function. The function has a `guild` parameter to filter the available species based on a specific species group, following the classifications used by The State of Canada's Birds, which categorizes species based on broad biomes and groups with distinct and noteworthy trends. Species listed as 'Special Concern', 'Threatened', or 'Endangered' by the Committee on the Status of Endangered Species in Canada (COSEWIC) is also available. If guild is not provided, the function will return all species available for the specified version of the model.
+There are 143 species available for the archived models and 149 species available for the current models. You can retrieve the species available for a specified model release using `bam_spp_list()`. The function's `guild` parameter can filter the results using the classifications from The State of Canada's Birds, which categorizes species by broad biome and by groups with distinct and noteworthy trends. Species assessed as Special Concern, Threatened, or Endangered by the Committee on the Status of Endangered Wildlife in Canada (COSEWIC) are also identified. If `guild` is not provided, the function returns all species available for the specified model release.
 
 Let's check the species group categories by accessing the `guild_opt` object.
 
@@ -111,7 +113,7 @@ Let's check the species group categories by accessing the `guild_opt` object.
 # Get the options for species grouping
 guild_opt
 ```
-In our example, we'll get four-letter AOU codes for 'COSEWIC' species available in version 5 of the models.
+In our example, we'll retrieve four-letter AOU codes for COSEWIC-listed species available in the current models (`version = "v5"`).
 
 ```{r species_list_code, echo = TRUE, results = 'markup', error = TRUE}
 # Generate a vector of COSEWIC species codes available in version 5. 
@@ -131,7 +133,7 @@ cosewic_v5_cn
 
 Next, we'll need to determine the AOI for accessing the model products. 
 
-You can choose to access the predictions for the entire modelled area, just a single model subregion (version 5 only), or a custom AOI. Since model subregion names vary by version and country, the `bam_get_bcr` and `bam_map_bcr` functions ensure the correct naming is used. You can specify an extent and identify BCRs intersection the AOI.
+You can access predictions for the entire modelled area, a single model subregion (current models only), or a custom AOI. Because model subregion names vary by model release and country, `bam_get_bcr()` and `bam_map_bcr()` ensure that the correct names are used. You can specify an extent to identify the BCRs that intersect the AOI.
 
 For our example, we'll use an example AOI that intersects two model subregions in the boreal plains and shield. Let's get the list of model subregions that interest with our AOI.
 
@@ -146,7 +148,7 @@ bcraoi_v5 <- bam_get_bcr("v5", ext=aoi_sf)
 bcraoi_v5
 ```
 
-And we can also visualize where our AOI falls on the map of all the model subregions for version 5 using the `bam_map_bcr` function.
+We can also use `bam_map_bcr()` to visualize where the AOI falls within the current model subregions.
 
 ```{r aoi_bcr_map, echo = TRUE, results = 'markup', error = TRUE, fig.width=8, fig.height=4}
 # Map aoi on the map of model subregions
@@ -161,7 +163,7 @@ Now that we have our species and AOI, we can download the model products!
 
 We will download the model products using the `bam_get_layer` function. 
 
-Let's download a version 5 `SpatRaster` for our one of our COSEWIC-designated species and the two BCRs that our AOI intersects. 
+Let's download a current-model `SpatRaster` for one of our COSEWIC-designated species and the two BCRs that intersect the AOI.
 
 
 ```{r get_layer, echo = TRUE, message=FALSE, results='hide'}
@@ -169,12 +171,12 @@ Let's download a version 5 `SpatRaster` for our one of our COSEWIC-designated sp
 result <- bam_get_layer(cosewic_v5[7], "v5", destfile = tempdir(), year = "2020", bcrNM=bcraoi_v5)
 ```
 
-The output of the function is a list of SpatRaster objects. In this example we have a list of one (one species). Note that each of the version 5 model objects has two bands:
+The output is a list of `SpatRaster` objects. This example returns a list of one object because we requested one species. Each current-model object has two bands:
 
 - **mean**: the mean predicted density in males/ha across 32 bootstraps
 - **cv**: the coefficient of variation of predicted density across 32 bootstraps
 
-The version 4 model products contain only the **mean** band.
+The archived model products contain only the **mean** band.
 
 Finally, we can plot these bands for our species of interest, Olive-sided Flycatcher.
 

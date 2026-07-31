@@ -1,7 +1,8 @@
 ##################################################################################
 #' Retrieve the list of BCR overlaid by the study area
 #'
-#' @param version A \code{character} specifying which version of the BAM landbird model to use. Valid options are "v4" or "v5".
+#' @param version Specifies the model release: \code{"v5"} for the current
+#'   models or \code{"v4"} for the archived models.
 #' @param ext A \code{SpatVector} or \code{SpatRaster} used to define the extent for the cropping. If \code{NULL}, the mosaic
 #'  will be used as default.
 #'
@@ -28,7 +29,7 @@ bam_get_bcr <- function(version, ext = NULL) {
     }else if (version == "v5"){
       ext <- terra::vect(system.file("extdata", "BAM_BCRNMv5_5072.shp", package = "BAMexploreR"))
     }else{
-      stop("The version is not recognised by the function. BAM National Models are only available for v4 and v5.")
+      stop("The version is not recognised by the function. BAM Landbird Density & Habitat models are only available for v4 and v5.")
     }
   }
 

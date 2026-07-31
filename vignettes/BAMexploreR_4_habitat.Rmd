@@ -17,13 +17,13 @@ knitr::opts_chunk$set(
 )
 ```
 
-This vignette will show you how to explore the important predictors of interest in BAM's landbird density models using the `BAMExploreR` package.
+This vignette shows you how to explore important predictors in BAM's Landbird Density & Habitat models using the `BAMexploreR` package.
 
 ## Background
 
 ### Predictor importance
 
-The machine learning framework that BAM uses to produce the landbird density models provides an estimate of the relative importance of each predictor in the model. We can explore those importance metrics to understand the habitat relationships for species of interest in each model subregion. Note that these functions will only provide the *importance* of each predictor, not the shape or direction of the relationship, which can be nonlinear and include complex interactions with other predictors given the machine learning framework used. For more information on the BAM landbird density models, please see the 'Introduction' vignette.
+The machine learning framework used to produce the BAM Landbird Density & Habitat models estimates the relative importance of each predictor. We can explore those importance metrics to understand habitat relationships for species of interest in each model subregion. These functions describe predictor *importance*, not necessarily the shape or direction of a relationship, which can be nonlinear and can include complex interactions with other predictors. For more information on the models, see the 'Introduction' vignette.
 
 ## Functions available
 
@@ -39,7 +39,7 @@ Arguments
 
 - `group`: A `character` of two grouping predictors for summarising predictor importance. Valid strings are `"spp"` (species) or `"bcr"`.
 
-- `version`: Specifies which version of the landbird density model to use. Valid options are `"v4"` or `"v5"`.
+- `version`: Specifies the model release: `"v5"` for the current models or `"v4"` for the archived models. The default is `"v5"`.
 
 - `plot`: Logical indicating whether to plot the results (`TRUE`) or return the processed data (`FALSE`).
 
@@ -61,7 +61,7 @@ Arguments
 
 - `groups`: A character of two grouping predictors for summarising predictor importance. The first group element is plotted on the x-axis as bins each containing a stacked bar, while the second group element is shown by fill colours in the stacked bars. Valid strings are any two of: `"spp"` (species), `"bcr"` (BCR), `var` (predictor), or `var_class` (predictor class).
 
-- `version`: Specifies which version of the landbird density model to use. Valid options are `"v4"` or `"v5"`.
+- `version`: Specifies the model release: `"v5"` for the current models or `"v4"` for the archived models. The default is `"v5"`.
 
 - `plot`: Logical indicating whether to plot the results (`TRUE`) or return the processed data (`FALSE`).
 
@@ -83,8 +83,7 @@ See `bam_map_bcr()` for available BCRs and their spellings.
 
 - `predictor`: A `character` specifying the model predictor (e.g., temperature, precipitation) to be visualized in the partial dependence plot. See `data(predictor_metadata)` for available predictors.
 
-- `version`: A `character`, either `"v4"` or `"v5"`. Defaults to `"v5"`. 
-Note: as of Februrary 21, 2026 only version 5 data is available. We're working to provide version 4 functionality as soon as we can!
+- `version`: Model release. Partial-dependence plots are currently available only for the current models, so this must be `"v5"`. The default is `"v5"`.
 
 - `colour` A `character` specifying the colour of the fitted spline. Default is `"purple"`.
 
@@ -99,7 +98,7 @@ mean response and an error ribbon representing the 95% confidence interval.
 
 ### 1. Identify species & area of interest
 
-The first step in exploring model predictors from the BAM landbird density models is to select the species and model subregions, or Bird Conservation Regions (BCRs) of interest.
+The first step in exploring predictors from the BAM Landbird Density & Habitat models is to select the species and model subregions, or Bird Conservation Regions (BCRs), of interest.
 
 We'll use the same example as the previous vignette: species listed by the Committee on the Status of Endangered Wildlife in Canada (COSEWIC) within an area of interest (AOI) across two sugbregions in the boreal plains and shield. Note we don't need to actually download any of the model products this time, just get our vectors of species and BCR; the importance values of each predictor for each model are stored in the package as tabular data.
 

@@ -15,8 +15,9 @@
 #' @param predictor A \code{character} specifying the model predictor (e.g., temperature, precipitation)
 #' to be visualized in the partial dependence plot. See \code{data(predictor_meta)} for available predictors.
 #'
-#' @param version A \code{character}, either \code{"v4"} or \code{"v5"}.
-#' Defaults to \code{"v5"}.
+#' @param version Model release. Partial-dependence plots are currently available
+#'   only for the current models, so this must be \code{"v5"}. Defaults to
+#'   \code{"v5"}.
 #'
 #' @param colour A \code{character} specifying the colour of the fitted spline.
 #' Default is \code{"purple"}.
@@ -64,12 +65,11 @@ bam_partial_dependence <- function(species, bcr, predictor, version="v5", colour
     stop("Invalid version argument. Must be either 'v4' or 'v5'.")
   }
 
-  # load boot_pts_sorted_v* from data folder
-  if (version == "v5") {
-    data <- bam_predictor_response_v5
-  } else {
-    data <- bam_predictor_response_v4
+  if (version == "v4") {
+    stop("`bam_partial_dependence()` is available only for the current models (`version = \"v5\"`); archived-model response data are not included.")
   }
+
+  data <- bam_predictor_response_v5
 
   # avoid using `var` as a column name
   data <- dplyr::rename(data, predictor_var = var)
@@ -77,7 +77,11 @@ bam_partial_dependence <- function(species, bcr, predictor, version="v5", colour
   # convert user specified species to FLBCs
   # checks for spellings and returns message if not found
   data("spp_tbl", package = "BAMexploreR")
-  species <- standardize_species_names(species_input = species, spp_tbl = spp_tbl)
+  species <- standardize_species_names(
+    species_input = species,
+    spp_tbl = spp_tbl,
+    version = version
+  )
 
 
   # check if the key exists in the data

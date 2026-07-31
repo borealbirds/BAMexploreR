@@ -8,8 +8,8 @@
 bam_spp_list(version, type = "speciesCode", guild = NULL)
 }
 \arguments{
-\item{version}{character; Indicate the version of the National Model requested. Each version of the
-National Model has its url access provided within the package.}
+\item{version}{Specifies the model release: \code{"v5"} for the current
+models or \code{"v4"} for the archived models.}
 
 \item{type}{character; type of output provided in the list, either \code{"speciesCode"}, \code{"commonName"} or \code{"scientificName"}.Default is \code{"speciesCode"}.}
 

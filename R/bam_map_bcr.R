@@ -1,7 +1,8 @@
 ##################################################################################
 #' Map the boundaries of BCR subunits for a specified version.
 #'
-#' @param version A \code{character} specifying which version of the National Model to use. Valid options are "v4" or "v5".
+#' @param version Specifies the model release: \code{"v5"} for the current
+#'   models or \code{"v4"} for the archived models.
 #' @param ext A \code{SpatVector} or a \code{SpatRaster} used to define an area of interest.
 #'
 #' @return Map illustrating the BCR and overlap extent if provided.
