@@ -164,7 +164,7 @@ bam_get_layer <- function(spList, version, destfile, crop_ext = NULL,  year = NU
     # get file name and URL
     get_file_info <- function() {
       if (version == "v4") {
-        file_name <- paste0("pred-", species_code, "-CAN-Mean.tif")
+        file_name <- paste0("WeightedMosaic_", species_code, ".tif")
         file_url <- file.path(url, file_name)
       } else if (version == "v5") {
         region <- ifelse(length(bcrNM) == 1, bcrNM, "mosaic")
