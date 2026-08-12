@@ -9,8 +9,8 @@ library(usethis)
 version.url <- tibble(
   version = c("v4",
               "v5"),
-  url = c("http://206.12.92.143/data/NationalModelv4",
-          "http://206.12.92.143/data/NationalModelv5")
+  url = c("https://cloud.borealbirds.ca/public-downloads/NationalModelv4",
+          "https://cloud.borealbirds.ca/public-downloads/NationalModelv5")
 )
 
 ###############################################################

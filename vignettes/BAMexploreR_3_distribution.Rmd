@@ -170,7 +170,7 @@ bcraoi_v5 <- bam_get_bcr(version="v5", ext=aoi_sf)
 
 # Get the BCRs of interest from model subregion layer provided in the package
 bcr_v5 <- vect(system.file("extdata", "BAM_BCRNMv5_5072.shp", package = "BAMexploreR"))
-aoi_bcr <- bcr_v5[bcr_v5$subunit_ui %in% bcraoi_v5, ]
+aoi_bcr <- bcr_v5[bcr_v5$bcr %in% bcraoi_v5, ]
 
 # Crop the BCR SpatVector to our AOI
 aoi_sf_bcr <- terra::crop(aoi_bcr, aoi_sf)
@@ -187,7 +187,7 @@ Looks good! Now we can use that new SpatVector with the BCRs to group our popula
 head(aoi_sf_bcr)
 
 # Calculate population size based on BAM landbird density raster
-pop_bcr_result <- bam_pop_size(result, crop_ext=aoi_sf_bcr, group="subunit_ui")
+pop_bcr_result <- bam_pop_size(result, crop_ext=aoi_sf_bcr, group="bcr")
 
 # Show results
 kable(pop_bcr_result, caption = "Estimated population size")

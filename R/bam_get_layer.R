@@ -62,9 +62,9 @@ bam_get_layer <- function(spList, version, destfile, crop_ext = NULL,  year = NU
       stop("bcrNM` must be a character vector representing valid BCR codes (e.g., 'can5', 'can80'). You provided an object of class: ", class(bcrNM)[1])
     }
     if(version == "v5"){
-      valid_bcrs <- c("mosaic", "can3", "can5", "can9", "can10", "can11", "can12", "can13", "can14",
-                      "can40", "can41", "can42", "can60", "can61", "can70", "can71", "can72", "can80",
-                      "can81", "can82")
+      valid_bcrs <- c("mosaic", "can10","can11","can12","can13","can14","can3","can4-0","can4-3","can4-4","can5","can71","can72",
+                      "can73","can74","can75","can76","can77-0","can77-1","can9","usa10","usa11","usa12","usa13","usa14","usa2",
+                      "usa23","usa28","usa30","usa4-0","usa4-1","usa4-2","usa5","usa9")
       if (!all(bcrNM %in% valid_bcrs)) {
         stop("Invalid bcr value(s) provided: ", paste(setdiff(bcrNM, valid_bcrs), collapse = ", "))
       }
@@ -219,7 +219,7 @@ bam_get_layer <- function(spList, version, destfile, crop_ext = NULL,  year = NU
         ifelse(version == "v4", "BAM_BCRNMv4_5072.shp", "BAM_BCRNMv5_5072.shp"),
         package = "BAMexploreR"
       ) %>% vect()
-      extent <- extent[extent$subunit_ui %in% bcrNM, ]
+      extent <- extent[extent$bcr %in% bcrNM, ]
       tiff_data <- crop_raster(tiff_data, extent)
 
       if (version == "v4"){

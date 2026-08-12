@@ -61,9 +61,9 @@ bam_get_bcr <- function(version, ext = NULL) {
     }
     user_sf <- sf::st_as_sf(ext)
     intersected <- sf::st_intersects(base_sf, user_sf, sparse = FALSE)
-    intersected_subUnits <- base_sf$subunit_ui[apply(intersected, 1, any)]
+    intersected_subUnits <- base_sf$bcr[apply(intersected, 1, any)]
   }else{
-    intersected_subUnits <-base_sf$subunit_ui
+    intersected_subUnits <-base_sf$bcr
   }
 
   # Return the results as a list

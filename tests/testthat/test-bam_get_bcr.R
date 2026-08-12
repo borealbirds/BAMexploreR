@@ -21,9 +21,9 @@ test_that("bam_get_bcr works with default parameters (v4)", {
 test_that("bam_get_bcr returns default when extent is not provided", {
   result <- bam_get_bcr(version = "v5")
   expect_type(result, "character")
-  expect_true(identical(result, c("can3", "can5", "can9", "can10", "can11", "can12", "can13", "can14",
-                                           "can40", "can41", "can42", "can60", "can61", "can70", "can71", "can72", "can80",
-                                           "can81", "can82"))
+  expect_true(identical(result, c("can10","can11","can12","can13","can14","can3","can4-0","can4-3","can4-4","can5","can71","can72",
+                                  "can73","can74","can75","can76","can77-0","can77-1","can9","usa10","usa11","usa12","usa13","usa14","usa2",
+                                  "usa23","usa28","usa30","usa4-0","usa4-1","usa4-2","usa5","usa9"))
   )
   result <- bam_get_bcr(version = "v4")
   expect_true(identical(result, c("can4", "can5", "can9", "can10", "can11", "can12", "can13", "can14",

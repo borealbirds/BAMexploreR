@@ -59,7 +59,7 @@ bam_map_bcr <- function(version, ext = NULL) {
   label_sf <- sf::st_as_sf(data.frame(
     X = base_bcr$X,
     Y = base_bcr$Y,
-    label = base_bcr$subunit_ui,
+    label = base_bcr$bcr,
     stringsAsFactors = FALSE
   ), coords = c("X", "Y"), crs = terra::crs(base_bcr))
 
@@ -77,15 +77,15 @@ bam_map_bcr <- function(version, ext = NULL) {
   custom_palette <- rep(custom_palette, length.out = ncat)  # Repeat the palette to get 25 colors
 
   tmap <- tmap::tm_shape(base_sf) +
-      tmap::tm_polygons(fill = "subunit_ui",
+      tmap::tm_polygons(fill = "bcr",
                         fill.scale = tm_scale_categorical(values = custom_palette),
                         col = "black", col_alpha = 0.5,
                         fill.legend = NULL,
-                        id = "subunit_ui") +
+                        id = "bcr") +
       tmap::tm_add_legend(type = "polygons",  # Updated from "fill"
-                          labels = unique(base_sf$subunit_ui),
+                          labels = unique(base_sf$bcr),
                           title = "BCR subunit",
-                          fill = custom_palette[seq_along(unique(base_sf$subunit_ui))]) +  # Use `fill` instead of `col`
+                          fill = custom_palette[seq_along(unique(base_sf$bcr))]) +  # Use `fill` instead of `col`
 
       tmap::tm_layout(legend.outside = TRUE, legend.is.portrait = FALSE, legend.stack = "horizontal")
 
