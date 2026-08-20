@@ -12,7 +12,7 @@
 `BAMexploreR` is an R package for accessing and analyzing the Boreal Avian Modelling Centre's current and archived Landbird Density & Habitat models.
 
 Other options for model access include:
-- **1. [BAM model dashboard]** - COMING SOON! Visit the central landing page for our models, including species profiles from the models and more details about our modelling approach.
+- **1. BAM model dashboard** - COMING SOON! Visit the central landing page for our models, including species profiles from the models and more details about our modelling approach.
 - **2. [BAMexploreR Shiny app](https://borealbirds.shinyapps.io/bam_landbird_viewer_dev95/)** - download and analyze model products with a graphical user interface.
 - **3. [Google Earth Engine viewer](https://borealbirds-gee.projects.earthengine.app/view/landbirdmodels)** - view and explore predictions and uncertainty from the current Landbird Density & Habitat models over Google Earth imagery and retrieve the asset IDs for working in Google Earth Engine.
 - **4. [Zenodo archive](https://zenodo.org/records/21632211)** - download the mosaic rasters for 2020 from the Zenodo archive.
