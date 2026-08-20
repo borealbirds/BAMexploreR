@@ -1,9 +1,9 @@
-## Note
-`BAMexploreR` and the accompanying Shiny app are currently under maintenance to support our new model products and will be operational as soon as possible. Check back soon!
-
 <img src="man/figures/BAM-Logo.png" width="50%" align="right"/>
 <p>&nbsp;</p>
 <p>&nbsp;</p>
+
+## Note
+`BAMexploreR` and the accompanying Shiny app are currently under maintenance to support our new model products and will be operational as soon as possible. Check back soon!
 
 # BAMexploreR
 
