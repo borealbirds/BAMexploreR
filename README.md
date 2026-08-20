@@ -1,3 +1,6 @@
+## Note
+`BAMexploreR` and the accompanying Shiny app are currently under maintenance to support our new model products and will be operational as soon as possible. Check back soon!
+
 <img src="man/figures/BAM-Logo.png" width="50%" align="right"/>
 <p>&nbsp;</p>
 <p>&nbsp;</p>
@@ -9,9 +12,10 @@
 `BAMexploreR` is an R package for accessing and analyzing the Boreal Avian Modelling Centre's current and archived Landbird Density & Habitat models.
 
 Other options for model access include:
-- **1. [BAM model dashboard](https://bamp-nationalmodel-dashboard.share.connect.posit.cloud/)** - visit the central landing page for our models, including species profiles from the models and more details about our modelling approach.
+- **1. [BAM model dashboard]** - COMING SOON! Visit the central landing page for our models, including species profiles from the models and more details about our modelling approach.
 - **2. [BAMexploreR Shiny app](https://borealbirds.shinyapps.io/bam_landbird_viewer_dev95/)** - download and analyze model products with a graphical user interface.
-- **3. [Google Earth Engine viewer](https://borealbirds-gee.projects.earthengine.app/view/landbirdmodels)** - view and explore predictions and uncertainty from the current Landbird Density & Habitat models over Google Earth imagery.
+- **3. [Google Earth Engine viewer](https://borealbirds-gee.projects.earthengine.app/view/landbirdmodels)** - view and explore predictions and uncertainty from the current Landbird Density & Habitat models over Google Earth imagery and retrieve the asset IDs for working in Google Earth Engine.
+- **4. [Zenodo archive](https://zenodo.org/records/21632211)** - download the mosaic rasters for 2020 from the Zenodo archive.
 
 The BAM Landbird Density & Habitat models provide species-specific predictions of the density of breeding male birds per hectare at 1 km resolution across their respective modelled extents. The models use a generalized analytical approach to relate landbird density to environmental predictors using in-person and autonomous recording unit (ARU) point-count surveys. Separate models are fitted for ecological subregions using predictors such as tree-species biomass at local and landscape scales, forest age, topography, land use, and climate. Machine learning accommodates predictor interactions and nonlinear responses without requiring time-consuming species-by-species parameterization. Cross-validation is used to limit overfitting, and bootstrap resampling provides estimates of uncertainty in predicted density.
 
