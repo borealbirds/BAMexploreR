@@ -74,8 +74,8 @@ load("./data/bam_predictor_response_v5.rda")
 ###############################################################
 ### create 4th internal data: birdlist matrix indicating species available per BCR
 ###############################################################
-if (file.exists("./data-raw/birdlist.rds")) {
-  birdlist <- readRDS("./data-raw/birdlist.rds")
+if (file.exists("./data-raw/birdlist.csv")) {
+  birdlist <- read.csv("./data-raw/birdlist.csv")
 } else {
   existing_internal_data <- new.env(parent = emptyenv())
   load("./R/sysdata.rda", envir = existing_internal_data)
