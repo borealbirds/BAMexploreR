@@ -37,12 +37,12 @@ bam_spp_list <- function(version, type = "speciesCode", guild = NULL) {
   }
 
   if(is.null(guild)){
-    spcode <- spdt %>% dplyr::pull("speciesCode")
+    spcode <- spdt |> dplyr::pull("speciesCode")
   }else if(any(!(guild %in% guild_opt))){
     print("Guild is invalid")
   }else{
-    spcode <- spdt %>%
-      dplyr::filter(dplyr::if_any(tidyselect::all_of(guild), ~ . == 1)) %>%  # Use if_any to check across multiple columns
+    spcode <- spdt |>
+      dplyr::filter(dplyr::if_any(tidyselect::all_of(guild), ~ . == 1)) |>  # Use if_any to check across multiple columns
       dplyr::pull("speciesCode")  # Extract species code
   }
 
@@ -52,11 +52,11 @@ bam_spp_list <- function(version, type = "speciesCode", guild = NULL) {
   if (httr::status_code(response) == 200) {
     if(version == "v4"){
       # Use regular expressions to parse
-      tiff_files <- regmatches(content_text, gregexpr('href="([^"]+\\.tif)"', content_text))
+      tiff_files <- regmatches(content_text, gregexpr('href="([^"]+\\.tiff)"', content_text))
       tiff_files <- unlist(tiff_files)
       tiff_files <- gsub('href="|/"', '', tiff_files)
-      spList <- tiff_files %>%
-        stringr::str_sub(start = 6, end = 9) %>%
+      spList <- tiff_files |>
+        stringr::str_sub(start = 16, end = 19) %>%
         .[.%in%spcode]
     } else if(version == "v5"){
       # Use regular expressions to parse
@@ -74,19 +74,19 @@ bam_spp_list <- function(version, type = "speciesCode", guild = NULL) {
 
   # Extract species list
   if(type=="speciesCode"){
-    sp <- spdt %>%
+    sp <- spdt |>
       dplyr::filter(speciesCode %in% spList,
-                    speciesCode %in% spcode) %>%
+                    speciesCode %in% spcode) |>
       dplyr::pull(speciesCode)
   }else if(type=="commonName") {
-    sp <- spdt %>%
+    sp <- spdt |>
       dplyr::filter(speciesCode %in% spList,
-                    speciesCode %in% spcode) %>%
+                    speciesCode %in% spcode) |>
       dplyr::pull(commonName)
   }else if(type=="scientificName") {
-    sp <- spdt %>%
+    sp <- spdt |>
       dplyr::filter(speciesCode %in% spList,
-                    speciesCode %in% spcode) %>%
+                    speciesCode %in% spcode) |>
       dplyr::pull(scientificName)
   }
  sp <- unique(sp)
