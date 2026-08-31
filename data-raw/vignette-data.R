@@ -9,8 +9,8 @@ library(usethis)
 version.url <- tibble(
   version = c("v4",
               "v5"),
-  url = c("https://cloud.borealbirds.ca/public-downloads/NationalModelv4",
-          "https://cloud.borealbirds.ca/public-downloads/NationalModelv5")
+  url = c("https://cloud.borealbirds.ca/NationalModelv4",
+          "https://cloud.borealbirds.ca/NationalModelv5")
 )
 
 ###############################################################
@@ -63,7 +63,6 @@ spp_tbl <- full_join(spp_v4, spp_v5, by = "speciesCode", suffix = c("_v4", "_v5"
 
 use_data(spp_tbl, internal = FALSE, overwrite = TRUE)
 
-
 ###############################################################
 ### create 3rd internal data: version 4 model covariate importance
 ###############################################################
@@ -105,3 +104,4 @@ guild_opt <- c("COSEWIC",
                "Long_Distance_Migrants")
 
 use_data(guild_opt, internal = FALSE, overwrite = TRUE)
+
