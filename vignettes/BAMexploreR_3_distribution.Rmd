@@ -92,7 +92,7 @@ We'll use the same example as the previous vignette: Olive-sided Flycatcher with
 library(BAMexploreR)
 
 # Use the example aoi SpatVector provided in the package
-aoi_sf <- vect(system.file("extdata", "vignette_poly_5072.shp", package = "BAMexploreR"))
+aoi_sf <- vect(system.file("extdata", "vignette_poly_3978.shp", package = "BAMexploreR"))
 
 #Download the model products
 result <- bam_get_layer("OSFL", "v5", destfile = tempdir(), year = "2020", crop_ext=aoi_sf)
@@ -169,7 +169,7 @@ Let's imagine a regional planning project where we need to know which BCR (in ou
 bcraoi_v5 <- bam_get_bcr(version="v5", ext=aoi_sf) 
 
 # Get the BCRs of interest from model subregion layer provided in the package
-bcr_v5 <- vect(system.file("extdata", "BAM_BCRNMv5_5072.shp", package = "BAMexploreR"))
+bcr_v5 <- vect(system.file("extdata", "BAM_BCRNMv5_3978.shp", package = "BAMexploreR"))
 aoi_bcr <- bcr_v5[bcr_v5$bcr %in% bcraoi_v5, ]
 
 # Crop the BCR SpatVector to our AOI

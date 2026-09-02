@@ -56,7 +56,7 @@ test_that("bam_pop_size throws error on invalid input", {
 # Test that Crop work
 test_that("bam_pop_size throws error on invalid cropping", {
   rasters <- bam_get_layer("TEWA", "v5", destfile=tempdir())
-  aoi_sf <- vect(system.file("extdata", "vignette_poly_5072.shp", package = "BAMexploreR"))
+  aoi_sf <- vect(system.file("extdata", "vignette_poly_3978.shp", package = "BAMexploreR"))
   result <- bam_pop_size(rasters, crop_ext=aoi_sf )
 
   rast_full <- terra::rast(ext = ext(aoi_sf), res = 1080, crs = crs(aoi_sf))
@@ -74,8 +74,8 @@ test_that("bam_pop_size throws error on invalid grouping", {
   # MN, SK  (approx)
   mb_poly <- st_as_sf(st_sfc(st_polygon(list(rbind(c(-102, 60),c(-94, 60),c(-94, 49),c(-102, 49),c(-102, 60))))), crs = 4326)
   sk_poly <- st_as_sf(st_sfc(st_polygon(list(rbind(c(-110, 60),c(-102, 60),c(-102, 49),c(-110, 49),c(-110, 60))))), crs = 4326)
-  poly_5072 <- st_transform(rbind(mb_poly, sk_poly), "EPSG:5072")
-  sv <- vect(poly_5072)
+  poly_3978 <- st_transform(rbind(mb_poly, sk_poly), "EPSG:3978")
+  sv <- vect(poly_3978)
   sv$id <- c("MB", "SK")
 
   rasters <- bam_get_layer("TEWA", "v4", destfile=tempdir())
@@ -90,8 +90,8 @@ test_that("bam_pop_size throws error on invalid grouping", {
 test_that("bam_pop_size works with list of rasters while croping and grouping", {
   mb_poly <- st_as_sf(st_sfc(st_polygon(list(rbind(c(-102, 60),c(-94, 60),c(-94, 49),c(-102, 49),c(-102, 60))))), crs = 4326)
   sk_poly <- st_as_sf(st_sfc(st_polygon(list(rbind(c(-110, 60),c(-102, 60),c(-102, 49),c(-110, 49),c(-110, 60))))), crs = 4326)
-  poly_5072 <- st_transform(rbind(mb_poly, sk_poly), "EPSG:5072")
-  sv <- vect(poly_5072)
+  poly_3978 <- st_transform(rbind(mb_poly, sk_poly), "EPSG:3978")
+  sv <- vect(poly_3978)
   sv$id <- c("MB", "SK")
 
   rasters <- bam_get_layer(c("TEWA", "OVEN"), "v4", destfile=tempdir())

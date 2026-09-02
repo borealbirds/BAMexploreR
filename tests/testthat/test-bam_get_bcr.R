@@ -34,7 +34,7 @@ test_that("bam_get_bcr returns default when extent is not provided", {
 
 # Test that the function works with user-defined extent (in 'extdata')
 test_that("bam_get_bcr works with user-defined extent (v4)", {
-  ext <- vect(system.file("extdata", "BAM_BCRNMv4_5072.shp", package = "BAMexploreR"))
+  ext <- vect(system.file("extdata", "BAM_BCRNMv4_3978.shp", package = "BAMexploreR"))
   ext <- ext[1]
   result <- bam_get_bcr(version = "v4", ext = ext)
   expect_type(result, "character")
@@ -45,7 +45,7 @@ test_that("bam_get_bcr works with user-defined extent (v4)", {
 
 # Test that the function cannot works with user-defined extent (in 'extdata') with NULL CRS
 test_that("bam_get_bcr returns error with missing CRS in extent", {
-  ext <- vect(system.file("extdata", "BAM_BCRNMv4_5072.shp", package = "BAMexploreR"))
+  ext <- vect(system.file("extdata", "BAM_BCRNMv4_3978.shp", package = "BAMexploreR"))
   crs(ext) <- ""
   expect_error(bam_get_bcr(version = "v4", ext = ext), "CRS is missing or empty.")
 })
@@ -54,7 +54,7 @@ test_that("bam_get_bcr returns error with missing CRS in extent", {
 # Test that the function shows NULL result on non-valid area
 test_that("bam_get_bcr returns empty subUnits when ext has no intersections", {
   non_intersecting_ext <- terra::ext(10000, 20000, 10000, 20000)
-  non_intersecting_vect <- terra::vect(non_intersecting_ext, crs = crs("EPSG:5072"))
+  non_intersecting_vect <- terra::vect(non_intersecting_ext, crs = crs("EPSG:3978"))
   result <- bam_get_bcr(version = "v4", ext = non_intersecting_vect)
   expect_equal(length(result), 0)
 })

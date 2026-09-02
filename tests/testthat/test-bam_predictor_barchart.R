@@ -19,8 +19,8 @@ test_that("bam_predictor_barchart produces a ggplot object when plot = TRUE", {
 # Test that proportions calculated correctly
 test_that("bam_predictor_barchart calculates proportions correctly", {
   result <- bam_predictor_barchart(groups = c("predictor_class", "bcr"), plot = FALSE)
-  proportions <- result %>%
-    dplyr::group_by(predictor_class) %>%
+  proportions <- result |>
+    dplyr::group_by(predictor_class) |>
     dplyr::summarise(total_prop = sum(prop))
   expect_true(all(proportions$total_prop <= 1))
 })

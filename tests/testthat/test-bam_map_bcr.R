@@ -20,7 +20,7 @@ test_that("bam_map_bcr works with default parameters (v4)", {
 
 # Test that the function works with user-defined extent (in 'extdata')
 test_that("bam_map_bcr works with user-defined extent (v4)", {
-  ext <- vect(system.file("extdata", "BAM_BCRNMv4_5072.shp", package = "BAMexploreR"))
+  ext <- vect(system.file("extdata", "BAM_BCRNMv4_3978.shp", package = "BAMexploreR"))
   ext <- ext[1]
   result <- bam_map_bcr(version = "v4", ext = ext)
   expect_s3_class(result, "tmap")
@@ -29,7 +29,7 @@ test_that("bam_map_bcr works with user-defined extent (v4)", {
 
 # Test that the function cannot works with user-defined extent (in 'extdata') with NULL CRS
 test_that("bam_map_bcr returns error with missing CRS in extent", {
-  ext <- vect(system.file("extdata", "BAM_BCRNMv4_5072.shp", package = "BAMexploreR"))
+  ext <- vect(system.file("extdata", "BAM_BCRNMv4_3978.shp", package = "BAMexploreR"))
   crs(ext) <- ""
   expect_error(bam_map_bcr(version = "v4", ext = ext), "CRS is missing or empty.")
 })
@@ -39,7 +39,7 @@ test_that("bam_map_bcr returns error with missing CRS in extent", {
 test_that("bam_map_bcr warns if ext does not intersect base BCRs", {
   # Make a spatial extent clearly outside any BCR boundaries
   non_intersecting_ext <- terra::ext(1e6, 2e6, 1e6, 2e6)
-  non_intersecting_vect <- terra::vect(non_intersecting_ext, crs = "EPSG:5072")
+  non_intersecting_vect <- terra::vect(non_intersecting_ext, crs = "EPSG:3978")
 
   expect_warning(
     bam_map_bcr(version = "v4", ext = non_intersecting_vect),

@@ -141,7 +141,7 @@ For our example, we'll use an example AOI that intersects two model subregions i
 library(terra)
 
 # Use the example aoi SpatVector provided in the package
-aoi_sf <- vect(system.file("extdata", "vignette_poly_5072.shp", package = "BAMexploreR"))
+aoi_sf <- vect(system.file("extdata", "vignette_poly_3978.shp", package = "BAMexploreR"))
 
 # Extract subregions from version 5 that intersect the aoi
 bcraoi_v5 <- bam_get_bcr("v5", ext=aoi_sf) 

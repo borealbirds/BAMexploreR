@@ -47,7 +47,7 @@ bam_pop_size <- function(raster_list, crop_ext= NULL, group = NULL){
       if (nchar(crs(crop_ext)) == 0) {
         stop("CRS of crop_ext is missing or empty.")
       }else{
-        crop_ext <- terra::project(crop_ext, "EPSG:5072")
+        crop_ext <- terra::project(crop_ext, "EPSG:3978")
       }
     }else{
       stop("crop_ext need to be a SpatVector  or a SpatRaster")
@@ -88,7 +88,7 @@ bam_pop_size <- function(raster_list, crop_ext= NULL, group = NULL){
       value_col <- setdiff(names(pixel_values), "ID")
 
       # rename it to "density"
-      pixel_values <- pixel_values %>%
+      pixel_values <- pixel_values |>
         dplyr::rename(mean = all_of(value_col))
     }
 
