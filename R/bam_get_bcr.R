@@ -12,6 +12,11 @@
 #'   available model outputs for \emph{all} specified species are returned.
 #'   If \code{NULL}, \code{spList} is ignored and all BCRs with available
 #'   model outputs are returned.
+#' @param common_bcr Logical. If \code{TRUE} and multiple species are
+#'   specified in \code{spList}, only BCRs with available model outputs for
+#'   all specified species are returned. If \code{FALSE}, BCRs with
+#'   available model outputs for any of the specified species are returned.
+#'   Ignored if \code{spList} is \code{NULL}.
 #'
 #' @return Vector of bcr that overlay the study area.
 #'
@@ -23,7 +28,7 @@
 #' @export
 #' @examples
 #' subUnit<- bam_get_bcr("v5")
-bam_get_bcr <- function(version, ext = NULL, spList = NULL) {
+bam_get_bcr <- function(version, ext = NULL, spList = NULL, common_bcr = TRUE) {
 
   if (!version %in% c("v4", "v5")) {
     stop("Invalid version argument. Must be either 'v4' or 'v5'.")
@@ -31,15 +36,18 @@ bam_get_bcr <- function(version, ext = NULL, spList = NULL) {
 
   # Set base_bcr
   if(version == "v4"){
-    base_bcr <- terra::vect(system.file("extdata", "BAM_BCRNMv4_5072.shp", package = "BAMexploreR"))
+    base_bcr <- terra::vect(system.file("extdata", "BAM_BCRNMv4_3978.shp", package = "BAMexploreR"))
   }else if (version == "v5"){
-    base_bcr <- terra::vect(system.file("extdata", "BAM_BCRNMv5_5072.shp", package = "BAMexploreR"))
-    base_bcr <- base_bcr[!base_bcr$bcr %in% c("Canada", "Alaska", "Lower48"),]
+    base_bcr <- terra::vect(system.file("extdata", "BAM_BCRNMv5_3978.shp", package = "BAMexploreR")) |>
+      terra::simplifyGeom(
+        tolerance = 1000,
+        preserveTopology = FALSE
+      )
   }else{
     stop("The version is not recognised by the function. BAM Landbird Density & Habitat models are only available for v4 and v5.")
   }
 
-  # Need output path
+  # Define extent
   if (is.null(ext)) {
     user_sf <- sf::st_as_sf(base_bcr)
   }else{
@@ -71,18 +79,54 @@ bam_get_bcr <- function(version, ext = NULL, spList = NULL) {
       )
     }
 
-    # Keep BCRs where all requested species have model outputs
-    available_bcr <- birdlist |>
-      dplyr::filter(
-        dplyr::if_all(
-          dplyr::all_of(spList),
-          ~ .x
-        )
-      ) |>
-      dplyr::pull(bcr)
+    if(isTRUE(common_bcr)){
+      available_bcr <- birdlist |>
+         dplyr::filter(
+           dplyr::if_all(
+             dplyr::all_of(spList),
+             ~ .x
+           )
+         ) |>
+         dplyr::pull(bcr)
 
-    # Restrict BCR layer to available species BCRs
-    base_bcr <- base_bcr[base_bcr$bcr %in% available_bcr,]
+       # Restrict BCR layer to available species BCRs
+       base_bcr <- base_bcr[base_bcr$bcr %in% available_bcr,]
+
+    }else{
+      # Get BCRs independently for each species
+      bcr_by_species <- lapply(spList, function(sp) {
+
+        birdlist |>
+          dplyr::filter(.data[[sp]]) |>
+          dplyr::pull(bcr) |>
+          unique()
+
+      })
+
+      # Name the list with species codes
+      names(bcr_by_species) <- spList
+
+      # Restrict each species to BCRs intersecting the extent
+      if (!is.null(ext)) {
+
+        intersected <- sf::st_intersects(
+          sf::st_as_sf(base_bcr),
+          user_sf,
+          sparse = FALSE
+        )
+
+        intersected_bcr <- base_bcr$bcr[
+          apply(intersected, 1, any)
+        ]
+
+        bcr_by_species <- lapply(
+          bcr_by_species,
+          function(x) x[x %in% intersected_bcr]
+        )
+      }
+
+      return(bcr_by_species)
+    }
   }
 
   # Convert to sf for intersection
