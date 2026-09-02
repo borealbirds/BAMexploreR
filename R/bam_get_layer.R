@@ -1,31 +1,31 @@
 ##################################################################################
 #' Download BAM Landbird Density & Habitat model rasters
 #'
-#' @param spList A \code{vector} of species to be downloaded.
-
 #' @param version Specifies the model release: \code{"v5"} for the current
-#'   models or \code{"v4"} for the archived models.
+#'   models or \code{"v4"} for the archived models. Default is "v5".
+#'
+#' @param spList A \code{vector} of species to be downloaded.
 #'
 #' @param destfile A \code{character} indicating output path where the downloaded file is saved.
 #'
 #' @param crop_ext A \code{SpatVector} or A \code{SpatRaster} used to define the extent for the cropping.
 #' Or downloading valid BCR polygons from list, type: \code{bam_map_bcr("v4")} or \code{bam_map_bcr("v5")}
 #'
+#' @param bcrNM A \code{vector} representing the BCR subunit name according to model version. Default is "Canada".
+#'   If a \code{crop_ext} has been provided, the argument will be ignored.
+#'
 #' @param year A \code{character} specifying the prediction year for the current
 #'   models. Only \code{"2020"} is currently available for public download and
 #'   is the default. Predictions at five-year intervals from 1995 to 2015 are
-#'   available by request from \email{bamp@ualberta.ca}.
-#'
-#' @param bcrNM A \code{vector} representing the BCR subunit name according to model version. Default is "mosaic".
+#'   available by request for v5 from \email{bamp@ualberta.ca}.If a \code{version} is v4,
+#'   the argument will be ignored.
 #'
 #' @return A list of \code{SpatRaster} objects. In addition to returning these objects,
 #' the function also downloads raster files to the directory specified by \code{destfile},
 #' as a side-effect.
 #'
 #' @examples
-#' bird <- bam_get_layer("TEWA", "v4", tempfile())
-#'
-#' bird <- bam_get_layer("TEWA", "v4", destfile = tempdir())
+#' bird <- bam_get_layer( "v4", "TEWA", destfile = tempdir())
 #'
 #' @author Melina Houle
 #' @docType methods
@@ -33,14 +33,14 @@
 #' @export
 #'
 #' @importFrom dplyr pull
-#' @importFrom magrittr %>%
 #' @importFrom httr GET content
 #' @importFrom tools file_ext file_path_sans_ext
 #' @importFrom stringr str_sub
 #' @importFrom terra vect rast project crop values crs writeRaster same.crs expanse
 #' @importFrom stats setNames
 #'
-bam_get_layer <- function(spList, version, destfile, crop_ext = NULL,  year = NULL, bcrNM= "mosaic") {
+bam_get_layer <- function(version= "v5", spList, destfile, crop_ext = NULL, bcrNM= "Canada",  year = "2020") {
+
   # Valid Model versions
   if (!version %in% c("v4", "v5")) {
     stop("Model version doesn't exist.")
@@ -51,57 +51,53 @@ bam_get_layer <- function(spList, version, destfile, crop_ext = NULL,  year = NU
     stop("You must provide an output path to store downloaded rasters.")
   }
 
+  # Valid year
   if (is.null(year)){
     if(version == "v5"){
       year <- c("2020")
     }
   }
-
-  if (!is.null(bcrNM)){
-    if (!is.character(bcrNM)) {
-      stop("bcrNM` must be a character vector representing valid BCR codes (e.g., 'can5', 'can80'). You provided an object of class: ", class(bcrNM)[1])
-    }
-    if(version == "v5"){
-      valid_bcrs <- c("mosaic", "can10","can11","can12","can13","can14","can3","can4-0","can4-3","can4-4","can5","can71","can72",
-                      "can73","can74","can75","can76","can77-0","can77-1","can9","usa10","usa11","usa12","usa13","usa14","usa2",
-                      "usa23","usa28","usa30","usa4-0","usa4-1","usa4-2","usa5","usa9")
-      if (!all(bcrNM %in% valid_bcrs)) {
-        stop("Invalid bcr value(s) provided: ", paste(setdiff(bcrNM, valid_bcrs), collapse = ", "))
-      }
-    }else{
-      valid_bcrs <- c("mosaic", "can4", "can5", "can9", "can10", "can11", "can12", "can13", "can14",
-                      "can60", "can61", "can70", "can71", "can80", "can81", "can82", "can83")
-      if (!all(bcrNM %in% valid_bcrs)) {
-        stop("Invalid bcr value(s) provided: ", paste(setdiff(bcrNM, valid_bcrs), collapse = ", "))
-      }
-    }
-  }
-
-  # Need CRS
-  if (!is.null(crop_ext)){
-    if(inherits(crop_ext, "SpatVector") || inherits(crop_ext, "SpatRaster") ) {
-      if (nchar(crs(crop_ext)) == 0) {
-        stop("CRS of crop_ext is missing or empty.")
-      }else{
-        if (crs(crop_ext, describe = TRUE)$code != 5072) {
-          crop_ext <- terra::project(crop_ext, "EPSG:5072")
-        }
-      }
-    }else{
-      stop("crop_ext need to be a SpatVector  or a SpatRaster")
-    }
-  }
-
-  if (!file.exists(destfile)) {
-    dir.create(destfile, showWarnings = FALSE)
-  }
-
   # Check crop_ext area
   if(!is.null(crop_ext)){
     crop_area <- expanse(crop_ext, unit="km")
     if(sum(crop_area) < 100){
       warning(sprintf("The BAM density models are predicted to a resolution of 1 km2. Your area of interest is only %.2f km2. Please consider whether these models are appropriate for your application.", crop_area))
     }
+    if(inherits(crop_ext, "SpatVector") || inherits(crop_ext, "SpatRaster") ) {
+      if (nchar(crs(crop_ext)) == 0) {
+        stop("CRS of crop_ext is missing or empty.")
+      }else{
+        if (crs(crop_ext, describe = TRUE)$code != 3978) {
+          crop_ext <- terra::project(crop_ext, "EPSG:3978")
+        }
+      }
+    }else{
+      stop("crop_ext need to be a SpatVector  or a SpatRaster")
+    }
+    if(!is.null(bcrNM)){
+      bcrNM <- NULL
+    }
+  }
+
+  # Valid bcrNM
+  if (!is.null(bcrNM)){
+    if(version == "v5"){
+      base_bcr <- terra::vect(system.file("extdata", "BAM_BCRNMv5_3978.shp", package = "BAMexploreR"))
+    }else{
+      base_bcr <- terra::vect(system.file("extdata", "BAM_BCRNMv4_3978.shp", package = "BAMexploreR"))
+    }
+    if (!is.character(bcrNM)) {
+      stop("bcrNM` must be a character vector representing valid BCR codes (e.g., 'can5', 'can80'). You provided an object of class: ", class(bcrNM)[1])
+    }
+    if (!all(bcrNM %in% base_bcr$bcr)) {
+      stop("Invalid bcr value(s) provided: ", paste(setdiff(bcrNM, base_bcr$bcr), collapse = ", "))
+    }
+
+  }
+
+  # Check destfile
+  if (!file.exists(destfile)) {
+    dir.create(destfile, showWarnings = FALSE)
   }
 
   allowed_years <- "2020"
@@ -128,124 +124,35 @@ bam_get_layer <- function(spList, version, destfile, crop_ext = NULL,  year = NU
   # Create valid species vector
   spList <- spList[spList %in% spv]
 
-  filter_species_by_bcr  <- function(birdlist, spList, bcrNM) {
-    valid_sp <- intersect(spList, names(birdlist))
-
-    # subset birdlist for selected BCRs
-    subset <- birdlist[birdlist$bcr %in% bcrNM, c("bcr", valid_sp), drop = FALSE]
-
-    mat <- as.matrix(subset[valid_sp])
-    keep <- colSums(mat) > 0
-    valid_sp[keep]
+  if(version == "v5"){
+    sp_filter <- .filter_species_by_bcr(birdlist, spList, bcrNM)
+  } else{
+    sp_filter <- spList
   }
 
-  if(!("mosaic" %in% bcrNM)){
-    sp_filter <- filter_species_by_bcr(birdlist, spList, bcrNM)
+  removed_species <- setdiff(spList, sp_filter)
 
-    removed_species <- setdiff(spList, sp_filter)
+  if(length(removed_species) > 0){
+    message("Species out of range: ",
+            paste(removed_species, collapse = ", "),
+            ". No output is available for these species in the selected BCR: ", paste(bcrNM, collapse = ", "))
+  }
+  spList <- sp_filter
 
-    if(length(removed_species) > 0){
-      message("Species out of range: ",
-              paste(removed_species, collapse = ", "),
-              ". No output is available for these species in the selected BCR.")
-    }
-    spList <- sp_filter
-
-    if (length(spList) == 0) {
-      message("\n\nNo species remain to download for the selected BCR.")
-    }
+  if (length(spList) == 0) {
+    stop("\n\nNo species remain to download for the selected BCR.")
   }
 
   outList <- list()
 
-  batch_download <- function(species_code, version, year = NULL, crop_ext, bcrNM = "mosaic") {
-    message("Downloading data for ", species_code, " from version ", version)
-
-    # get file name and URL
-    get_file_info <- function() {
-      if (version == "v4") {
-        file_name <- paste0("WeightedMosaic_", species_code, ".tif")
-        file_url <- file.path(url, file_name)
-      } else if (version == "v5") {
-        region <- ifelse(length(bcrNM) == 1, bcrNM, "mosaic")
-        file_name <- paste0(species_code, "_", region, "_", year, ".tif")
-        file_url <- file.path(url, species_code, region, file_name)
-      }
-      list(name = file_name, url = file_url)
-    }
-
-    # download raster to a file
-    download_raster <- function(file_url, to_temp = TRUE) {
-      target_file <- if (to_temp) tempfile(fileext = ".tif") else file.path(destfile, basename(file_url))
-      writeBin(content(GET(file_url), "raw"), target_file)
-      rast(target_file)
-    }
-
-    #crop raster to extent
-    crop_raster <- function(r, ext) {
-      r_proj <- terra::project(ext, r)
-      terra::crop(r, r_proj, snap = "near", mask = TRUE)
-    }
-
-    # Get file info
-    url <- version.url$url[version.url$version == version]
-    file_info <- get_file_info()
-    file_name <- file_info$name
-    file_url  <- file_info$url
-
-    # create output name
-    out_name <- paste0(tools::file_path_sans_ext(file_name), ".tif")
-
-    # Main raster loading
-    if (inherits(crop_ext, c("SpatVector", "SpatRaster"))) {
-      tiff_data <- download_raster(file_url, to_temp = TRUE)
-
-      tiff_data <- if (inherits(crop_ext, "SpatVector")) {
-        crop_raster(tiff_data, crop_ext)
-      } else {
-        crop_raster(tiff_data, project(crop_ext, tiff_data, align_only = TRUE))
-      }
-
-      out_name <- sub("\\.tif?$", "_clip.tif", file_name)
-
-    } else if ("mosaic" %in% bcrNM) {
-      tiff_data <- download_raster(file_url, to_temp = (version == "v4"))
-
-    } else if(length(bcrNM)>1 || (length(bcrNM) == 1 && version == "v4")){
-      tiff_data <- download_raster(file_url, to_temp = (version == "v4"))
-
-      extent <- system.file(
-        "extdata",
-        ifelse(version == "v4", "BAM_BCRNMv4_5072.shp", "BAM_BCRNMv5_5072.shp"),
-        package = "BAMexploreR"
-      ) %>% vect()
-      extent <- extent[extent$bcr %in% bcrNM, ]
-      tiff_data <- crop_raster(tiff_data, extent)
-
-      if (version == "v4"){
-        out_name <- paste0(species_code, "-CAN-Mean_BCRclip.tif")
-      }else{
-        out_name <- paste0(species_code, "-mosaic-", year, "-BCRclip.tif")
-      }
-    } else {
-      tiff_data <- download_raster(file_url, to_temp = (version == "v5"))
-    }
-
-    if (!terra::same.crs(tiff_data, "EPSG:5072"))
-      tiff_data <- terra::project(tiff_data, "EPSG:5072")
-
-    terra::writeRaster(tiff_data, file.path(destfile, out_name), overwrite = TRUE)
-    return(setNames(list(tiff_data), species_code))
-  }
-
   # Perform batch download for species in the list
   for (s in spList) {
    if(version == "v4"){
-     outspp <- batch_download(species = s, year = NULL, version = version, crop_ext, bcrNM)
+     outspp <- .batch_download(species = s, year = NULL, version = version, crop_ext, bcrNM, destfile)
      outList <- append(outList, outspp)
    }else{
       for (y in year) {#v5
-        outspp <- batch_download(species = s, year = y, version = version, crop_ext, bcrNM)
+        outspp <- .batch_download(species = s, year = y, version = version, crop_ext, bcrNM, destfile)
         outList <- append(outList, outspp)
       }
    }
