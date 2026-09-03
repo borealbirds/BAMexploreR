@@ -49,7 +49,7 @@
 #' @examples
 #'
 #' # download v4 rasters for Tennessee Warbler and Ovenbird
-#' rasters <- bam_get_layer(c("TEWA", "OVEN"), "v4", destfile=tempdir())
+#' rasters <- bam_get_layer("v4", c("TEWA", "OVEN"), destfile=tempdir())
 #'
 #' # visualize core habitat
 #' bam_occurrence(rasters)
@@ -59,7 +59,7 @@
 #'
 #' # analyse core habitat in a custom area, using v5 predictions for Tennessee Warbler
 #' aoi_sf <- vect(system.file("extdata", "vignette_poly_3978.shp", package = "BAMexploreR"))
-#' rasterv5 <- bam_get_layer("TEWA", "v5",  crop_ext = aoi_sf, destfile = tempdir(), year = "2020")
+#' rasterv5 <- bam_get_layer("v5",  "TEWA", crop_ext = aoi_sf, destfile = tempdir(), year = "2020")
 #' bam_occurrence(rasterv5)
 #'
 #'
