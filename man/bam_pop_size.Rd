@@ -23,7 +23,7 @@ It also provides a basic summary of the input raster.
 }
 \examples{
 # download rasters for Tennessee Warbler and Ovenbird
-rasters <- bam_get_layer(c("TEWA", "OVEN"), "v4", destfile=tempdir())
+rasters <- bam_get_layer("v4", c("TEWA", "OVEN"), destfile=tempdir())
 
 # get summaries of population size
 bam_pop_size(rasters) # 111 million and 3.5 million, respectively

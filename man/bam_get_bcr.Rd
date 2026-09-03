@@ -5,14 +5,28 @@
 \alias{bam_get_bcr}
 \title{Retrieve the list of BCR overlaid by the study area}
 \usage{
-bam_get_bcr(version, ext = NULL)
+bam_get_bcr(version, ext = NULL, spList = NULL, common_bcr = TRUE)
 }
 \arguments{
 \item{version}{Specifies the model release: \code{"v5"} for the current
 models or \code{"v4"} for the archived models.}
 
-\item{ext}{A \code{SpatVector} or \code{SpatRaster} used to define the extent for the cropping. If \code{NULL}, the mosaic
-will be used as default.}
+\item{ext}{A \code{SpatVector} or \code{SpatRaster} used to define the extent
+for the cropping. If \code{NULL}, \code{ext} is ignored and all
+BCRs with available model outputs are returned..}
+
+\item{spList}{A \code{vector} of one or more species codes for which
+BCRs with available landbird density and habitat model rasters should
+be returned. If multiple species are specified, only BCRs with
+available model outputs for \emph{all} specified species are returned.
+If \code{NULL}, \code{spList} is ignored and all BCRs with available
+model outputs are returned.}
+
+\item{common_bcr}{Logical. If \code{TRUE} and multiple species are
+specified in \code{spList}, only BCRs with available model outputs for
+all specified species are returned. If \code{FALSE}, BCRs with
+available model outputs for any of the specified species are returned.
+Ignored if \code{spList} is \code{NULL}.}
 }
 \value{
 Vector of bcr that overlay the study area.

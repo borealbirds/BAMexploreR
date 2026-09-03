@@ -11,79 +11,104 @@ export(bam_predictor_importance)
 export(bam_spp_list)
 import(tmap)
 importFrom(RColorBrewer,brewer.pal)
-importFrom(dplyr,all_of)
-importFrom(dplyr,arrange)
-importFrom(dplyr,as_tibble)
-importFrom(dplyr,bind_rows)
-importFrom(dplyr,filter)
-importFrom(dplyr,group_by)
-importFrom(dplyr,group_split)
-importFrom(dplyr,left_join)
-importFrom(dplyr,mutate)
-importFrom(dplyr,n)
-importFrom(dplyr,pull)
-importFrom(dplyr,rename)
-importFrom(dplyr,row_number)
-importFrom(dplyr,summarise)
-importFrom(dplyr,summarize)
-importFrom(dplyr,ungroup)
-importFrom(ggplot2,aes)
-importFrom(ggplot2,element_text)
-importFrom(ggplot2,geom_bar)
-importFrom(ggplot2,geom_boxplot)
-importFrom(ggplot2,geom_errorbar)
-importFrom(ggplot2,geom_jitter)
-importFrom(ggplot2,geom_line)
-importFrom(ggplot2,geom_point)
-importFrom(ggplot2,geom_ribbon)
-importFrom(ggplot2,ggplot)
-importFrom(ggplot2,labs)
-importFrom(ggplot2,position_dodge)
-importFrom(ggplot2,scale_colour_manual)
-importFrom(ggplot2,scale_fill_manual)
-importFrom(ggplot2,theme)
-importFrom(ggplot2,theme_classic)
-importFrom(ggplot2,theme_minimal)
-importFrom(httr,GET)
-importFrom(httr,content)
-importFrom(magrittr,"%>%")
-importFrom(opticut,iquantile)
-importFrom(opticut,lorenz)
-importFrom(purrr,imap)
-importFrom(purrr,map)
-importFrom(purrr,map_dbl)
-importFrom(rlang,.data)
-importFrom(rlang,syms)
-importFrom(sf,st_as_sf)
-importFrom(sf,st_intersects)
-importFrom(stats,predict)
-importFrom(stats,quantile)
-importFrom(stats,sd)
-importFrom(stats,setNames)
-importFrom(stats,smooth.spline)
+importFrom(dplyr,
+  all_of,
+  arrange,
+  as_tibble,
+  bind_rows,
+  filter,
+  group_by,
+  group_split,
+  left_join,
+  mutate,
+  n,
+  pull,
+  rename,
+  row_number,
+  summarise,
+  summarize,
+  ungroup
+)
+importFrom(ggplot2,
+  aes,
+  element_text,
+  geom_bar,
+  geom_boxplot,
+  geom_errorbar,
+  geom_jitter,
+  geom_line,
+  geom_point,
+  geom_ribbon,
+  ggplot,
+  labs,
+  position_dodge,
+  scale_colour_manual,
+  scale_fill_manual,
+  theme,
+  theme_classic,
+  theme_minimal
+)
+importFrom(httr,
+  GET,
+  content
+)
+importFrom(opticut,
+  iquantile,
+  lorenz
+)
+importFrom(purrr,
+  imap,
+  map,
+  map_dbl
+)
+importFrom(rlang,
+  .data,
+  syms
+)
+importFrom(sf,
+  st_as_sf,
+  st_intersects
+)
+importFrom(stats,
+  predict,
+  quantile,
+  sd,
+  setNames,
+  smooth.spline
+)
 importFrom(stringr,str_sub)
-importFrom(terra,aggregate)
-importFrom(terra,crop)
-importFrom(terra,crs)
-importFrom(terra,expanse)
-importFrom(terra,project)
-importFrom(terra,rast)
-importFrom(terra,same.crs)
-importFrom(terra,setValues)
-importFrom(terra,values)
-importFrom(terra,vect)
-importFrom(terra,writeRaster)
+importFrom(terra,
+  aggregate,
+  crop,
+  crs,
+  expanse,
+  project,
+  rast,
+  same.crs,
+  setValues,
+  values,
+  vect,
+  writeRaster
+)
 importFrom(tibble,tibble)
-importFrom(tidyr,drop_na)
-importFrom(tidyr,pivot_longer)
-importFrom(tidyselect,all_of)
-importFrom(tidyselect,everything)
-importFrom(tidyselect,starts_with)
-importFrom(tmap,tm_add_legend)
-importFrom(tmap,tm_layout)
-importFrom(tmap,tm_polygons)
-importFrom(tmap,tm_shape)
-importFrom(tmap,tm_text)
-importFrom(tmap,tmap_mode)
-importFrom(tools,file_ext)
-importFrom(tools,file_path_sans_ext)
+importFrom(tidyr,
+  drop_na,
+  pivot_longer
+)
+importFrom(tidyselect,
+  all_of,
+  everything,
+  starts_with
+)
+importFrom(tmap,
+  tm_add_legend,
+  tm_layout,
+  tm_polygons,
+  tm_shape,
+  tm_text,
+  tmap_mode
+)
+importFrom(tools,
+  file_ext,
+  file_path_sans_ext
+)

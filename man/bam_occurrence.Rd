@@ -48,7 +48,7 @@ estimate different ecological quantities and are not inherently equal.
 \examples{
 
 # download v4 rasters for Tennessee Warbler and Ovenbird
-rasters <- bam_get_layer(c("TEWA", "OVEN"), "v4", destfile=tempdir())
+rasters <- bam_get_layer("v4", c("TEWA", "OVEN"), destfile=tempdir())
 
 # visualize core habitat
 bam_occurrence(rasters)
@@ -57,8 +57,8 @@ bam_occurrence(rasters)
 bam_occurrence(rasters, quantile=0.8)
 
 # analyse core habitat in a custom area, using v5 predictions for Tennessee Warbler
-aoi_sf <- vect(system.file("extdata", "vignette_poly_5072.shp", package = "BAMexploreR"))
-rasterv5 <- bam_get_layer("TEWA", "v5",  crop_ext = aoi_sf, destfile = tempdir(), year = "2020")
+aoi_sf <- vect(system.file("extdata", "vignette_poly_3978.shp", package = "BAMexploreR"))
+rasterv5 <- bam_get_layer("v5",  "TEWA", crop_ext = aoi_sf, destfile = tempdir(), year = "2020")
 bam_occurrence(rasterv5)
 
 

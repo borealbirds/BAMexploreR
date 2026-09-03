@@ -5,13 +5,19 @@
 \alias{bam_map_bcr}
 \title{Map the boundaries of BCR subunits for a specified version.}
 \usage{
-bam_map_bcr(version, ext = NULL)
+bam_map_bcr(version, ext = NULL, spList = NULL)
 }
 \arguments{
 \item{version}{Specifies the model release: \code{"v5"} for the current
 models or \code{"v4"} for the archived models.}
 
-\item{ext}{A \code{SpatVector} or a \code{SpatRaster} used to define an area of interest.}
+\item{ext}{A \code{SpatVector} or a \code{SpatRaster} used to define an area
+of interest.}
+
+\item{spList}{A \code{vector} of one species codes for which
+BCRs with available landbird density and habitat model rasters are
+mapped. If \code{NULL}, \code{spList} is ignored and all BCRs with available
+model outputs are mapped}
 }
 \value{
 Map illustrating the BCR and overlap extent if provided.
