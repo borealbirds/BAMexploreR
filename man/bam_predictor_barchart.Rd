@@ -43,6 +43,10 @@ If \code{NULL}, default colour-blind friendly palette from \code{viridis} is use
 }
 \value{
 A stacked bar chart with the first group element plotted on the x-axis as bins each containing a stacked bar, and the second group element is shown by fill colours in the stacked bars.  If plot = FALSE the processed data is returned as a data.frame.
+The returned \code{data.frame} includes \code{mean_share}, the mean per-model share of
+predictor importance (see Details), and \code{prop}, that share expressed as a proportion
+of its x-axis bin. Rank predictors on \code{mean_share} or \code{prop} rather than on a
+raw sum of importance.
 }
 \description{
 Creates stacked bar plots showing the proportion of model predictors importance
@@ -53,6 +57,23 @@ Stacked bars can be grouped by species, predictor class, or
 Bird Conservation Region (BCR). For example, grouping by species and predictor class creates
 a plot where a stacked bar is created for each species, and each bar is split into the proportion
 of predictor importance that each of nine predictor classes contributed, pooled across the specified BCRs.
+
+Relative influence is normalised by the boosted regression tree machinery to sum to 100
+\emph{within a single model}, that is, within one species x BCR. Importance values therefore
+only have meaning relative to other predictors in the same species x BCR, and a raw sum across
+models would weight a species (or a BCR) by how many models it appears in. Species in this
+dataset are modelled in anywhere from 4 to 33 BCRs, so that weighting is substantial.
+
+To keep comparisons valid, importance is first converted to a share within each species x BCR
+model, then averaged over models so that every model contributes equally, and only then
+expressed as a proportion of its x-axis bin. Bars are therefore comparable across species and
+BCRs regardless of how widely each was modelled. Note that a species' profile is still an
+average over the particular BCRs in which it was modelled; to compare species on identical
+geography, restrict \code{bcr} to a set they share.
+
+\code{groups} must pair one model-level variable (\code{"spp"} or \code{"bcr"}) with one
+within-model variable (\code{"predictor"} or \code{"predictor_class"}). Pairing two of the
+same kind is degenerate and raises an error.
 }
 \examples{
 # Compare predictor importance (binned by predictor class) for all species in all BCRs

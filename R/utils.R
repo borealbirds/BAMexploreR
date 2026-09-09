@@ -1,7 +1,56 @@
 if (getRversion() >= "2.15.1") {
   utils::globalVariables(c(".", ".env","predictor_class", "mean_rel_inf", "sd_rel_inf", "species", "spp", "sum_inf", "sum_all_groups",
                            "pooled_sd", "percent_inf", "sym", "sd_percent_inf", "guild_opt", "speciesCode", "commonName",
-                           "scientificName", "sum_influence", "sum_group1", "prop", "density", "spp_tbl", "bam_predictor_response_v5"))
+                           "scientificName", "sum_influence", "sum_group1", "prop", "density", "spp_tbl", "bam_predictor_response_v5",
+                           # predictor-importance aggregation (per-model shares and uncertainty)
+                           "bcr", "predictor", "boot", "n_boots", "n_boot", ".scale", "share", "approx_var",
+                           "unit_var", "n_units", "sum_share", "sum_share_sq", "sum_unit_var", "mean_share",
+                           "among_var", "within_var", "se_share", "sd_among", "sd_among_inf",
+                           "bam_predictor_importance_v4", "bam_predictor_importance_v5",
+                           "bam_predictor_boot_v5", "rel.inf"))
+}
+
+# Session-scoped record of which advisory warnings have already been shown, so
+# that repeated calls in a script or vignette do not bury the console in
+# identical messages.
+.bam_warn_state <- new.env(parent = emptyenv())
+
+# Session-scoped memo for derived tables. `bam_predictor_boot_v5` is the stored
+# source of truth and everything else is rolled up from it, so a small cache
+# keeps repeated calls (a vignette, a loop over species) from redoing the same
+# aggregation over ~1.7 million rows.
+.bam_cache <- new.env(parent = emptyenv())
+
+#' Fetch a shipped dataset by name
+#'
+#' LazyData puts shipped datasets in the package namespace on a normal install,
+#' but \code{devtools::load_all()} and a plain \code{data()} load can place them
+#' elsewhere, so search both and return \code{NULL} rather than erroring when the
+#' dataset is not shipped at all (as for v4 bootstrap data).
+#'
+#' @param nm A \code{character} dataset name.
+#' @return The dataset, or \code{NULL}.
+#' @noRd
+.get_dataset <- function(nm) {
+  out <- tryCatch(
+    get(nm, envir = asNamespace("BAMexploreR")),
+    error = function(e) tryCatch(get(nm), error = function(e) NULL)
+  )
+  if (is.null(out) || !is.data.frame(out)) NULL else out
+}
+
+#' Emit a warning at most once per session
+#'
+#' @param id A \code{character} key identifying the warning.
+#' @param ... Passed to \code{warning()}.
+#' @noRd
+.warn_once <- function(id, ...) {
+  if (isTRUE(.bam_warn_state[[id]])) {
+    return(invisible(FALSE))
+  }
+  .bam_warn_state[[id]] <- TRUE
+  warning(..., call. = FALSE)
+  invisible(TRUE)
 }
 
 # Use matrix to check species availabilities per bcr
@@ -146,4 +195,101 @@ if (getRversion() >= "2.15.1") {
   if (exists("tiff_mosaic")) {file.remove(sources(tiff_mosaic))}
 
   return(setNames(list(tiff_data), species_code))
+}
+
+
+#' Load and prepare a predictor-importance dataset
+#'
+#' Internal helper shared by \code{bam_predictor_importance()} and
+#' \code{bam_predictor_barchart()}.
+#'
+#' Relative influence is normalised by \code{gbm::summary.gbm()} to sum to 100
+#' within a single model, i.e. within a species x BCR x bootstrap. The v5 export
+#' preserves this: every species x BCR sums to exactly 100. The v4 export was
+#' truncated to predictors with \code{rel.inf >= 1}, so its species x BCR totals
+#' range from ~1 to ~88 and are not comparable to one another. For v4 we rescale
+#' each species x BCR back to 100 so that units are at least internally
+#' consistent, and warn that composition remains distorted.
+#'
+#' @param version A \code{character}, either \code{"v4"} or \code{"v5"}.
+#'
+#' @return A \code{data.frame} of predictor importance whose \code{mean_rel_inf}
+#'   sums to 100 within each species x BCR.
+#'
+#' @importFrom dplyr group_by mutate ungroup select
+#' @noRd
+.load_predictor_importance <- function(version) {
+
+  if (version == "v5") {
+    return(bam_predictor_importance_v5)
+  }
+
+  .warn_once(
+    "v4_truncated",
+    "Version 'v4' predictor importance retains only predictors with a relative ",
+    "influence >= 1 (a median of 2 predictors per species x BCR). Each species x ",
+    "BCR has been rescaled to sum to 100, but the truncation still biases ",
+    "composition toward predictor classes made up of few, strongly influential ",
+    "predictors. Treat cross-species and cross-BCR comparisons as indicative only; ",
+    "use version = 'v5' where possible."
+  )
+
+  # rescale each species x BCR to sum to 100, carrying sd_rel_inf on the same scale
+  bam_predictor_importance_v4 |>
+    dplyr::group_by(spp, bcr) |>
+    dplyr::mutate(
+      .scale       = 100 / sum(mean_rel_inf, na.rm = TRUE),
+      mean_rel_inf = mean_rel_inf * .scale,
+      sd_rel_inf   = sd_rel_inf * .scale
+    ) |>
+    dplyr::ungroup() |>
+    dplyr::select(-.scale)
+}
+
+
+#' Bootstrap-level predictor-class shares, derived on demand
+#'
+#' Correct uncertainty for a predictor class requires summing relative influence
+#' within that class \emph{inside each bootstrap} before taking any variance,
+#' because relative influence is compositional: predictors within one model are
+#' negatively correlated by construction. The species x BCR summary datasets have
+#' already averaged over bootstraps and cannot support this.
+#'
+#' \code{bam_predictor_boot_v5} is the single source of truth: it holds
+#' \code{rel.inf} for every species x BCR x bootstrap x predictor, and
+#' \code{bam_predictor_importance_v5} is derived from it. This helper performs the
+#' other derivation, rolling predictors up to their class within each bootstrap.
+#' The result is memoised, since collapsing ~1.7 million rows is wasted work on
+#' the second and subsequent call in a session.
+#'
+#' @param version A \code{character}, either \code{"v4"} or \code{"v5"}.
+#'
+#' @return A \code{data.frame} with columns \code{spp}, \code{bcr}, \code{boot},
+#'   \code{predictor_class} and \code{share}, or \code{NULL} when no
+#'   bootstrap-level dataset is shipped for this version (v4 has none).
+#'
+#' @importFrom dplyr filter group_by summarise arrange
+#' @noRd
+.predictor_class_boot <- function(version) {
+
+  key <- paste0("class_boot_", version)
+  if (!is.null(.bam_cache[[key]])) return(.bam_cache[[key]])
+
+  raw <- .get_dataset(paste0("bam_predictor_boot_", version))
+  if (is.null(raw)) return(NULL)
+
+  # `rel.inf` sums to 100 within a species x BCR x bootstrap, so dividing the
+  # class total by 100 gives that class's share of the model in that bootstrap.
+  # Predictors with no class would silently deflate the shares, so drop them
+  # first; the shipped v5 data has none.
+  out <-
+    raw |>
+    dplyr::filter(!is.na(predictor_class)) |>
+    dplyr::group_by(spp, bcr, boot, predictor_class) |>
+    dplyr::summarise(share = sum(rel.inf) / 100, .groups = "drop") |>
+    dplyr::arrange(spp, bcr, boot, predictor_class) |>
+    as.data.frame()
+
+  .bam_cache[[key]] <- out
+  out
 }
