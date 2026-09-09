@@ -185,7 +185,7 @@ Note that not all predictors go into every model! You'll see there are multiple 
 
 ### 3. Stacked bar chart of predictors
 
-If we want to visualize the predictor importance by individual predictors or with grouping of multiple categories, we can use the `bam_predictor_barchart` function. This function picks two groups for summary, with the group plotted on the x-axis as bins each containing a stacked bar and the second group is shown by fill colours in the stacked bars. The options for grouping are `spp` (species), `bcr` (model subregion), `var` (predictor), or `var_class` (predictor class).
+If we want to visualize the predictor importance by individual predictors or with grouping of multiple categories, we can use the `bam_predictor_barchart` function. This function picks two groups for summary, with the group plotted on the x-axis as bins each containing a stacked bar and the second group is shown by fill colours in the stacked bars. The options for grouping are `spp` (species), `bcr` (model subregion), `predictor`, or `predictor_class`. Note that you must pair a model-level variable (`spp` or `bcr`) with a within-model one (`predictor` or `predictor_class`): relative importance is only defined *within* a species x BCR model, so pairing `spp` with `bcr` would give every bar an identical, meaningless split.
 
 Let's start by looking at the proportion of influence across predictor categories for each species. `bam_predictor_barchart()` uses the `viridis` palettes by default, but we'll demonstrate the custom `colour=` argument by using a Okabe-Ito colour blind palette. 
 
@@ -222,7 +222,9 @@ bam_predictor_barchart(species = species_v5, bcr = bcraoi_v5,
 
 There's a lot of information here! Note we can see that not every predictor is included in every species model.
 
-Instead of a plot, let's try extracting the tabular summary for this level of detail.
+Because relative importance is scaled to sum to 100 *within* each species x BCR model, it only has meaning relative to the other predictors of that same model. When species are stacked inside a bar, `bam_predictor_barchart()` therefore averages each species' within-model share across the models it appears in, rather than summing raw importance. Without that step a species modelled in 33 BCRs would tower over one modelled in 4 purely because it contributes more models, and the plot would be showing modelling coverage rather than ecology.
+
+Instead of a plot, let's try extracting the tabular summary for this level of detail. Rank on `mean_share` (the mean within-model share) or `prop` (that share as a fraction of its bar) rather than on a raw sum.
 
 ```{r cov_bar_text, echo = TRUE, results = 'markup', error = TRUE, fig.width=7, fig.height=4, fig.align='center'}
 # Create table of predictor importance for each predictor grouped by species
@@ -233,7 +235,7 @@ bam_predictors_v5 <- bam_predictor_barchart(species = species_v5, bcr = bcraoi_v
 # Check the top 2 per species
 bam_predictors_v5 |>
   group_by(spp) |>
-  slice_max(order_by = sum_influence, n = 2) |> 
+  slice_max(order_by = mean_share, n = 2) |> 
   ungroup() |> 
   kable(caption = "Summary of model predictor importance by species for AOI")
 ```
@@ -246,7 +248,7 @@ Until now we've been examining the relative magnitude of the `bird abundance ~ e
 ```{r partial_dep1, echo = TRUE, results = 'markup', error = TRUE, fig.width=7, fig.height=4, fig.align='center'}
 
 # BCR "can61"
-bam_partial_dependence(species = species_v5[1], bcr = bcraoi_v5[1], 
+bam_partial_dependence(species = "CAWA", bcr = bcraoi_v5[1], 
                        predictor = "SCANFIprcD_1km", version = "v5", spar=0.4)
 
 ```
@@ -255,7 +257,7 @@ It looks like `SCANFIprcD_1km` (% broadleaf tree cover) is positively correlated
 ```{r partial_dep2, echo = TRUE, results = 'markup', error = TRUE, fig.width=7, fig.height=4, fig.align='center'}
 
 # BCR "can80"
-bam_partial_dependence(species = species_v5[1], bcr = bcraoi_v5[2], 
+bam_partial_dependence(species = "CAWA", bcr = bcraoi_v5[2], 
                        predictor = "SCANFIprcD_1km", version = "v5", spar=0.4)
 
 ```
