@@ -29,15 +29,43 @@
 #' @return A ggplot displaying percent predictor importance by predictor class, grouped by the \code{group} argument.
 #' Percent importance is used to allow comparisions across groups that have
 #' differing total predictor importance.
-#' If \code{plot = FALSE} the processed data is returned as a \code{data.frame}.
+#' If \code{plot = FALSE} the processed data is returned as a \code{data.frame},
+#' including \code{mean_share} (the mean per-model share of importance for that
+#' predictor class), \code{n_units} (the number of models behind it),
+#' \code{percent_inf}, its standard error \code{sd_percent_inf}, and
+#' \code{sd_among_inf}, the spread of \code{percent_inf} across the models in the
+#' group. \code{sd_among_inf} does not shrink as more models are added, so prefer it
+#' when comparing groups that differ widely in how many models they contain.
 #'
-#' @details Bootstrap variation (per species x BCR) is propagated by
-#' taking the root sum square of standard deviation values.
+#' @details Relative influence is normalised to sum to 100 \emph{within a single
+#' model}, that is, within one species x BCR. Importance is therefore first converted
+#' to a share within each model and then averaged over models, so that every model
+#' contributes equally and a widely modelled species does not outweigh a narrowly
+#' modelled one. A predictor class absent from a model counts as a share of zero.
 #'
-#' @importFrom dplyr group_by filter summarise left_join mutate
+#' Uncertainty combines two sources: variation among the models in a group
+#' (among-BCR, or among-species, variation) and bootstrap variation within each
+#' model. \code{sd_percent_inf} is the standard error of the mean share,
+#'
+#' \deqn{SE = \sqrt{ \frac{s^{2}_{among}}{n} + \frac{\overline{s^{2}_{within}}}{n b} }}
+#'
+#' for \eqn{n} models and \eqn{b} bootstraps. With a single model this reduces to
+#' the bootstrap standard error alone. Being a standard error of a mean, it narrows
+#' as a species (or BCR) is modelled more widely; that is correct but means bar
+#' widths are not themselves comparable across groups of very different size. The
+#' returned \code{sd_among_inf} gives the coverage-neutral spread instead.
+#'
+#' Because relative influence is compositional, predictors within one model are
+#' negatively correlated by construction, so the within-model variance must be
+#' computed by summing relative influence within a predictor class \emph{inside
+#' each bootstrap}. When bootstrap-level shares are unavailable the function falls
+#' back to a root-sum-square approximation that assumes independence and warns; those
+#' error bars are conservative (too wide).
+#'
+#' @importFrom dplyr group_by filter summarise left_join mutate distinct count semi_join coalesce select
+#' @importFrom stats var median
 #' @importFrom rlang syms
 #' @importFrom ggplot2 ggplot aes geom_errorbar geom_point labs theme theme_classic element_text position_dodge scale_colour_manual
-#' @importFrom tidyr drop_na
 #'
 #' @export
 #' @examples
@@ -64,14 +92,9 @@ bam_predictor_importance <- function(species = "all", bcr = "all", group = "spp"
   }
 
   # load bam_predictor_importance_v* from data folder
-  #load(system.file("R/sysdata.rda", package = "BAMexploreR"))
-  if (version == "v5") {
-    #data("bam_predictor_importance_v5", package = "BAMexploreR")
-    data <- bam_predictor_importance_v5
-  } else {
-    #data("bam_predictor_importance_v4", package = "BAMexploreR")
-    data <- bam_predictor_importance_v4
-  }
+  # `.load_predictor_importance()` rescales v4 (which is truncated at rel.inf >= 1)
+  # so that every species x BCR sums to 100, as v5 already does.
+  data <- .load_predictor_importance(version)
 
   # convert user specified species to FLBCs
   if (!identical(species, "all")){
@@ -94,9 +117,10 @@ bam_predictor_importance <- function(species = "all", bcr = "all", group = "spp"
                paste(setdiff(bcr, unique(data$bcr)), collapse = ", ")))
   }
 
-  # check if user specified `group` is in `data`
-  if (is.null(group) || !group %in% colnames(data)) {
-    stop("Please specify a valid `group` column from the data.")
+  # check if user specified `group` is in `data`. `group` must identify a model,
+  # because relative influence is normalised within a species x BCR.
+  if (is.null(group) || length(group) != 1 || !group %in% c("spp", "bcr")) {
+    stop("`group` must be either 'spp' (species) or 'bcr' (Bird Conservation Region).")
   }
 
 
@@ -113,31 +137,114 @@ bam_predictor_importance <- function(species = "all", bcr = "all", group = "spp"
   # convert characters to symbols for dplyr::group_by
   group_sym <- rlang::syms(unique(c(group, "predictor_class")))
 
-  # group by user-specified group
-  # then, sum rel.inf by the grouped predictor per predictor class
-  # convert std. dev. back to variance, sum, and take sqrt()
-  cov_importance_grouped <-
-    data |>
-    group_by(!!!group_sym) |> # !!! evaluates a list of expressions
-    filter(!is.na(predictor_class)) |>
-    summarise(sum_inf = sum(mean_rel_inf), sd_inf = sd(mean_rel_inf),
-              pooled_sd = sqrt(sum(sd_rel_inf^2)),
-              .groups = "keep")
+  # A species x BCR is one model, and relative influence sums to 100 within it.
+  # Work in per-model shares so that every model carries equal weight regardless
+  # of how many models a species (or BCR) contributes.
+  data <- filter(data, !is.na(predictor_class))
 
-  # group by user-specified group,
-  # then, sum rel.inf from all predictor_classes
+  # `n_boots` counts the bootstraps in which a predictor was non-zero, not the
+  # number of replicates run, so estimate the replicate count from the strongest
+  # predictor in the whole model rather than from one class.
+  model_boot <-
+    data |>
+    group_by(spp, bcr) |>
+    summarise(n_boot = max(n_boots), .groups = "drop")
+
+  # per-model share of each predictor class, plus an approximate bootstrap
+  # variance of that share used only when bootstrap-level data is unavailable
+  unit_share <-
+    data |>
+    group_by(spp, bcr, predictor_class) |>
+    summarise(share      = sum(mean_rel_inf) / 100,
+              approx_var = sum(sd_rel_inf^2) / 100^2,
+              .groups    = "drop") |>
+    left_join(model_boot, by = c("spp", "bcr"))
+
+  # Prefer bootstrap-level shares: summing relative influence within a class
+  # inside each bootstrap respects the negative correlation among predictors of
+  # the same model, which sqrt(sum(sd_rel_inf^2)) ignores.
+  boot_tbl <- .predictor_class_boot(version)
+
+  if (is.null(boot_tbl)) {
+    .warn_once(
+      paste0("no_boot_shares_", version),
+      "Bootstrap-level predictor-class shares are not available for version '",
+      version, "'. Error bars use an approximate within-model variance that ",
+      "treats predictors in a class as independent, and so are conservative ",
+      "(too wide)."
+    )
+    unit_share$unit_var <- unit_share$approx_var
+  } else {
+    unit_var_tbl <-
+      boot_tbl |>
+      dplyr::semi_join(dplyr::distinct(data, spp, bcr), by = c("spp", "bcr")) |>
+      group_by(spp, bcr, predictor_class) |>
+      summarise(unit_var = stats::var(share),
+                n_boot   = dplyr::n(),
+                .groups  = "drop")
+
+    unit_share <-
+      unit_share |>
+      dplyr::select(-n_boot) |>
+      left_join(unit_var_tbl, by = c("spp", "bcr", "predictor_class")) |>
+      mutate(unit_var = dplyr::coalesce(unit_var, approx_var))
+  }
+
+  # number of models behind each level of `group`. A predictor class absent from
+  # a model contributes a share of zero, so divide by this rather than by the
+  # number of rows actually present.
+  n_units <-
+    data |>
+    dplyr::distinct(spp, bcr) |>
+    dplyr::count(!!rlang::sym(group), name = "n_units")
+
+  # Sums of shares and squared shares let the zero-filled mean and among-model
+  # variance be recovered without materialising the absent model x class cells.
+  cov_importance_grouped <-
+    unit_share |>
+    group_by(!!!group_sym) |> # !!! evaluates a list of expressions
+    summarise(sum_share    = sum(share),
+              sum_share_sq = sum(share^2),
+              sum_unit_var = sum(unit_var, na.rm = TRUE),
+              n_boot       = stats::median(n_boot, na.rm = TRUE),
+              .groups      = "drop") |>
+    left_join(n_units, by = group) |>
+    mutate(
+      mean_share = sum_share / n_units,
+      # among-model variance of the per-model share (zero-filled)
+      among_var  = ifelse(n_units > 1,
+                          (sum_share_sq - n_units * mean_share^2) / (n_units - 1),
+                          0),
+      # mean within-model (bootstrap) variance, also zero-filled
+      within_var = sum_unit_var / n_units,
+      # standard error of the mean share, propagating both components
+      se_share   = sqrt(pmax(among_var, 0) / n_units +
+                        within_var / (n_units * n_boot)),
+      # spread of the per-model share across models. Unlike `se_share` this does
+      # not shrink as more models are added, so it is the better summary when
+      # comparing groups that differ widely in how many models they contain.
+      sd_among   = sqrt(pmax(among_var, 0))
+    )
+
+  # Shares sum to 1 within every model, so the class shares of a group sum to 1
+  # and `sum_all_groups` is 1 up to floating point. It is kept explicit so the
+  # percentages are exact and so the code still behaves if that ever changes.
   group1_sum <-
     cov_importance_grouped |>
     group_by(!!group_sym[[1]]) |>
-    summarise(sum_all_groups = sum(sum_inf), .groups = "keep")
+    summarise(sum_all_groups = sum(mean_share), .groups = "keep")
 
   # calculate the percent of predictor importance
   # sd_percent_inf is the uncertainty of the percent influence of a given predictor_class
   percent_importance <-
     cov_importance_grouped |>
     left_join(group1_sum, by = group) |>
-    mutate(percent_inf = 100 * sum_inf / sum_all_groups,
-           sd_percent_inf = 100 * pooled_sd / sum_all_groups)
+    mutate(percent_inf = 100 * mean_share / sum_all_groups,
+           sd_percent_inf = 100 * se_share / sum_all_groups,
+           sd_among_inf   = 100 * sd_among / sum_all_groups) |>
+    # drop the running sums and variance components used to build the estimates
+    dplyr::select(-sum_share, -sum_share_sq, -sum_unit_var, -n_boot,
+                  -among_var, -within_var, -se_share, -sd_among)
 
   percent_importance[[group]] <- as.factor(percent_importance[[group]])
 

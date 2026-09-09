@@ -40,15 +40,43 @@ If \code{NULL}, default colour-blind friendly palette from \code{viridis} is use
 A ggplot displaying percent predictor importance by predictor class, grouped by the \code{group} argument.
 Percent importance is used to allow comparisions across groups that have
 differing total predictor importance.
-If \code{plot = FALSE} the processed data is returned as a \code{data.frame}.
+If \code{plot = FALSE} the processed data is returned as a \code{data.frame},
+including \code{mean_share} (the mean per-model share of importance for that
+predictor class), \code{n_units} (the number of models behind it),
+\code{percent_inf}, its standard error \code{sd_percent_inf}, and
+\code{sd_among_inf}, the spread of \code{percent_inf} across the models in the
+group. \code{sd_among_inf} does not shrink as more models are added, so prefer it
+when comparing groups that differ widely in how many models they contain.
 }
 \description{
 Plot mean relative predictor importance (with bootstrap variation)
 by predictor class, with options to group by BCR (Bird Conservation Region) or species.
 }
 \details{
-Bootstrap variation (per species x BCR) is propagated by
-taking the root sum square of standard deviation values.
+Relative influence is normalised to sum to 100 \emph{within a single
+model}, that is, within one species x BCR. Importance is therefore first converted
+to a share within each model and then averaged over models, so that every model
+contributes equally and a widely modelled species does not outweigh a narrowly
+modelled one. A predictor class absent from a model counts as a share of zero.
+
+Uncertainty combines two sources: variation among the models in a group
+(among-BCR, or among-species, variation) and bootstrap variation within each
+model. \code{sd_percent_inf} is the standard error of the mean share,
+
+\deqn{SE = \sqrt{ \frac{s^{2}_{among}}{n} + \frac{\overline{s^{2}_{within}}}{n b} }}
+
+for \eqn{n} models and \eqn{b} bootstraps. With a single model this reduces to
+the bootstrap standard error alone. Being a standard error of a mean, it narrows
+as a species (or BCR) is modelled more widely; that is correct but means bar
+widths are not themselves comparable across groups of very different size. The
+returned \code{sd_among_inf} gives the coverage-neutral spread instead.
+
+Because relative influence is compositional, predictors within one model are
+negatively correlated by construction, so the within-model variance must be
+computed by summing relative influence within a predictor class \emph{inside
+each bootstrap}. When bootstrap-level shares are unavailable the function falls
+back to a root-sum-square approximation that assumes independence and warns; those
+error bars are conservative (too wide).
 }
 \examples{
 
