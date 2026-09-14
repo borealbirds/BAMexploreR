@@ -46,6 +46,15 @@ bam_get_layer <- function(version= "v5", spList, destfile, crop_ext = NULL, bcrN
     stop("Model version doesn't exist.")
   }
 
+  bcr_v5 <- terra::vect(system.file("extdata", "BAM_BCRNMv5_3978.shp", package = "BAMexploreR"))
+  bcr_v4 <- terra::vect(system.file("extdata", "BAM_BCRNMv4_3978.shp", package = "BAMexploreR"))
+
+  if(version == "v5"){
+    base_bcr <- bcr_v5
+  }else{
+    base_bcr <- bcr_v4
+  }
+
   # Need output path
   if (missing(destfile)) {
     stop("You must provide an output path to store downloaded rasters.")
@@ -59,10 +68,6 @@ bam_get_layer <- function(version= "v5", spList, destfile, crop_ext = NULL, bcrN
   }
   # Check crop_ext area
   if(!is.null(crop_ext)){
-    crop_area <- expanse(crop_ext, unit="km")
-    if(sum(crop_area) < 100){
-      warning(sprintf("The BAM density models are predicted to a resolution of 1 km2. Your area of interest is only %.2f km2. Please consider whether these models are appropriate for your application.", crop_area))
-    }
     if(inherits(crop_ext, "SpatVector") || inherits(crop_ext, "SpatRaster") ) {
       if (nchar(crs(crop_ext)) == 0) {
         stop("CRS of crop_ext is missing or empty.")
@@ -74,25 +79,23 @@ bam_get_layer <- function(version= "v5", spList, destfile, crop_ext = NULL, bcrN
     }else{
       stop("crop_ext need to be a SpatVector  or a SpatRaster")
     }
-    if(!is.null(bcrNM)){
-      bcrNM <- NULL
+    crop_area <- expanse(crop_ext, unit="km")
+    if(sum(crop_area) < 100){
+      warning(sprintf("The BAM density models are predicted to a resolution of 1 km2. Your area of interest is only %.2f km2. Please consider whether these models are appropriate for your application.", crop_area))
     }
+    # Find bcr intersecting ext and reset bcrNM
+    intersects <- terra::relate(base_bcr, crop_ext, relation = "intersects")
+    bcrNM <- base_bcr$bcr[apply(intersects, 1, any)]
   }
 
   # Valid bcrNM
   if (!is.null(bcrNM)){
-    if(version == "v5"){
-      base_bcr <- terra::vect(system.file("extdata", "BAM_BCRNMv5_3978.shp", package = "BAMexploreR"))
-    }else{
-      base_bcr <- terra::vect(system.file("extdata", "BAM_BCRNMv4_3978.shp", package = "BAMexploreR"))
-    }
     if (!is.character(bcrNM)) {
       stop("bcrNM` must be a character vector representing valid BCR codes (e.g., 'can5', 'can80'). You provided an object of class: ", class(bcrNM)[1])
     }
     if (!all(bcrNM %in% base_bcr$bcr)) {
       stop("Invalid bcr value(s) provided: ", paste(setdiff(bcrNM, base_bcr$bcr), collapse = ", "))
     }
-
   }
 
   # Check destfile

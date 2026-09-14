@@ -85,17 +85,13 @@ bam_map_bcr <- function(version, ext = NULL, spList = NULL) {
     }else if (nchar(terra::crs(ext)) == 0){
       stop("CRS is missing or empty.")
     } else {
-      if (length(terra::intersect(base_bcr, ext)) == 0) {
-        warning("The provided extent does not intersect with any BCR sub-units.")
-      }else{
-        # Ensure both SpatVect objects are in the same CRS
-        if (terra::crs(ext) != "EPSG:3978") {
-          extent <- terra::project(ext, "EPSG:3978")
-        } else {
-          extent <- ext
-        }
-        user_sf <- sf::st_as_sf(extent)
+      # Ensure both SpatVect objects are in the same CRS
+      if (terra::crs(ext) != "EPSG:3978") {
+        extent <- terra::project(ext, "EPSG:3978")
+      } else {
+        extent <- ext
       }
+      user_sf <- sf::st_as_sf(extent)
     }
 
     intersected <- sf::st_intersects(
@@ -105,8 +101,12 @@ bam_map_bcr <- function(version, ext = NULL, spList = NULL) {
     )
 
     intersected_subUnits <- selected_sf[
-      apply(intersected, 1, any)
+      apply(intersected, 1, any),
     ]
+
+    if (nrow(intersected_subUnits) == 0) {
+      stop("The provided extent does not intersect with any BCR sub-units.",  call. = FALSE)
+    }
   }else{
     intersected_subUnits <- selected_sf
   }
