@@ -84,7 +84,7 @@ bam_pop_size <- function(raster_list, crop_ext= NULL, group = NULL){
 
     } else {
       # normal case
-      pixel_values <- terra::extract(raster_i, crop_ext_grp)
+      pixel_values <- terra::extract(raster_i, crop_ext_grp, touches = TRUE)
       value_col <- setdiff(names(pixel_values), "ID")
 
       # rename it to "density"
@@ -112,7 +112,7 @@ bam_pop_size <- function(raster_list, crop_ext= NULL, group = NULL){
         dplyr::select(species, tidyselect::everything())
 
       #rename the group column
-      colnames(group_summary) <- c("group", colnames(group_summary[2:ncol(group_summary)]))
+      colnames(group_summary) <- c("species","group", colnames(group_summary[3:ncol(group_summary)]))
     } else {
       group_summary <- pixel_values |>
         dplyr::rename(density = mean) |>
