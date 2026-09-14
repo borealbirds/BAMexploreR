@@ -34,7 +34,7 @@ test_that("bam_predictor_importance works with different group options", {
 # Test invalid inputs
 test_that("bam_predictor_importance fails with invalid group", {
   expect_error(bam_predictor_importance(group = "nonsense"))
-  expect_error(bam_predictor_importance(species = "lolo", group = "spp"))
+  expect_warning(expect_error(bam_predictor_importance(species = "lolo", group = "spp")),"lolo not found in spp_tbl. Returning NA.")
   expect_error(bam_predictor_importance(group = "spp", bcr = "lolo"))
 })
 

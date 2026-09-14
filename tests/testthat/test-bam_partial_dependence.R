@@ -33,12 +33,15 @@ test_that("bam_partial_dependence runs silently without warnings", {
 # Test: bam_partial_dependence errors for invalid inputs
 # -------------------------------------------------
 test_that("bam_partial_dependence stops for invalid species, BCR, or predictor", {
-  expect_error(
-    bam_partial_dependence(
-      species = "NONEXISTENT",
-      bcr = "can12",
-      predictor = "SCANFIheight_1km"
-    )
+  expect_warning(
+    expect_error(
+      bam_partial_dependence(
+        species = "NONEXISTENT",
+        bcr = "can12",
+        predictor = "SCANFIheight_1km"
+      )
+    ),
+    "nonexistent not found in spp_tbl. Returning NA."
   )
 
   expect_error(

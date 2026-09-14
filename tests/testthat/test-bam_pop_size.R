@@ -1,12 +1,9 @@
 library(testthat)
 library(BAMexploreR)
-library(sf)
-library(terra)
-library(glue)
 
 # Check that bam_pop_size handles filtering by species
 test_that("bam_pop_size handles raster list", {
-  rasters <- bam_get_layer(c("TEWA", "OVEN"), "v4", destfile=tempdir())
+  rasters <- bam_get_layer("v4", c("TEWA", "OVEN"), destfile=tempdir())
   result <- bam_pop_size(rasters)
   expect_s3_class(result, "data.frame")
   expect_true(all(c("species", "total_pop", "mean_density", "sd_density", "n_cells", "group") %in% colnames(result)))
@@ -27,7 +24,7 @@ test_that("bam_pop_size correctly sums pixel values", {
 
 # Test if bam_pop_size works with list
 test_that("bam_pop_size works with list of rasters", {
-  rasters <- bam_get_layer(c("TEWA", "OVEN"), "v4", destfile=tempdir())
+  rasters <- bam_get_layer("v4", c("TEWA", "OVEN"), destfile=tempdir())
   result <- bam_pop_size(rasters)
   expect_equal(nrow(result), 2)
   expect_true(all(result$spp %in% c("TEWA", "OVEN")))
@@ -55,14 +52,12 @@ test_that("bam_pop_size throws error on invalid input", {
 
 # Test that Crop work
 test_that("bam_pop_size throws error on invalid cropping", {
-  rasters <- bam_get_layer("TEWA", "v5", destfile=tempdir())
+  rasters <- bam_get_layer("v5", "TEWA", destfile=tempdir())
   aoi_sf <- vect(system.file("extdata", "vignette_poly_3978.shp", package = "BAMexploreR"))
   result <- bam_pop_size(rasters, crop_ext=aoi_sf )
 
-  rast_full <- terra::rast(ext = ext(aoi_sf), res = 1080, crs = crs(aoi_sf))
-  values(rast_full) <- 1
-  cropped  <- crop(rast_full, aoi_sf)
-  manual_n <- sum(!is.na(values(cropped)))
+  cropped <- terra::crop(rasters$TEWA, aoi_sf, snap = "near", mask = TRUE)
+  manual_n <- sum(!is.na(values(cropped$mean)))
   fn_n       <- result$n_cells[[1]]
 
   expect_equal(fn_n, manual_n,  tolerance = 0.1, info = glue::glue( "bam_pop_size reported {fn_n} cells, but manual crop has {manual_n} cells"))
@@ -72,13 +67,13 @@ test_that("bam_pop_size throws error on invalid cropping", {
 # Test that grouping work
 test_that("bam_pop_size throws error on invalid grouping", {
   # MN, SK  (approx)
-  mb_poly <- st_as_sf(st_sfc(st_polygon(list(rbind(c(-102, 60),c(-94, 60),c(-94, 49),c(-102, 49),c(-102, 60))))), crs = 4326)
-  sk_poly <- st_as_sf(st_sfc(st_polygon(list(rbind(c(-110, 60),c(-102, 60),c(-102, 49),c(-110, 49),c(-110, 60))))), crs = 4326)
-  poly_3978 <- st_transform(rbind(mb_poly, sk_poly), "EPSG:3978")
+  mb_poly <- sf::st_as_sf(sf::st_sfc(sf::st_polygon(list(rbind(c(-102, 60),c(-94, 60),c(-94, 49),c(-102, 49),c(-102, 60))))), crs = 4326)
+  sk_poly <- sf::st_as_sf(sf::st_sfc(sf::st_polygon(list(rbind(c(-110, 60),c(-102, 60),c(-102, 49),c(-110, 49),c(-110, 60))))), crs = 4326)
+  poly_3978 <- sf::st_transform(rbind(mb_poly, sk_poly), "EPSG:3978")
   sv <- vect(poly_3978)
   sv$id <- c("MB", "SK")
 
-  rasters <- bam_get_layer("TEWA", "v4", destfile=tempdir())
+  rasters <- bam_get_layer("v4", "TEWA", destfile=tempdir())
   result <- bam_pop_size(rasters, crop_ext=sv, group = "id" )
 
   expect_s3_class(result, "data.frame")
@@ -88,13 +83,13 @@ test_that("bam_pop_size throws error on invalid grouping", {
 
 # Test if bam_pop_size works with list
 test_that("bam_pop_size works with list of rasters while croping and grouping", {
-  mb_poly <- st_as_sf(st_sfc(st_polygon(list(rbind(c(-102, 60),c(-94, 60),c(-94, 49),c(-102, 49),c(-102, 60))))), crs = 4326)
-  sk_poly <- st_as_sf(st_sfc(st_polygon(list(rbind(c(-110, 60),c(-102, 60),c(-102, 49),c(-110, 49),c(-110, 60))))), crs = 4326)
-  poly_3978 <- st_transform(rbind(mb_poly, sk_poly), "EPSG:3978")
+  mb_poly <- sf::st_as_sf(sf::st_sfc(sf::st_polygon(list(rbind(c(-102, 60),c(-94, 60),c(-94, 49),c(-102, 49),c(-102, 60))))), crs = 4326)
+  sk_poly <- sf::st_as_sf(sf::st_sfc(sf::st_polygon(list(rbind(c(-110, 60),c(-102, 60),c(-102, 49),c(-110, 49),c(-110, 60))))), crs = 4326)
+  poly_3978 <- sf::st_transform(rbind(mb_poly, sk_poly), "EPSG:3978")
   sv <- vect(poly_3978)
   sv$id <- c("MB", "SK")
 
-  rasters <- bam_get_layer(c("TEWA", "OVEN"), "v4", destfile=tempdir())
+  rasters <- bam_get_layer("v4", c("TEWA", "OVEN"), destfile=tempdir())
   result <- bam_pop_size(rasters, crop_ext=sv, group = "id")
   expect_equal(nrow(result), 4)
   expect_true(all(result$species %in% c("TEWA", "OVEN")))

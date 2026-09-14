@@ -1,7 +1,5 @@
 library(testthat)
 library(BAMexploreR)
-library(terra)
-library(tmap)
 
 # Test that an invalid version triggers an error
 test_that("bam_map_bcr handles case-sensitive and whitespace issues with version input", {
@@ -36,15 +34,13 @@ test_that("bam_map_bcr returns error with missing CRS in extent", {
 
 
 # Test that the function shows NULL result on non-valid area
-test_that("bam_map_bcr warns if ext does not intersect base BCRs", {
+test_that("bam_map_bcr returns error if ext does not intersect base BCRs", {
   # Make a spatial extent clearly outside any BCR boundaries
-  non_intersecting_ext <- terra::ext(1e6, 2e6, 1e6, 2e6)
+  non_intersecting_ext <- terra::ext(1e6, 1.5e6, 1.5e6, 2e6)
   non_intersecting_vect <- terra::vect(non_intersecting_ext, crs = "EPSG:3978")
 
-  expect_warning(
-    bam_map_bcr(version = "v4", ext = non_intersecting_vect),
-    regexp = "does not intersect"  # Match your actual warning message
-  )
+  expect_error(
+    bam_map_bcr(version = "v4", ext = non_intersecting_vect), "The provided extent does not intersect with any BCR sub-units.")
 })
 
 

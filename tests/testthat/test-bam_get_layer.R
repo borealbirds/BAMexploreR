@@ -5,26 +5,26 @@ library(terra)
 
   # Test that function throws error if `destfile` is missing
   test_that("bam_get_layer throws error if destfile is missing", {
-    expect_error(bam_get_layer(spList = "BAOR", version = "v4"),
+    expect_error(bam_get_layer(version = "v4", spList = "BAOR"),
                  "You must provide an output path to store downloaded rasters.")
   })
 
   test_that("message is shown for invalid species", {
     expect_error(
-      bam_get_layer(spList = "BBBB", version = "v4", destfile = tempdir()),
+      bam_get_layer(version = "v4", spList = "BBBB", destfile = tempdir()),
       "Invalid species in spList: must be in bam_spp_list()"
     )
   })
 
   # Test error handling for invalid version
   test_that("bam_get_layer throws error with invalid version", {
-    expect_error(bam_get_layer(spList = "BAOR", version = "invalid_version", destfile = tempdir()),
+    expect_error(bam_get_layer(version = "invalid_version", spList = "BAOR", destfile = tempdir()),
                  "Model version doesn't exist.")
   })
 
   # Test the basic functionality with mock data
   test_that("bam_get_layer downloads raster", {
-    result <- bam_get_layer(spList = "BAOR", version = "v4", destfile = tempdir())
+    result <- bam_get_layer(version = "v4", spList = "BAOR", destfile = tempdir())
     expect_type(result, "list")
     expect_true("BAOR" %in% names(result))
     expect_s4_class(result$BAOR, "SpatRaster")
@@ -34,15 +34,14 @@ library(terra)
   # Test ext has projection
   test_that("function stops if ext has no CRS", {
     # Create a simple SpatVect without CRS
-    library(terra)
-    coords <- matrix(c(0, 0, 1, 0, 1, 1, 0, 1, 0, 0), ncol = 2, byrow = TRUE)
+    coords <- matrix(c(0, 0, 10000, 0, 10000, 10000, 0, 10000, 0, 0), ncol = 2, byrow = TRUE)
 
     p <- vect(list(coords), type = "polygons")
     crs(p) <- ""  # Remove CRS
 
     # Now expect your function to fail
     expect_error(
-      bam_get_layer("BAOR", "v4", destfile = tempdir(), crop_ext = p),  # Replace with your function name
+      bam_get_layer("v4", "BAOR", destfile = tempdir(), crop_ext = p),  # Replace with your function name
       "CRS of crop_ext is missing or empty."
     )
   })
@@ -51,17 +50,17 @@ library(terra)
   test_that("bam_get_layer rejects invalid years", {
     # Invalid years should throw an error
     expect_error(
-      bam_get_layer(spList = "BAOR", version = "v5", destfile = "tmp.tif", year = 1999),
+      bam_get_layer(version = "v5", spList = "BAOR", destfile = "tmp.tif", year = 1999),
       "Only 2020 predictions are currently available"
     )
 
     expect_error(
-      bam_get_layer(spList = "BAOR", version = "v5", destfile = "tmp.tif", year = 2021),
+      bam_get_layer(version = "v5", spList = "BAOR", destfile = "tmp.tif", year = 2021),
       "Only 2020 predictions are currently available"
     )
 
     expect_error(
-      bam_get_layer(spList = "BAOR", version = "v5", destfile = "tmp.tif", year = 2015),
+      bam_get_layer(version = "v5", spList = "BAOR", destfile = "tmp.tif", year = 2015),
       "Only 2020 predictions are currently available"
     )
   })
@@ -71,7 +70,7 @@ library(terra)
 
     for (yr in allowed_years) {
       expect_no_error(  # If using testthat < 3.1.0, use expect_silent()
-        bam_get_layer(spList = "BTNW", version = "v5", destfile = tempdir(), year = yr)
+        bam_get_layer(version = "v5", spList = "BTNW", destfile = tempdir(), year = yr)
       )
     }
   })
@@ -100,8 +99,8 @@ library(terra)
 
     expect_no_error(  # If using older testthat, use expect_silent()
       bam_get_layer(
-        spList = valid_species,
         version = "v5",
+        spList = valid_species,
         destfile = tempdir(),
         year = 2020
       )
