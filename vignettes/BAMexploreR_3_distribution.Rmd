@@ -137,9 +137,9 @@ We can see that the area of occurrence is smaller when we use a more conservativ
 library(knitr)
 
 # Area of occurrence for lorenz approach
-kable(occ_lorenz_result$occurrence_summary, caption="Area of occurence with Lorenz threshold")
+knitr::kable(occ_lorenz_result$occurrence_summary, caption="Area of occurence with Lorenz threshold")
 # Area of occurence for quantile approach
-kable(occ_quantile_result$occurrence_summary, caption="Area of occurence with 50% threshold")
+knitr::kable(occ_quantile_result$occurrence_summary, caption="Area of occurence with 50% threshold")
 ```
 
 Within our AOI of ~100,000 km^2^, we estimate approximately half of that is occupied by Olive-sided Flycatchers if we use the Lorenz curve approach and we estimate just under a third of that is occupied by Olive-sided Flycatchers if we use a custom 50% threshold
@@ -155,7 +155,7 @@ Let's use our same Olive-sided Flycatcher example as before.
 pop_aoi_result <- bam_pop_size(result)
 
 # Show results
-kable(pop_aoi_result, caption = "Estimated population size (male birds)")
+knitr::kable(pop_aoi_result, caption = "Estimated population size (male birds)")
 ```
 
 The `bam_pop_size` function can also accommodate an AOI SpatVector for AOI with a column that can be used to group the population size summary.
@@ -190,7 +190,7 @@ head(aoi_sf_bcr)
 pop_bcr_result <- bam_pop_size(result, crop_ext=aoi_sf_bcr, group="bcr")
 
 # Show results
-kable(pop_bcr_result, caption = "Estimated population size")
+knitr::kable(pop_bcr_result, caption = "Estimated population size")
 ```
 
 We can see that our total Olive-sided Flycatcher population is primarily in BCR 80. Based on the mean_density and n_cells columns that this larger population size is primarily due to differences in mean density between the BCRs, and not by differences in total area suggesting BCR 61 provides higher quality habitat for Olive-sided Flycatchers (within our AOI).

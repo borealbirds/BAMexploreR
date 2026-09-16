@@ -154,7 +154,7 @@ aoi_importance <- bam_predictor_importance(species = "OSFL", bcr = bcraoi_v5,
 
 # Check results
 library(knitr)
-kable(aoi_importance, caption="Percent importance of predictor classes, grouped by model subreigon")
+knitr::kable(aoi_importance, caption="Percent importance of predictor classes, grouped by model subreigon")
 ```
 
 Right now we're just looking at one species. What happens if we include multiple species in our `species` argument? We get statistics summarized across species.
@@ -178,7 +178,7 @@ library(dplyr)
 predictor_metadata |> 
   dplyr::filter(version=="v5", predictor_class=="Veg Structure") |> 
   dplyr::select(predictor, definition) |> 
-  kable(caption = "Model predictors in the 'Veg Structure' class")
+  knitr::kable(caption = "Model predictors in the 'Veg Structure' class")
 ```
 
 Note that not all predictors go into every model! You'll see there are multiple versions of biomass, which exist because not all spatial predictor products were available for the entire model area. For example, 'SCANFI_biomass_1km' was used for all of Canada, while 'LFbiomass_1km' was used for Alaska and 'RAPTCC_1km' was used for the lower 48 United States.
@@ -237,7 +237,7 @@ bam_predictors_v5 |>
   group_by(spp) |>
   slice_max(order_by = mean_share, n = 2) |> 
   ungroup() |> 
-  kable(caption = "Summary of model predictor importance by species for AOI")
+  knitr::kable(caption = "Summary of model predictor importance by species for AOI")
 ```
 
 

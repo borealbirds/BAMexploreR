@@ -168,7 +168,7 @@ Let's download a current-model `SpatRaster` for one of our COSEWIC-designated sp
 
 ```{r get_layer, echo = TRUE, message=FALSE, results='hide'}
 #Download the model product for Olive-sided Flycatcher
-result <- bam_get_layer(cosewic_v5[7], "v5", destfile = tempdir(), year = "2020", bcrNM=bcraoi_v5)
+result <- bam_get_layer("v5", cosewic_v5[7],  destfile = tempdir(), year = "2020", bcrNM=bcraoi_v5)
 ```
 
 The output is a list of `SpatRaster` objects. This example returns a list of one object because we requested one species. Each current-model object has two bands:
