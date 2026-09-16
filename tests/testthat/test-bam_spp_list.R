@@ -17,13 +17,13 @@ test_that("species names resolve to release-specific codes", {
 
   expect_equal(
     BAMexploreR:::standardize_species_names(
-      "Perisoreus canadensis", spp_tbl, version = "v4"
+      "Perisoreus canadensis", version = "v4"
     ),
     "GRAJ"
   )
   expect_equal(
     BAMexploreR:::standardize_species_names(
-      "Perisoreus canadensis", spp_tbl, version = "v5"
+      "Perisoreus canadensis", version = "v5"
     ),
     "CAJA"
   )
