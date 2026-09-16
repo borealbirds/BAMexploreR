@@ -55,15 +55,14 @@ bam_spp_list <- function(version, type = "speciesCode", guild = NULL) {
       tiff_files <- regmatches(content_text, gregexpr('href="([^"]+\\.tiff)"', content_text))
       tiff_files <- unlist(tiff_files)
       tiff_files <- gsub('href="|/"', '', tiff_files)
-      spList <- tiff_files |>
-        stringr::str_sub(start = 16, end = 19) %>%
-        .[.%in%spcode]
+      spList <- stringr::str_sub(tiff_files, start = 16, end = 19)
+      spList <- spList[spList %in% spcode]
     } else if(version == "v5"){
       # Use regular expressions to parse
       subdirs <- regmatches(content_text, gregexpr('href="([^"]+/)"', content_text))
       subdirs <- unlist(subdirs)
-      spList <- gsub('href="|/"', '', subdirs) %>%
-        .[!(. %in% "/data")]
+      spList <- gsub('href="|/"', '', subdirs)
+      spList <- spList[spList != "/data"]
     } else {
       print("You must specify either v4 or v5")
     }
