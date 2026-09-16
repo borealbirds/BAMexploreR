@@ -134,3 +134,47 @@
 #' @keywords datasets
 #' @docType data
 "bam_predictor_importance_v4"
+
+
+# ---------------------------------------------------------------------------
+# Bootstrap-level partial dependence: the source of truth for v5 response curves.
+# ---------------------------------------------------------------------------
+
+#' Bootstrap-level predictor response curves (National Models v5)
+#'
+#' The partial dependence of predicted bird density on each model predictor, in
+#' every bootstrap replicate of every species x BCR model. This is the dataset
+#' from which \code{bam_partial_dependence()} fits its mean response and 95\%
+#' confidence ribbon.
+#'
+#' Curves were generated with \code{gbm::plot.gbm()} at
+#' \code{continuous.resolution = 50}. Only species x BCR x predictor combinations
+#' in the top 75th percentile of relative influence across all models were
+#' retained, so a combination absent from this dataset is not an error: the
+#' predictor was simply too weak in that model to be worth plotting. Use
+#' \code{\link{bam_predictor_importance_v5}} to find the predictors that matter
+#' for a given species x BCR.
+#'
+#' There is no v4 counterpart; response data for the archived models are not
+#' included in the package.
+#'
+#' @format A \code{tbl_df} with 9,686,705 rows and seven columns:
+#' \describe{
+#'   \item{species}{Four-letter bird code (70 species).}
+#'   \item{bcr}{Bird Conservation Region (model subregion; 33 BCRs).}
+#'   \item{var}{Model predictor (89 predictors).}
+#'   \item{replicate}{Bootstrap replicate index, 1 to 32, within that
+#'     species x BCR model.}
+#'   \item{covariate_value}{Value of the predictor at which the response was
+#'     evaluated. Stored as \code{character} so that continuous and categorical
+#'     predictors can share the column; cast to \code{numeric} when
+#'     \code{covariate_type} is \code{"continuous"}.}
+#'   \item{covariate_type}{Either \code{"continuous"} or \code{"categorical"}.}
+#'   \item{y}{Partial dependence of predicted density on the predictor, in
+#'     singing males per hectare.}
+#' }
+#' @seealso \code{\link{bam_partial_dependence}}
+#' @source Generated from the Version 5 National Model objects.
+#' @keywords datasets
+#' @docType data
+"bam_predictor_response_v5"

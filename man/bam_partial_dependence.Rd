@@ -21,7 +21,7 @@ See \code{data(spp_tbl)} for available species and their spelling.}
 See \code{bam_map_bcr()} for available BCRs and their spellings.}
 
 \item{predictor}{A \code{character} specifying the model predictor (e.g., temperature, precipitation)
-to be visualized in the partial dependence plot. See \code{data(predictor_meta)} for available predictors.}
+to be visualized in the partial dependence plot. See \code{data(predictor_metadata)} for available predictors.}
 
 \item{version}{Model release. Partial-dependence plots are currently available
 only for the current models, so this must be \code{"v5"}. Defaults to
