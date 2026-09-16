@@ -102,7 +102,6 @@ bam_predictor_barchart <- function(species = "all", bcr = "all",  groups = c("sp
   if (!identical(species, "all")){
     species <- standardize_species_names(
       species_input = species,
-      spp_tbl = BAMexploreR:::spp_tbl,
       version = version
     )
   }

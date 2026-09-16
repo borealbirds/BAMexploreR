@@ -79,7 +79,6 @@ bam_partial_dependence <- function(species, bcr, predictor, version="v5", colour
   data("spp_tbl", package = "BAMexploreR")
   species <- standardize_species_names(
     species_input = species,
-    spp_tbl = spp_tbl,
     version = version
   )
 

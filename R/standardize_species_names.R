@@ -11,7 +11,7 @@
 #' @return A character vector of species codes (same length as input).
 #' @noRd
 
-standardize_species_names <- function(species_input, spp_tbl, version = NULL) {
+standardize_species_names <- function(species_input, version = NULL) {
 
   if (!is.null(version)) {
     if (!version %in% names(spp_tbl)) {
