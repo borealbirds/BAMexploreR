@@ -3,7 +3,7 @@ library(BAMexploreR)
 
 # Check that bam_pop_size handles filtering by species
 test_that("bam_pop_size handles raster list", {
-  rasters <- bam_get_layer("v4", c("TEWA", "OVEN"), destfile=tempdir())
+  rasters <- bam_get_layer("v4", c("TEWA", "OVEN"), destfolder=tempdir())
   result <- bam_pop_size(rasters)
   expect_s3_class(result, "data.frame")
   expect_true(all(c("species", "total_pop", "mean_density", "sd_density", "n_cells", "group") %in% colnames(result)))
@@ -24,7 +24,7 @@ test_that("bam_pop_size correctly sums pixel values", {
 
 # Test if bam_pop_size works with list
 test_that("bam_pop_size works with list of rasters", {
-  rasters <- bam_get_layer("v4", c("TEWA", "OVEN"), destfile=tempdir())
+  rasters <- bam_get_layer("v4", c("TEWA", "OVEN"), destfolder=tempdir())
   result <- bam_pop_size(rasters)
   expect_equal(nrow(result), 2)
   expect_true(all(result$spp %in% c("TEWA", "OVEN")))
@@ -52,7 +52,7 @@ test_that("bam_pop_size throws error on invalid input", {
 
 # Test that Crop work
 test_that("bam_pop_size throws error on invalid cropping", {
-  rasters <- bam_get_layer("v5", "TEWA", destfile=tempdir())
+  rasters <- bam_get_layer("v5", "TEWA", destfolder=tempdir())
   aoi_sf <- vect(system.file("extdata", "vignette_poly_3978.shp", package = "BAMexploreR"))
   result <- bam_pop_size(rasters, crop_ext=aoi_sf )
 
@@ -73,7 +73,7 @@ test_that("bam_pop_size throws error on invalid grouping", {
   sv <- vect(poly_3978)
   sv$id <- c("MB", "SK")
 
-  rasters <- bam_get_layer("v4", "TEWA", destfile=tempdir())
+  rasters <- bam_get_layer("v4", "TEWA", destfolder=tempdir())
   result <- bam_pop_size(rasters, crop_ext=sv, group = "id" )
 
   expect_s3_class(result, "data.frame")
@@ -89,7 +89,7 @@ test_that("bam_pop_size works with list of rasters while croping and grouping", 
   sv <- vect(poly_3978)
   sv$id <- c("MB", "SK")
 
-  rasters <- bam_get_layer("v4", c("TEWA", "OVEN"), destfile=tempdir())
+  rasters <- bam_get_layer("v4", c("TEWA", "OVEN"), destfolder=tempdir())
   result <- bam_pop_size(rasters, crop_ext=sv, group = "id")
   expect_equal(nrow(result), 4)
   expect_true(all(result$species %in% c("TEWA", "OVEN")))

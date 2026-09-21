@@ -6,7 +6,7 @@
 #'
 #' @param spList A \code{vector} of species to be downloaded.
 #'
-#' @param destfile A \code{character} indicating output path where the downloaded file is saved.
+#' @param destfolder A \code{character} indicating output path to folder where the downloaded file is saved.
 #'
 #' @param crop_ext A \code{SpatVector} or A \code{SpatRaster} used to define the extent for the cropping.
 #' Or downloading valid BCR polygons from list, type: \code{bam_map_bcr("v4")} or \code{bam_map_bcr("v5")}
@@ -21,11 +21,11 @@
 #'   the argument will be ignored.
 #'
 #' @return A list of \code{SpatRaster} objects. In addition to returning these objects,
-#' the function also downloads raster files to the directory specified by \code{destfile},
+#' the function also downloads raster files to the directory specified by \code{destfolder},
 #' as a side-effect.
 #'
 #' @examples
-#' bird <- bam_get_layer( "v4", "TEWA", destfile = tempdir())
+#' bird <- bam_get_layer( "v4", "TEWA", destfolder = tempdir())
 #'
 #' @author Melina Houle
 #' @docType methods
@@ -39,7 +39,7 @@
 #' @importFrom terra vect rast project crop values crs writeRaster same.crs expanse
 #' @importFrom stats setNames
 #'
-bam_get_layer <- function(version= "v5", spList, destfile, crop_ext = NULL, bcrNM= "Canada",  year = "2020") {
+bam_get_layer <- function(version= "v5", spList, destfolder, crop_ext = NULL, bcrNM= "Canada",  year = "2020") {
 
   # Valid Model versions
   if (!version %in% c("v4", "v5")) {
@@ -56,7 +56,7 @@ bam_get_layer <- function(version= "v5", spList, destfile, crop_ext = NULL, bcrN
   }
 
   # Need output path
-  if (missing(destfile)) {
+  if (missing(destfolder)) {
     stop("You must provide an output path to store downloaded rasters.")
   }
 
@@ -98,9 +98,9 @@ bam_get_layer <- function(version= "v5", spList, destfile, crop_ext = NULL, bcrN
     }
   }
 
-  # Check destfile
-  if (!file.exists(destfile)) {
-    dir.create(destfile, showWarnings = FALSE)
+  # Check destfolder
+  if (!file.exists(destfolder)) {
+    dir.create(destfolder, showWarnings = FALSE)
   }
 
   allowed_years <- "2020"
@@ -151,11 +151,11 @@ bam_get_layer <- function(version= "v5", spList, destfile, crop_ext = NULL, bcrN
   # Perform batch download for species in the list
   for (s in spList) {
    if(version == "v4"){
-     outspp <- .batch_download(species = s, year = NULL, version = version, crop_ext, bcrNM, destfile)
+     outspp <- .batch_download(species_code = s, year = NULL, version = version, crop_ext, bcrNM, destfolder)
      outList <- append(outList, outspp)
    }else{
       for (y in year) {#v5
-        outspp <- .batch_download(species = s, year = y, version = version, crop_ext, bcrNM, destfile)
+        outspp <- .batch_download(species_code = s, year = y, version = version, crop_ext, bcrNM, destfolder)
         outList <- append(outList, outspp)
       }
    }

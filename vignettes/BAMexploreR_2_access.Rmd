@@ -86,7 +86,7 @@ Arguments
 
 - version: Specifies the model release: `"v5"` for the current models or `"v4"` for the archived models.
 
-- destfile: A character indicating output path where the downloaded file is saved.
+- destfolder: A character indicating output path where the downloaded file is saved.
 
 - crop_ext: A SpatVector or SpatRaster used to define the extent for the cropping.
 
@@ -97,7 +97,7 @@ Arguments
 
 Output
 
-A list of multiband SpatRaster objects. In addition to returning these objects, the function also downloads raster files to the directory specified by destfile as a side-effect.
+A list of multiband SpatRaster objects. In addition to returning these objects, the function also downloads raster files to the directory specified by destfolder as a side-effect.
 
 ## Example workflow
 
@@ -168,7 +168,7 @@ Let's download a current-model `SpatRaster` for one of our COSEWIC-designated sp
 
 ```{r get_layer, echo = TRUE, message=FALSE, results='hide'}
 #Download the model product for Olive-sided Flycatcher
-result <- bam_get_layer("v5", cosewic_v5[7],  destfile = tempdir(), year = "2020", bcrNM=bcraoi_v5)
+result <- bam_get_layer(version = "v5", spList= cosewic_v5[11], tempdir(), bcrNM=bcraoi_v5, year = "2020")
 ```
 
 The output is a list of `SpatRaster` objects. This example returns a list of one object because we requested one species. Each current-model object has two bands:

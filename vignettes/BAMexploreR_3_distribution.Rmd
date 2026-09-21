@@ -95,7 +95,7 @@ library(BAMexploreR)
 aoi_sf <- vect(system.file("extdata", "vignette_poly_3978.shp", package = "BAMexploreR"))
 
 #Download the model products
-result <- bam_get_layer("OSFL", "v5", destfile = tempdir(), year = "2020", crop_ext=aoi_sf)
+result <- bam_get_layer("OSFL", "v5", destfolder = tempdir(), year = "2020", crop_ext=aoi_sf)
 ```
 
 Let's plot just the mean density to check our download.

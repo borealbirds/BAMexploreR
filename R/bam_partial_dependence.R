@@ -76,7 +76,6 @@ bam_partial_dependence <- function(species, bcr, predictor, version="v5", colour
 
   # convert user specified species to FLBCs
   # checks for spellings and returns message if not found
-  data("spp_tbl", package = "BAMexploreR")
   species <- standardize_species_names(
     species_input = species,
     version = version
