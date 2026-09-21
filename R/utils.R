@@ -126,8 +126,8 @@ if (getRversion() >= "2.15.1") {
 }
 
 # download raster to a file
-.download_raster <- function(file_url, destfile) {
-  target_file <-  file.path(destfile, basename(file_url))
+.download_raster <- function(file_url, destfolder) {
+  target_file <-  file.path(destfolder, basename(file_url))
   writeBin(content(GET(file_url), "raw"), target_file)
   rast(target_file)
 }
@@ -138,7 +138,7 @@ if (getRversion() >= "2.15.1") {
   terra::crop(r, r_proj, snap = "near", mask = TRUE)
 }
 
-.batch_download <- function(species_code, version, year = NULL, crop_ext, bcrNM = "Canada", destfile) {
+.batch_download <- function(species_code, version, year = NULL, crop_ext, bcrNM = "Canada", destfolder) {
   message("Downloading data for ", species_code, " from version ", version)
 
   # Get file info
@@ -152,7 +152,7 @@ if (getRversion() >= "2.15.1") {
 
   # Main raster loading
   if (!is.null(crop_ext)) {
-    tiff_data <- .download_raster(file_url, destfile)
+    tiff_data <- .download_raster(file_url, destfolder)
 
     tiff_data <- if (inherits(crop_ext, "SpatVector")) {
       .crop_raster(tiff_data, crop_ext)
@@ -163,10 +163,10 @@ if (getRversion() >= "2.15.1") {
     out_name <- sub("\\.tif?$", "_clip.tif", file_name)
 
   } else if (any(c("Canada", "Lower48", "Alaska") %in% bcrNM)) {
-    tiff_data <- .download_raster(file_url, destfile)
+    tiff_data <- .download_raster(file_url, destfolder)
 
   } else if(length(bcrNM)>1 || (length(bcrNM) == 1 && version == "v4")){
-    tiff_mosaic <- .download_raster(file_url, destfile)
+    tiff_mosaic <- .download_raster(file_url, destfolder)
 
     extent <- system.file(
       "extdata",
@@ -182,17 +182,17 @@ if (getRversion() >= "2.15.1") {
       out_name <- paste0(species_code, "_BCRclip_", year, ".tif")
     }
   } else {
-    tiff_data <- .download_raster(file_url, destfile)
+    tiff_data <- .download_raster(file_url, destfolder)
   }
 
   if (!terra::same.crs(tiff_data, "EPSG:3978"))
     tiff_data <- terra::project(tiff_data, "EPSG:3978")
 
-  if(isFALSE(sources(tiff_data) == file.path(destfile, out_name))){
-    terra::writeRaster(tiff_data, file.path(destfile, out_name), overwrite = TRUE)
+  if(isFALSE(terra::sources(tiff_data) == file.path(destfolder, out_name))){
+    terra::writeRaster(tiff_data, file.path(destfolder, out_name), overwrite = TRUE)
   }
 
-  if (exists("tiff_mosaic")) {file.remove(sources(tiff_mosaic))}
+  if (exists("tiff_mosaic")) {file.remove(terra::sources(tiff_mosaic))}
 
   return(setNames(list(tiff_data), species_code))
 }
