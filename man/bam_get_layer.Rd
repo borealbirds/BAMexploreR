@@ -8,7 +8,7 @@
 bam_get_layer(
   version = "v5",
   spList,
-  destfile,
+  destfolder,
   crop_ext = NULL,
   bcrNM = "Canada",
   year = "2020"
@@ -20,7 +20,7 @@ models or \code{"v4"} for the archived models. Default is "v5".}
 
 \item{spList}{A \code{vector} of species to be downloaded.}
 
-\item{destfile}{A \code{character} indicating output path where the downloaded file is saved.}
+\item{destfolder}{A \code{character} indicating output path to folder where the downloaded file is saved.}
 
 \item{crop_ext}{A \code{SpatVector} or A \code{SpatRaster} used to define the extent for the cropping.
 Or downloading valid BCR polygons from list, type: \code{bam_map_bcr("v4")} or \code{bam_map_bcr("v5")}}
@@ -36,14 +36,14 @@ the argument will be ignored.}
 }
 \value{
 A list of \code{SpatRaster} objects. In addition to returning these objects,
-the function also downloads raster files to the directory specified by \code{destfile},
+the function also downloads raster files to the directory specified by \code{destfolder},
 as a side-effect.
 }
 \description{
 Download BAM Landbird Density & Habitat model rasters
 }
 \examples{
-bird <- bam_get_layer( "v4", "TEWA", destfile = tempdir())
+bird <- bam_get_layer( "v4", "TEWA", destfolder = tempdir())
 
 }
 \author{
