@@ -2,9 +2,6 @@
 <p>&nbsp;</p>
 <p>&nbsp;</p>
 
-## Note
-`BAMexploreR` and the accompanying Shiny app are currently under maintenance to support our new model products and will be operational as soon as possible. Check back soon!
-
 # BAMexploreR
 
 ## Overview
